@@ -15,3 +15,5 @@ be/logs/
 
 .idea
 .package-lock.json
+
+fe/node_modules/
