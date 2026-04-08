@@ -1,1 +1,14 @@
-.be/node_modules
+# Bỏ qua thư mục node_modules
+be/node_modules/
+
+# Bỏ qua các file bảo mật như .env
+be/.env
+be/.env.local
+be/.env.*.local
+
+# Bỏ qua các file cấu hình hoặc dữ liệu nhạy cảm
+be/config/*.json
+be/config/*.yml
+
+# Bỏ qua các thư mục log (nếu có)
+be/logs/
