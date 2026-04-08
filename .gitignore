@@ -12,3 +12,6 @@ be/config/*.yml
 
 # Bỏ qua các thư mục log (nếu có)
 be/logs/
+
+.idea
+.package-lock.json
