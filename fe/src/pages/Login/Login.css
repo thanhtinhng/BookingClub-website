@@ -1,0 +1,239 @@
+/* ===== Login Wrapper ===== */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #9ca3af;
+}
+
+/* ===== Card ===== */
+.login-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 48px;
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 48px 56px;
+  width: 860px;
+  max-width: 95vw;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Left: Image Placeholder ===== */
+.login-image-placeholder {
+  flex: 0 0 300px;
+  height: 340px;
+  border: 2px solid #6b7280;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-image-icon {
+  color: #6b7280;
+}
+
+/* ===== Right: Form Section ===== */
+.login-form-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ===== Dashed Form Box ===== */
+.login-form-box {
+  width: 100%;
+  border: 2px dashed #f59e0b;
+  border-radius: 8px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===== Title ===== */
+.login-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 8px 0;
+}
+
+/* ===== Field ===== */
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-label {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* ===== Input Wrapper ===== */
+.login-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #9ca3af;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 0 10px;
+  gap: 8px;
+  transition: border-color 0.2s;
+}
+
+.login-input-wrapper:focus-within {
+  border-color: #4b6fa5;
+}
+
+.login-input-wrapper--disabled {
+  background-color: #f3f4f6;
+}
+
+.login-input-icon-left {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.login-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #374151;
+}
+
+.login-input--disabled {
+  color: #6b7280;
+}
+
+.login-input::placeholder {
+  color: #9ca3af;
+}
+
+/* ===== Toggle button (show/hide) ===== */
+.login-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: #9ca3af;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.login-toggle-btn:hover {
+  color: #4b6fa5;
+  background: transparent;
+}
+
+/* ===== Submit Button ===== */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #3d5a80;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.login-btn:hover {
+  background-color: #2e4568;
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+}
+
+/* ===== Footer Text ===== */
+.login-footer-text {
+  font-size: 14px;
+  color: #374151;
+  text-align: center;
+  margin: 0;
+}
+
+.login-link {
+  font-weight: 700;
+  color: #1e3a5f;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.login-link:hover {
+  color: #f59e0b;
+  text-decoration: underline;
+}
+
+/* ===== Error Styles ===== */
+.login-error-text {
+  color: #ef4444; 
+  font-size: 12px;
+  margin-top: 2px;
+  margin-left: 4px;
+}
+
+.input-error {
+  border-color: #ef4444 !important; 
+}
+
+/* ===== để mất cái ẩn mật khẩu có sẵn của edge ===== */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+
+/* ===== responsive cho tablet ===== */
+@media screen and (max-width: 768px) {
+  /* 1. Thu nhỏ cái thẻ Card trắng lại, giảm viền, giảm khoảng cách */
+  .login-card {
+    padding: 32px 24px;
+    gap: 0; 
+    width: 100%;
+    border-radius: 16px;
+  }
+
+  /* 2. xóa cái khung ảnh bên trái */
+  .login-image-placeholder {
+    display: none; 
+  }
+
+  /* 3. Bóp nhỏ khung form và các ô chữ lại */
+  .login-form-box {
+    padding: 20px 16px;
+  }
+
+  .login-title {
+    font-size: 20px;
+  }
+
+  .login-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+/* ===== responsive cho điện thoại ===== */
+@media screen and (max-width: 480px) {
+  .login-card {
+    padding: 24px 16px;
+  }
+}
