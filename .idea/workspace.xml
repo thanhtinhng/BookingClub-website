@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2e53b034-ee94-4c9e-9d9b-d45e60d37ea9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/be/src/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/be/src/server.js" afterDir="false" />
-    </list>
+    <list default="true" id="2e53b034-ee94-4c9e-9d9b-d45e60d37ea9" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,9 +13,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="3BtYV5FIdGw1vJoAKbx9hXZ6WPt" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -27,8 +25,9 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "test",
+    "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/nguye/OneDrive/Máy tính/Nhsmai04/BookingClub-website",
     "node.js.detected.package.eslint": "true",
@@ -56,6 +55,7 @@
       <option name="presentableId" value="Default" />
       <updated>1775309854098</updated>
       <workItem from="1775309855443" duration="657000" />
+      <workItem from="1775703029352" duration="194000" />
     </task>
     <servers />
   </component>
