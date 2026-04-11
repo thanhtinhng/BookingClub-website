@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const registerService = async ({ phone, password, email }) => {
   const existingPhone = await User.findOne({ phone });
@@ -34,5 +35,26 @@ export const loginService = async ({ phone, password }) => {
     throw new Error("Wrong password");
   }
 
-  return user;
+  //tao access token
+  const payload = {
+    id: user._id,
+    phone: user.phone,
+    email: user.email
+  }
+
+  const access_token = jwt.sign(
+    payload,
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRE
+    }
+  )
+
+  return {
+    access_token,
+    user: {
+      phone: user.phone,
+      email: user.email
+    }
+  }
 };

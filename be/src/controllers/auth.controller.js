@@ -34,15 +34,12 @@ export const login = async (req, res) => {
   try {
     const { phone, password } = req.body;
 
-    const user = await loginService({ phone, password });
+    const rs = await loginService({ phone, password });
 
     return res.json({
-      _id: user._id,
-      phone: user.phone,
-      email: user.email,
-      status: user.status,
-      accessToken: mockToken(),
-      refreshToken: mockToken()
+      access_token: rs.access_token,
+      phone: rs.user.phone,
+      email: rs.user.email
     });
 
   } catch (err) {
