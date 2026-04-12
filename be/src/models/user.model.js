@@ -20,10 +20,15 @@ const userSchema = new mongoose.Schema({
     enum: ["Active", "Banned", "Pending"],
     default: "Active"
   },
+  role:{
+    type: String,
+    enum: ["Admin", "User", "Owner", "Guest"],
+    default: "User"
+  },
   created_at: {
     type: Date,
     default: Date.now
   }
-});
+}, {discriminatorKey: 'role'});
 
 export default mongoose.model("User", userSchema);
