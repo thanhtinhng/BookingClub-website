@@ -1,56 +1,10 @@
 import { useState } from "react";
-import { Eye, EyeOff, Image } from "lucide-react";
+import { Image } from "lucide-react"; 
+import InputField from "../../components/ui/InputField/InputField"; 
+import "./Register.css";
 import "./Register.css";
 
-// COMPONENT CON 
-interface InputFieldProps {
-  label: string;
-  type: string;
-  placeholder: string;
-  value: string;
-  onChange: (value: string) => void;
-  error?: string;
-  isPassword?: boolean;
-}
 
-const InputField: React.FC<InputFieldProps> = ({ 
-  label, type, placeholder, value, onChange, error, isPassword = false 
-}) => {
-  // Mỗi ô input tự quản lý trạng thái ẩn/hiện 
-  const [showPassword, setShowPassword] = useState(false);
-  
-  // Quyết định xem thẻ input sẽ hiển thị kiểu text hay password
-  const inputType = isPassword ? (showPassword ? "text" : "password") : type;
-
-  return (
-    <div className="register-field">
-      <label className="register-label">{label}</label>
-      <div className={`register-input-wrapper ${error ? 'input-error' : ''}`}>
-        <input
-          type={inputType}
-          className="register-input"
-          placeholder={placeholder}
-          value={value}
-          // Trả thẳng value về cho component cha
-          onChange={(e) => onChange(e.target.value)} 
-        />
-        {isPassword && (
-          <button
-            type="button"
-            className="register-toggle-btn"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-        )}
-      </div>
-      {/* Hiển thị dòng chữ đỏ nếu có lỗi */}
-      {error && <span className="register-error-text">{error}</span>}
-    </div>
-  );
-};
-
-// COMPONENT CHÍNH
 const Register: React.FC = () => {
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");

@@ -65,80 +65,6 @@
   margin: 0 0 4px 0;
 }
 
-/* ===== Field ===== */
-.register-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.register-label {
-  font-size: 13px;
-  color: #374151;
-  font-weight: 500;
-}
-
-/* ===== Input Wrapper ===== */
-.register-input-wrapper {
-  display: flex;
-  align-items: center;
-  border: 1.5px solid #9ca3af;
-  border-radius: 6px;
-  background-color: #ffffff;
-  padding: 0 10px;
-  gap: 8px;
-  transition: border-color 0.2s;
-}
-
-.register-input-wrapper:focus-within {
-  border-color: #4b6fa5;
-}
-
-.register-input-wrapper--disabled {
-  background-color: #f3f4f6;
-}
-
-.register-input-icon-left {
-  color: #9ca3af;
-  flex-shrink: 0;
-}
-
-.register-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 9px 0;
-  font-size: 14px;
-  color: #374151;
-}
-
-.register-input--disabled {
-  color: #6b7280;
-}
-
-.register-input::placeholder {
-  color: #9ca3af;
-}
-
-/* ===== Toggle Button ===== */
-.register-toggle-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  color: #9ca3af;
-  flex-shrink: 0;
-  transition: color 0.2s;
-}
-
-.register-toggle-btn:hover {
-  color: #4b6fa5;
-  background: transparent;
-}
-
 /* ===== Submit Button ===== */
 .register-btn {
   width: 100%;
@@ -195,26 +121,7 @@
   text-decoration: underline;
 }
 
-/* ===== Error Styles  ===== */
-.register-error-text {
-  color: #ef4444; 
-  font-size: 12px;
-  margin-top: 2px;
-  margin-left: 4px;
-}
-
-.input-error {
-  border-color: #ef4444 !important; 
-}
-
-
-/* ===== Ẩn con mắt mặc định của Edge ===== */
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear {
-  display: none;
-}
-
-/* ===== responsive tablet ===== */
+/* ===== RESPONSIVE TABLET ===== */
 @media screen and (max-width: 768px) {
   .register-card {
     padding: 32px 24px;
@@ -241,7 +148,7 @@ input[type="password"]::-ms-clear {
   }
 }
 
-/* ===== responsive điện thoại ===== */
+/* ===== RESPONSIVE ĐIỆN THOẠI ===== */
 @media screen and (max-width: 480px) {
   .register-card {
     padding: 24px 16px;
