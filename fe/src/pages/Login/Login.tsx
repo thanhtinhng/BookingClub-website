@@ -1,26 +1,20 @@
 import { useState } from "react";
-import { Eye, EyeOff, Image } from "lucide-react";
+import { Image } from "lucide-react"; 
 import "./Login.css";
+import InputField from "../../components/layout/InputField/InputField";
+
+
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [showEmail, setShowEmail] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   
-
-
-// Phần Validate 
-
-  //  Thêm State để lưu thông báo lỗi
+  // State lưu thông báo lỗi
   const [errors, setErrors] = useState({ email: "", password: "" });
 
-
-  //  Hàm kiểm tra dữ liệu khi bấm nút Đăng nhập
+  // Hàm validate khi bấm nút Đăng nhập
   const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // Ngăn trình duyệt tự tải lại trang
-    
-
+    e.preventDefault();
     let newErrors = { email: "", password: "" };
     let isValid = true;
 
@@ -42,18 +36,14 @@ const Login: React.FC = () => {
       isValid = false;
     }
 
-    // Cập nhật lỗi lên màn hình
     setErrors(newErrors);
 
-    // Nếu không có lỗi gì thì báo thành công (Sau này sẽ ghép API ở đây)
     if (isValid) {
       console.log("Dữ liệu chuẩn có thể gửi Back-end:", { email, password });
       alert("Đăng nhập hợp lệ!");
     }
   };
 
-  
-  
   return (
     <div className="login-wrapper">
       <div className="login-card">
@@ -67,61 +57,26 @@ const Login: React.FC = () => {
           <div className="login-form-box">
             <h2 className="login-title">Đăng nhập</h2>
 
-            {/*Email field */}
-            <div className="login-field">
-              <label className="login-label">Email</label>
-              {/* Nếu có lỗi thì thêm class error vào để viền đỏ */}
-              <div className={`login-input-wrapper ${errors.email ? 'input-error' : ''}`}>
-              
-                <input
-                  type={showEmail ? "text" : "email"}
-                  className="login-input"
-                  placeholder="Nhập email của bạn"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setErrors({ ...errors, email: "" }); // Gõ vào là mất lỗi
-                  }}
-                />
-                <button
-                  type="button"
-                  className="login-toggle-btn"
-                  onClick={() => setShowEmail(!showEmail)}
-                >
-               
-                </button>
-              </div>
-              {/* Hiển thị dòng chữ đỏ nếu có lỗi */}
-              {errors.email && <span className="login-error-text">{errors.email}</span>}
-            </div>
+            {/* Gọi Component */}
+            <InputField
+              label="Email"
+              type="email"
+              placeholder="Nhập email của bạn"
+              value={email}
+              onChange={(val) => { setEmail(val); setErrors({ ...errors, email: "" }); }}
+              error={errors.email}
+            />
 
-            {/* Password field */}
-            <div className="login-field">
-              <label className="login-label">Mật khẩu</label>
-              <div className={`login-input-wrapper ${errors.password ? 'input-error' : ''}`}>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="login-input"
-                  placeholder="Nhập mật khẩu"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setErrors({ ...errors, password: "" }); // Gõ vào là mất lỗi
-                  }}
-                />
-                <button
-                  type="button"
-                  className="login-toggle-btn"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-              {/* Hiển thị dòng chữ đỏ nếu có lỗi */}
-              {errors.password && <span className="login-error-text">{errors.password}</span>}
-            </div>
+            <InputField
+              label="Mật khẩu"
+              type="password"
+              placeholder="Nhập mật khẩu"
+              value={password}
+              onChange={(val) => { setPassword(val); setErrors({ ...errors, password: "" }); }}
+              error={errors.password}
+              isPassword={true}
+            />
 
-            {/* Submit button - Gắn hàm handleLogin vào sự kiện onClick */}
             <button type="button" className="login-btn" onClick={handleLogin}>
               Đăng nhập
             </button>
