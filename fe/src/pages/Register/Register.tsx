@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Image } from "lucide-react"; 
-import InputField from "../../components/ui/InputField/InputField"; 
+import InputField from "../../components/layout/InputField/InputField"; 
 import "./Register.css";
 import "./Register.css";
 
