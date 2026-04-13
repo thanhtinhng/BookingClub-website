@@ -17,3 +17,4 @@ be/logs/
 .package-lock.json
 
 fe/node_modules/
+node_modules

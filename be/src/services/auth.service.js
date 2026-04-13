@@ -1,0 +1,60 @@
+import User from "../models/user.model.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+export const registerService = async ({ phone, password, email }) => {
+  const existingPhone = await User.findOne({ phone });
+  if (existingPhone) {
+    throw new Error("Phone already exists");
+  }
+
+  const existingEmail = await User.findOne({ email });
+  if (existingEmail) {
+    throw new Error("Email already exists");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await User.create({
+    phone,
+    password: hashedPassword,
+    email
+  });
+
+  return user;
+};
+
+export const loginService = async ({ phone, password }) => {
+  const user = await User.findOne({ phone });
+
+  if (!user) throw new Error("User not found");
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw new Error("Wrong password");
+  }
+
+  //tao access token
+  const payload = {
+    id: user._id,
+    phone: user.phone,
+    email: user.email
+  }
+
+  const access_token = jwt.sign(
+    payload,
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRE
+    }
+  )
+
+  return {
+    access_token,
+    user: {
+      phone: user.phone,
+      email: user.email
+    }
+  }
+};
