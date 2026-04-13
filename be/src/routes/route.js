@@ -15,7 +15,6 @@ router.all("*", auth)
 
 router.post("/register", register);
 router.post("/login", limiter, login); //trong 1 phut chi request duoc 10 lan
-
 router.get("/me", getMe);
 
 export default router;

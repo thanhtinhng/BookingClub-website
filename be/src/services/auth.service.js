@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const registerService = async ({ phone, password, email }) => {
+export const registerService = async ({ name, phone, password, email }) => {
   const existingPhone = await User.findOne({ phone });
   if (existingPhone) {
     throw new Error("Phone already exists");
@@ -16,6 +16,7 @@ export const registerService = async ({ phone, password, email }) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await User.create({
+    name,
     phone,
     password: hashedPassword,
     email
