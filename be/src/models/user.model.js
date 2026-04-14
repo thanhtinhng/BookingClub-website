@@ -13,6 +13,28 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    default: null,
+    unique: true,
+    sparse: true
+  },
+  email_verified: {
+    type: Boolean,
+    default: false
+  },
+  email_verify_token_hash: {
+    type: String,
+    default: null
+  },
+  email_verify_token_expires_at: {
+    type: Date,
+    default: null
+  },
+  reset_password_token_hash: {
+    type: String,
+    default: null
+  },
+  reset_password_token_expires_at: {
+    type: Date,
     default: null
   },
   status: {
