@@ -53,15 +53,8 @@ const Register: React.FC = () => {
     if (isValid) {
       console.log("Dữ liệu đăng ký:", { fullName, email, phone, password });
 
-      const data = {
-        name: fullName,
-        email: email,
-        phone: phone,
-        password: password
-      }
-
       try {
-        await createUserApi(data);
+        await createUserApi(fullName, email, phone, password);
 
         alert("Đăng ký hợp lệ! Vui lòng kiểm tra email để kích hoạt tài khoản.");
       } catch (error: any) {

@@ -28,12 +28,12 @@ export const registerService = async ({ name, phone, password, email }) => {
 export const loginService = async ({ phone, password }) => {
   const user = await User.findOne({ phone });
 
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error("Wrong email or password");
 
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    throw new Error("Wrong password");
+    throw new Error("Wrong email or password");
   }
 
   //tao access token

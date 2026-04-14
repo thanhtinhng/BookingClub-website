@@ -1,17 +1,51 @@
 import axios from "./axios.customize";
 
-interface CreateUserPayload {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-}
-
-const createUserApi = (data: CreateUserPayload) => {
+//register
+const createUserApi = (
+  name: string,
+  email: string,
+  phone: string,
+  password: string
+) => {
   const URL_API = "/api/register";
+  const data = {
+    name,
+    email,
+    phone,
+    password
+  };
   return axios.post(URL_API, data);
 };
 
+//login
+interface LoginResponse {
+  access_token: string;
+  phone: string;
+  email: string;
+}
+
+const loginApi = (
+  phone: string,
+  password: string
+): Promise<LoginResponse> => {
+  const URL_API = "/api/login";
+  return axios.post(URL_API, { phone, password });
+};
+
+//get my infomation (getMe)
+interface User {
+  _id: string;
+  email: string;
+  phone: string;
+  name: string;
+}
+
+const getMeApi = (): Promise<User> => {
+  return axios.get("/api/me");
+};
+
 export {
-  createUserApi
+  createUserApi,
+  loginApi,
+  getMeApi
 }
