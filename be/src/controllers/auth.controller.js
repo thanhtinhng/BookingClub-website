@@ -1,13 +1,11 @@
 import { registerService, loginService } from "../services/auth.service.js";
 import { validatePassword } from "../validators/validate.js";
 
-const mockToken = () => "fake-token-" + Date.now();
-
 export const register = async (req, res) => {
   try {
-    const { phone, password, email } = req.body;
+    const { name, phone, password, email } = req.body;
 
-    if (!phone || !password || !email) {
+    if (!name || !phone || !password || !email) {
       return res.status(400).json({ message: "Missing fields" });
     }
 
@@ -17,12 +15,10 @@ export const register = async (req, res) => {
       });
     }
 
-    const user = await registerService({ phone, password, email });
+    const user = await registerService({ name, phone, password, email });
 
     return res.json({
-      user,
-      accessToken: mockToken(),
-      refreshToken: mockToken()
+      user
     });
 
   } catch (err) {
