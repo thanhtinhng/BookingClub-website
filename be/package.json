@@ -2,7 +2,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --dns-result-order=ipv4first src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "import": "node src/scripts/seeder.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

@@ -1,0 +1,117 @@
+{
+  "SportComplex": [
+    {
+      "_id": "65f1a2b3c4d5e6f7a8b90123" ,
+      "owner_id": "65f1a1a1a1a1a1a1a1a1a1a1" ,
+      "name": "Sân Mega Pickleball & Pong",
+      "address": "Số 1 Tân Mỹ, Tân Phú, Quận 7, TP.HCM",
+      "location": {
+        "type": "Point",
+        "coordinates": [106.7123, 10.7289]
+      },
+      "phone": "0901234567",
+      "email": "contact@namsaigon.com",
+      "opening_hours": "06:00",
+      "closing_hours": "22:00",
+      "created_at":  "2024-03-15T00:00:00Z" 
+    },
+    {
+      "_id": "65f1a2b3c4d5e6f7a8b90124",
+      "owner_id": "65f1a1a1a1a1a1a1a1a1a1a2",
+      "name": "Sân Bóng Thăng Long",
+      "address": "Phan Thúc Duyện, Tân Bình, TP.HCM",
+      "location": {
+        "type": "Point",
+        "coordinates": [106.6634, 10.8012]
+      },
+      "phone": "02838112233",
+      "email": null,
+      "opening_hours": "07:00",
+      "closing_hours": "23:00",
+      "created_at":  "2024-03-16T00:00:00Z" 
+    }
+  ],
+
+  "SubField": [
+    {
+      "_id":  "65f1b1b1b1b1b1b1b1b1b101" ,
+      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+      "field_type": "Football",
+      "status": "Available"
+    },
+    {
+      "_id": "65f1b1b1b1b1b1b1b1b1b102",
+      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+      "field_type": "Badminton",
+      "status": "Booked"
+    },
+    {
+      "_id":  "65f1b1b1b1b1b1b1b1b1b103" ,
+      "complex_id":  "65f1a2b3c4d5e6f7a8b90124" ,
+      "field_type": "Tennis",
+      "status": "Maintenance"
+    }
+  ],
+
+  "FieldImage": [
+    {
+      "_id": "65f1d1d1b1b1b1b1b1b1b101",
+      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+      "image_url": "https://megapickleandpong.com/wp-content/uploads/2022/11/Homepage-2-1-768x513.jpg",
+      "image_type": "Overall",
+      "is_primary": true,
+      "alt_text": "Toàn cảnh sân bóng đá Nam Sài Gòn từ trên cao",
+      "created_at": "2024-03-15T10:00:00Z"
+    },
+    {
+      "_id": "65f1d1d1b1b1b1b1b1b1b102",
+      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+      "image_url": "https://cdn.shopvnb.com/uploads/images/bai_viet/mega-pickleball-3-1761016494.webp",
+      "image_type": "Price",
+      "is_primary": false,
+      "alt_text": "Bảng giá dịch vụ sân bóng Nam Sài Gòn 2024",
+      "created_at": "2024-03-15T10:05:00Z"
+    },
+    {
+      "_id": "65f1d1d1b1b1b1b1b1b1b103",
+      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+      "image_url": "https://megapickleandpong.com/wp-content/uploads/2022/11/Homepage-1-1-768x513.jpg",
+      "image_type": "Other",
+      "is_primary": false,
+      "alt_text": "Khu vực thay đồ và nhà vệ sinh sạch sẽ",
+      "created_at": "2024-03-15T10:10:00Z"
+    },
+    {
+      "_id": "65f1d1d1b1b1b1b1b1b1b105",
+      "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+      "image_url": "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?q=80&w=1000",
+      "image_type": "Overall",
+      "is_primary": true,
+      "alt_text": "Sân bóng Thăng Long lung linh dưới ánh đèn đêm",
+      "created_at": "2024-03-16T11:00:00Z"
+    }
+  ],
+
+  "PricingRule": [
+    {
+      "_id":  "65f1c1c1c1c1c1c1c1c1c101" ,
+      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+      "field_type": "Football",
+      "day_of_week": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "start_hour": "17:00",
+      "end_hour": "21:00",
+      "price_multiplier": 1.5,
+      "is_active": true
+    },
+    {
+      "_id":  "65f1c1c1c1c1c1c1c1c1c102" ,
+      "complex_id":  "65f1a2b3c4d5e6f7a8b90124" ,
+      "field_type": "Tennis",
+      "day_of_week": ["Saturday", "Sunday"],
+      "start_hour": "08:00",
+      "end_hour": "22:00",
+      "price_multiplier": 2.0,
+      "is_active": true
+    }
+  ]
+}
