@@ -8,7 +8,7 @@ const router = express.Router();
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 phút
-  max: 10 // tối đa 10 request / IP
+  max: 15 // tối đa 15 request / IP
 });
 
 router.all("*", auth)
