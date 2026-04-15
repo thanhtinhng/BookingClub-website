@@ -14,11 +14,71 @@
   align-items: center;
 }
 
+.booking-complex-name {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
 .booking-card-title {
   color: #1e3a5f;
   font-size: 20px;
   font-weight: 700;
   margin: 0;
+}
+
+/* --- Header Info & Badge Môn thể thao --- */
+.booking-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.booking-card-header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.booking-sport-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* --- Nút Đổi sân  --- */
+.booking-clear-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.booking-clear-btn:hover {
+  background-color: #fee2e2;
+}
+
+/* --- CSS cho ô bị khóa --- */
+.time-pill.occupied {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  border: 1.5px dashed #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.time-pill.occupied:hover {
+  background-color: #f3f4f6;
 }
 
 .booking-card-subtitle {
@@ -74,7 +134,7 @@
   border-color: #3d5a80;
 }
 
-/* ===== Các hàng Dịch vụ & Toggle (Tái sử dụng từ Layout) ===== */
+/* ===== Các hàng Dịch vụ & Toggle ===== */
 .service-row {
   display: flex;
   justify-content: space-between;
@@ -98,8 +158,6 @@
   font-size: 13px;
   color: #6b7280;
 }
-
-
 
 .time-pill.occupied {
   background-color: #e5e7eb; 

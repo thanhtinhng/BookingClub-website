@@ -33,6 +33,32 @@
   border-radius: 8px;
 }
 
+.sport-filter-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.sport-filter-btn {
+  padding: 8px 20px;
+  border-radius: 24px;
+  border: none;
+  background-color: #e5e7eb;
+  color: #4b5563;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.sport-filter-btn:hover {
+  background-color: #d1d5db;
+}
+
+.sport-filter-btn.active {
+  background-color: #3d5a80;
+  color: #ffffff;
+}
+
 /* ===== Danh sách nút chọn sân ===== */
 .court-list-container {
   display: flex;
@@ -83,14 +109,31 @@
   width: 32%;
   position: sticky;
   top: 40px;
+  max-height: calc(100vh - 80px); /* Giới hạn độ cao */
+  overflow-y: auto;               /* Nếu Card dài quá giới hạn, cho phép tự cuộn bên trong Card */
 }
 
-.booking-sidebar-card {
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
-  border: 2px dashed #f59e0b;
+/*Làm đẹp thanh sidebar */
+.booking-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.booking-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.booking-sidebar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 10px;
+}
+.booking-sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+.booking-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start; 
+  gap: 32px;
 }
 
 .booking-title {
@@ -125,82 +168,6 @@
   font-size: 13px;
   margin: 0;
 }
-
-/* ===== Các hàng Dịch vụ ===== */
-.service-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.service-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.service-name {
-  font-size: 15px;
-  color: #374151;
-  font-weight: 600;
-}
-
-.service-price {
-  font-size: 13px;
-  color: #6b7280;
-}
-
-/* ===== Toggle Switch) ===== */
-.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-.toggle-switch input { opacity: 0; width: 0; height: 0; }
-.toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d5db; transition: .3s; border-radius: 24px; }
-.toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-.toggle-switch input:checked + .toggle-slider { background-color: #3d5a80; }
-.toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
-
-/* ===== Footer (Tổng tiền & Thanh Toán) ===== */
-.booking-footer-box {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.total-price-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.total-label {
-  font-size: 16px;
-  color: #374151;
-  font-weight: 600;
-}
-
-.total-amount {
-  font-size: 24px;
-  color: #1e3a5f;
-  font-weight: 800;
-}
-
-.booking-pay-btn {
-  width: 100%;
-  padding: 14px;
-  background-color: #3d5a80;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.booking-pay-btn:hover { background-color: #2e4568; }
-.booking-pay-btn:active { transform: scale(0.98); }
 
 /* ===== RESPONSIVE ===== */
 @media screen and (max-width: 900px) {

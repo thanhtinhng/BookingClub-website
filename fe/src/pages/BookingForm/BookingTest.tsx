@@ -8,14 +8,32 @@ interface CourtInfo {
   price: number;
 }
 
-const BookingTest: React.FC = () => {
-  const [selectedCourt, setSelectedCourt] = useState<CourtInfo | null>(null);
-// Fake dữ liệu để test UI
+const currentComplex = {
+  id: "CPX_001",
+  name: "Trung tâm Thể thao Rạch Miễu"
+};
 
-  const courtList: CourtInfo[] = [
-    { id: "C_001", name: "Sân số 1", price: 250000 },
-    { id: "C_002", name: "Sân VIP (Có mái che)", price: 350000 },
-  ];
+const mockCourtsData: Record<string, CourtInfo[]> = {
+  pickleball: [
+    { id: "PB_001", name: "Sân 1", price: 250000 },
+    { id: "PB_VIP", name: "Sân VIP", price: 350000 },
+  ],
+  badminton: [
+    { id: "BM_001", name: "Sân 1", price: 150000 },
+    { id: "BM_002", name: "Sân 2", price: 150000 }, 
+  ],
+};
+
+const BookingTest: React.FC = () => {
+  const [selectedSport, setSelectedSport] = useState<string>("pickleball");
+  const [selectedCourt, setSelectedCourt] = useState<CourtInfo | null>(null);
+
+  const currentCourts = mockCourtsData[selectedSport];
+
+  const handleSportChange = (sportKey: string) => {
+    setSelectedSport(sportKey);
+    setSelectedCourt(null); 
+  };
 
   return (
     <div className="booking-wrapper">
@@ -24,26 +42,46 @@ const BookingTest: React.FC = () => {
         {/* --- CỘT TRÁI --- */}
         <div className="booking-main">
           <div className="booking-placeholder-content">
-            <h2 className="booking-title" style={{ fontSize: "24px", marginBottom: "16px" }}>
-              Danh sách sân bóng(test cho trang chi tiết sân sau này)
+            <h2 className="booking-title" style={{ fontSize: "28px", marginBottom: "8px" }}>
+              {currentComplex.name}
             </h2>
             <p style={{ color: "#6b7280", marginBottom: "24px" }}>
-              Bấm vào một trong các nút bên dưới để chọn sân.
+              Danh sách sân bóng (Test cho trang chi tiết sân sau này)
             </p>
 
+            {/* --- BỘ LỌC THỂ THAO --- */}
+            <div className="sport-filter-container">
+              <button
+                onClick={() => handleSportChange("pickleball")}
+                className={`sport-filter-btn ${selectedSport === "pickleball" ? "active" : ""}`}
+              >
+                Pickleball
+              </button>
+              <button
+                onClick={() => handleSportChange("badminton")}
+                className={`sport-filter-btn ${selectedSport === "badminton" ? "active" : ""}`}
+              >
+                Cầu lông
+              </button>
+            </div>
+
+            {/* --- DANH SÁCH SÂN --- */}
             <div className="court-list-container">
-              {courtList.map((court) => (
-                <button
-                  key={court.id}
-                  onClick={() => setSelectedCourt(court)}
-                  className={`court-btn ${selectedCourt?.id === court.id ? "active" : ""}`}
-                >
-                  <div className="court-btn-name">{court.name}</div>
-                  <div className="court-btn-price">
-                    {court.price.toLocaleString("vi-VN")}đ/h
-                  </div>
-                </button>
-              ))}
+              {currentCourts.map((court) => {
+                const isActive = selectedCourt?.id === court.id;
+                return (
+                  <button
+                    key={court.id}
+                    onClick={() => setSelectedCourt(court)}
+                    className={`court-btn ${isActive ? "active" : ""}`}
+                  >
+                    <div className="court-btn-name">{court.name}</div>
+                    <div className="court-btn-price">
+                      {court.price.toLocaleString("vi-VN")}đ/h
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             <div className="booking-fake-scroll"></div>
@@ -54,15 +92,20 @@ const BookingTest: React.FC = () => {
         <div className="booking-sidebar">
           {selectedCourt ? (
             <BookingCard 
+              complexId={currentComplex.id}       
+              complexName={currentComplex.name}   
               courtId={selectedCourt.id}
               courtName={selectedCourt.name}
+              sportType={selectedSport}  
               basePricePerHour={selectedCourt.price}
               onClearSelection={() => setSelectedCourt(null)}
             />
           ) : (
             <div className="empty-state-card">
               <h3 className="empty-state-title">Chưa chọn sân</h3>
-              <p className="empty-state-desc">Vui lòng chọn một sân ở cột bên trái</p>
+              <p className="empty-state-desc">
+                Vui lòng chọn một sân ở cột bên trái
+              </p>
             </div>
           )}
         </div>
