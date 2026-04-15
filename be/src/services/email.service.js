@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { logger } from "../utils/logger.js";
 
 const hasSmtpConfig = () => {
   return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
@@ -26,7 +27,7 @@ export const sendMail = async ({ to, subject, text, html }) => {
   const transporter = createTransporter();
 
   if (!transporter) {
-    console.log("[mail] SMTP is not configured. Skipping actual send.");
+    logger.warn("SMTP is not configured. Skipping actual send.");
     return { skipped: true };
   }
 

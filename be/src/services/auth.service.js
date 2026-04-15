@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { isSmtpConfigured, sendMail } from "./email.service.js";
+import { sendMail } from "./email.service.js";
 
 const getApiBaseUrl = () => (process.env.API_BASE_URL || "http://localhost:5001").replace(/\/$/, "");
 const getClientUrl = () => (process.env.CLIENT_URL || "http://localhost:5173").replace(/\/$/, "");
@@ -87,10 +87,7 @@ export const registerService = async ({ phone, password, email }) => {
   return {
     user: mapUser(user),
     verificationToken,
-    verificationLink,
-    debug: {
-      smtpConfigured: isSmtpConfigured()
-    }
+    verificationLink
   };
 };
 
@@ -126,7 +123,10 @@ export const loginService = async ({ phone, password }) => {
 
   return {
     access_token,
-    user: mapUser(user)
+    user: {
+      phone: user.phone,
+      email: user.email
+    }
   }
 };
 
@@ -181,10 +181,7 @@ export const resendVerificationEmailService = async ({ email }) => {
 
   return {
     message: "Verification email sent",
-    verificationLink,
-    debug: {
-      smtpConfigured: isSmtpConfigured()
-    }
+    verificationLink
   };
 };
 
@@ -209,11 +206,7 @@ export const forgotPasswordService = async ({ email }) => {
 
   return {
     message: "Password reset email sent",
-    resetLink,
-    debug: {
-      resetToken,
-      smtpConfigured: isSmtpConfigured()
-    }
+    resetLink
   };
 };
 

@@ -35,8 +35,7 @@ export const register = async (req, res) => {
         ? {}
         : {
             verificationToken: result.verificationToken,
-            verificationLink: result.verificationLink,
-            debug: result.debug
+            verificationLink: result.verificationLink
           })
     });
 
