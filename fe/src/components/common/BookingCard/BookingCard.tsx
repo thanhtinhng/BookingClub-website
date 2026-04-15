@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import "./BookingCard.css";
 
-// Interface
+interface TimeSlot {
+  time: string;
+  isOccupied: boolean;
+}
+
 interface ServiceItem {
   id: string;
   name: string;
@@ -10,8 +14,8 @@ interface ServiceItem {
 }
 
 interface BookingCardProps {
-  courtId: string;       // ID thực tế của sân dùng để lưu DB
-  courtName: string;     // Tên hiển thị
+  courtId: string;  // ID sân 
+  courtName: string;  // Tên hiển thị
   basePricePerHour: number;
   onClearSelection: () => void;
 }
@@ -24,7 +28,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
 }) => {
 
   // Mock data để test UI
-  const timeSlots = ["17:00-18:00", "18:00-19:00", "19:00-20:00", "20:00-21:00", "21:00-22:00"];
+  const timeSlots: TimeSlot[] = [
+    { time: "17:00-18:00", isOccupied: false },
+    { time: "18:00-19:00", isOccupied: true }, // Ô này đã có người đặt
+    { time: "19:00-20:00", isOccupied: false },
+    { time: "20:00-21:00", isOccupied: false },
+    { time: "21:00-22:00", isOccupied: true }, // Ô này cũng đã có người đặt
+  ];
   
   const availableServices: ServiceItem[] = [
     { id: "referee", name: "Thuê trọng tài", price: 200000, unit: "hour" },
@@ -33,14 +43,19 @@ const BookingCard: React.FC<BookingCardProps> = ({
   ];
 
   //State
+
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]); 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-// Logic
-  const handleToggleSlot = (slot: string) => {
+  // Logic
+
+  const handleToggleSlot = (slotTime: string, isOccupied: boolean) => {
+    // Nếu ô đã có người đặt, không làm gì 
+    if (isOccupied) return;
+
     setSelectedSlots((prev) =>
-      prev.includes(slot) ? prev.filter((s) => s !== slot) : [...prev, slot]
+      prev.includes(slotTime) ? prev.filter((s) => s !== slotTime) : [...prev, slotTime]
     );
   };
 
@@ -50,24 +65,23 @@ const BookingCard: React.FC<BookingCardProps> = ({
     );
   };
 
-// Tính tiền ở Front-end
+  // Tính tiền ở Front-end
+
   const totalHours = selectedSlots.length;
   
   const totalServicesPrice = selectedServices.reduce((total, serviceId) => {
     const service = availableServices.find(s => s.id === serviceId);
     if (!service) return total;
-    
     const cost = service.unit === 'hour' ? service.price * totalHours : service.price;
     return total + cost;
   }, 0);
 
   const totalPrice = (totalHours * basePricePerHour) + totalServicesPrice;
-
+ 
+  // Gói dữ liệu được gửi
 
   const handlePayment = async () => {
     setIsSubmitting(true);
-
-    // Gói dữ liệu được gửi
     const bookingPayload = {
       courtId,
       courtName,
@@ -76,13 +90,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
       totalAmount: totalPrice,
     };
 
-    console.log("Payload gửi đi:", bookingPayload);
+    console.log("Booking Payload:", bookingPayload);
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500)); 
-      
-      alert("UI Completed. Awaiting API integration.");
-      
+      alert("Booking logic validated with occupied slots.");
     } catch (error) {
       console.error("Payment error:", error);
     } finally {
@@ -92,7 +104,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   return (
     <div className="booking-card-container">
-      {/* Header */}
       <div className="booking-card-header">
         <div>
           <h3 className="booking-card-title">Đặt {courtName}</h3>
@@ -108,31 +119,32 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
       <hr className="booking-divider" />
 
-      {/* Grid Chọn giờ */}
       <div className="booking-section">
         <h4 className="booking-section-title">Chọn khung giờ chi tiết</h4>
         <div className="time-pill-grid">
-          {timeSlots.map((slot) => (
-            <button
-              key={slot}
-              type="button"
-              className={`time-pill ${selectedSlots.includes(slot) ? "active" : ""}`}
-              onClick={() => handleToggleSlot(slot)}
-              disabled={isSubmitting}
-            >
-              {slot}
-            </button>
-          ))}
+          {timeSlots.map((slot) => {
+            const isSelected = selectedSlots.includes(slot.time);
+            return (
+              <button
+                key={slot.time}
+                type="button"
+                // Thêm class 'occupied' nếu ô đã bị đặt
+                className={`time-pill ${isSelected ? "active" : ""} ${slot.isOccupied ? "occupied" : ""}`}
+                onClick={() => handleToggleSlot(slot.time, slot.isOccupied)}
+                disabled={isSubmitting || slot.isOccupied} // Vô hiệu hóa nút nếu đã đặt
+              >
+                {slot.time}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <hr className="booking-divider" />
 
-      {/* Render danh sách dịch vụ động */}
       {availableServices.length > 0 && (
         <div className="booking-section">
           <h4 className="booking-section-title">Dịch vụ tiện ích</h4>
-          
           {availableServices.map((service) => (
             <div className="service-row" key={service.id}>
               <div className="service-info">
@@ -155,13 +167,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
         </div>
       )}
 
-      {/* Footer Tổng tiền & Nút Submit */}
       <div className="booking-footer-box">
         <div className="total-price-row">
           <span className="total-label">Tổng tiền:</span>
           <span className="total-amount">{totalPrice.toLocaleString("vi-VN")}đ</span>
         </div>
-        
         <button 
           className="booking-pay-btn" 
           onClick={handlePayment}
