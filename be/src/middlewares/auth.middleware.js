@@ -2,9 +2,10 @@ import jwt from "jsonwebtoken";
 
 const auth = (req, res, next) => {
 
-    const white_lists = ["/", "/register", "/login", ""] //bỏ qua kiểm tra những uri này
+    const white_lists = ["/", "/register", "/login", "/verify-email", "/resend-verification-email", "/forgot-password", "/reset-password"] //bỏ qua kiểm tra những uri này
+    const requestPath = req.originalUrl.split('?')[0];
 
-    if (white_lists.find(item => '/api' + item === req.originalUrl)) {
+    if (white_lists.find(item => '/api' + item === requestPath)) {
         next()
     } else {
         if (req.headers && req.headers.authorization) {

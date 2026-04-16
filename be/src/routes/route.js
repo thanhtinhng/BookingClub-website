@@ -1,5 +1,12 @@
 import express from "express";
-import { login, register } from "../controllers/auth.controller.js";
+import {
+  login,
+  register,
+  verifyEmail,
+  resendVerificationEmail,
+  forgotPassword,
+  resetPassword
+} from "../controllers/auth.controller.js";
 import rateLimit from 'express-rate-limit';
 import auth from "../middlewares/auth.middleware.js";
 import { getMe } from "../controllers/user.controller.js";
@@ -15,6 +22,11 @@ router.all("*", auth)
 
 router.post("/register", register);
 router.post("/login", limiter, login); //trong 1 phut chi request duoc 10 lan
+router.get("/verify-email", verifyEmail);
+router.post("/verify-email", verifyEmail);
+router.post("/resend-verification-email", resendVerificationEmail);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 router.get("/me", getMe);
 
 export default router;
