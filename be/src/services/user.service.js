@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 
 export const getMeService = async (userId) => {
   const user = await User.findById(userId).select(
-    "_id phone email status"
+    "_id name phone email status"
   );
 
   if (!user) {

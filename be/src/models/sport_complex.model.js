@@ -44,7 +44,7 @@ const sportComplexSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    closeing_hours:{
+    closing_hours:{
         type: String,
         required: true
     },

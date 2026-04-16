@@ -52,7 +52,7 @@ const sendResetPasswordEmail = async ({ email, phone, token }) => {
   return resetLink;
 };
 
-export const registerService = async ({ phone, password, email }) => {
+export const registerService = async ({ name, phone, password, email }) => {
   const existingPhone = await User.findOne({ phone });
   if (existingPhone) {
     throw new Error("Phone already exists");
@@ -69,6 +69,7 @@ export const registerService = async ({ phone, password, email }) => {
   const emailVerifyTokenExpiresAt = createExpiryDate(verifyTokenExpiresMinutes);
 
   const user = await User.create({
+    name,
     phone,
     password: hashedPassword,
     email,
@@ -94,7 +95,7 @@ export const registerService = async ({ phone, password, email }) => {
 export const loginService = async ({ phone, password }) => {
   const user = await User.findOne({ phone });
 
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error("Wrong email or password");
 
   if (!user.email_verified || user.status === "Pending") {
     throw new Error("Please verify your email first");
@@ -103,7 +104,7 @@ export const loginService = async ({ phone, password }) => {
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    throw new Error("Wrong password");
+    throw new Error("Wrong email or password");
   }
 
   //tao access token

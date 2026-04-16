@@ -15,7 +15,7 @@ const router = express.Router();
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 phút
-  max: 10 // tối đa 10 request / IP
+  max: 15 // tối đa 15 request / IP
 });
 
 router.all("*", auth)
@@ -27,7 +27,6 @@ router.post("/verify-email", verifyEmail);
 router.post("/resend-verification-email", resendVerificationEmail);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
-
 router.get("/me", getMe);
 
 export default router;

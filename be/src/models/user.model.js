@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
   phone: {
     type: String,
     required: true,
@@ -42,7 +46,7 @@ const userSchema = new mongoose.Schema({
     enum: ["Active", "Banned", "Pending"],
     default: "Active"
   },
-  role:{
+  role: {
     type: String,
     enum: ["Admin", "User", "Owner", "Guest"],
     default: "User"
@@ -51,6 +55,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-}, {discriminatorKey: 'role'});
+}, { discriminatorKey: 'role' });
 
 export default mongoose.model("User", userSchema);

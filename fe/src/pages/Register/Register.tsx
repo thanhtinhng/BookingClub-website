@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Image } from "lucide-react"; 
-import InputField from "../../components/layout/InputField/InputField"; 
+import { Image } from "lucide-react";
+import InputField from "../../components/layout/InputField/InputField";
 import "./Register.css";
 import "./Register.css";
+import { createUserApi } from "../../utils/api";
 
 
 const Register: React.FC = () => {
@@ -20,38 +21,50 @@ const Register: React.FC = () => {
     confirmPassword: "",
   });
 
-  const handleRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleRegister = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     let newErrors = { fullName: "", email: "", phone: "", password: "", confirmPassword: "" };
     let isValid = true;
 
     if (!fullName.trim()) { newErrors.fullName = "Họ và tên không được để trống"; isValid = false; }
-    
-    if (!email) { newErrors.email = "Email không được để trống"; isValid = false; } 
+
+    if (!email) { newErrors.email = "Email không được để trống"; isValid = false; }
     else if (!email.includes("@")) { newErrors.email = "Email chưa đúng định dạng"; isValid = false; }
 
     const phoneRegex = /^[0-9]{10}$/;
-    if (!phone) { newErrors.phone = "Số điện thoại không được để trống"; isValid = false; } 
+    if (!phone) { newErrors.phone = "Số điện thoại không được để trống"; isValid = false; }
     else if (!phoneRegex.test(phone)) { newErrors.phone = "Số điện thoại phải gồm 10 chữ số"; isValid = false; }
 
     let typesCount = 0;
-    if (/[a-z]/.test(password)) typesCount++; 
-    if (/[A-Z]/.test(password)) typesCount++; 
-    if (/[0-9]/.test(password)) typesCount++; 
-    if (/[^a-zA-Z0-9]/.test(password)) typesCount++; 
+    if (/[a-z]/.test(password)) typesCount++;
+    if (/[A-Z]/.test(password)) typesCount++;
+    if (/[0-9]/.test(password)) typesCount++;
+    if (/[^a-zA-Z0-9]/.test(password)) typesCount++;
 
-    if (!password) { newErrors.password = "Mật khẩu không được để trống"; isValid = false; } 
-    else if (password.length < 8) { newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự"; isValid = false; } 
+    if (!password) { newErrors.password = "Mật khẩu không được để trống"; isValid = false; }
+    else if (password.length < 8) { newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự"; isValid = false; }
     else if (typesCount < 3) { newErrors.password = "Mật khẩu yếu! Phải chứa ít nhất 3 loại: chữ thường, chữ hoa, số, ký tự đặc biệt"; isValid = false; }
 
-    if (!confirmPassword) { newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu"; isValid = false; } 
+    if (!confirmPassword) { newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu"; isValid = false; }
     else if (confirmPassword !== password) { newErrors.confirmPassword = "Mật khẩu xác nhận không khớp"; isValid = false; }
 
     setErrors(newErrors);
 
     if (isValid) {
       console.log("Dữ liệu đăng ký:", { fullName, email, phone, password });
-      alert("Đăng ký hợp lệ! Vui lòng kiểm tra email để kích hoạt tài khoản.");
+
+      try {
+        await createUserApi(fullName, email, phone, password);
+
+        alert("Đăng ký hợp lệ! Vui lòng kiểm tra email để kích hoạt tài khoản.");
+      } catch (error: any) {
+        console.log(">>> error: ", error);
+
+        const message =
+          error?.response?.data?.message || "Có lỗi xảy ra";
+
+        alert(message);
+      }
     }
   };
 

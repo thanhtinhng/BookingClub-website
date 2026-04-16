@@ -22,3 +22,5 @@ const timeSlotSchema = new mongoose.Schema({
         required: true
     }
 });
+
+export default mongoose.model("TimeSlot", timeSlotSchema);

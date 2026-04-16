@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const timeSlotSchema = new mongoose.Schema({
+const pricingRuleSchema = new mongoose.Schema({
     complex_id:
     {
         type: mongoose.Schema.Types.ObjectId,
@@ -13,19 +13,19 @@ const timeSlotSchema = new mongoose.Schema({
         required: true
     },
     day_of_week: [{
-        Type: String,
+        type: String,
         enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
         required: true
     }],
     start_hour: { 
-    type: String, 
-    required: true, 
-    match: /^([1]\d|2[0-3]):([0-5]\d)$/ 
+        type: String, 
+        required: true, 
+        match: /^(0[6-9]|1\d|2[0-3]):([0-5]\d)$/ 
     },
     end_hour: { 
-    type: String, 
-    required: true, 
-    match: /^([1]\d|2[0-3]):([0-5]\d)$/
+        type: String, 
+        required: true, 
+        match: /^(0[6-9]|1\d|2[0-3]):([0-5]\d)$/
     },
     price_multiplier: {
         type: Number,
@@ -37,4 +37,4 @@ const timeSlotSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model("PricingRule", timeSlotSchema);
+export default mongoose.model("PricingRule", pricingRuleSchema);
