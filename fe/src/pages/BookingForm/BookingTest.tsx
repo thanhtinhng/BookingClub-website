@@ -90,24 +90,15 @@ const BookingTest: React.FC = () => {
 
         {/* --- CỘT PHẢI --- */}
         <div className="booking-sidebar">
-          {selectedCourt ? (
-            <BookingCard 
-              complexId={currentComplex.id}       
-              complexName={currentComplex.name}   
-              courtId={selectedCourt.id}
-              courtName={selectedCourt.name}
-              sportType={selectedSport}  
-              basePricePerHour={selectedCourt.price}
-              onClearSelection={() => setSelectedCourt(null)}
-            />
-          ) : (
-            <div className="empty-state-card">
-              <h3 className="empty-state-title">Chưa chọn sân</h3>
-              <p className="empty-state-desc">
-                Vui lòng chọn một sân ở cột bên trái
-              </p>
-            </div>
-          )}
+          <BookingCard 
+            complexId={currentComplex.id}       
+            complexName={currentComplex.name}   
+            courtId={selectedCourt?.id}
+            courtName={selectedCourt?.name}
+            sportType={selectedSport}  
+            basePricePerHour={selectedCourt?.price}
+            onClearSelection={() => setSelectedCourt(null)}
+          />
         </div>
 
       </div>

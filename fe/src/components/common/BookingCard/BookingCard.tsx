@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./BookingCard.css";
 
-// Interface
+// --- INTERFACES ---
 interface TimeSlot {
   time: string;
   isOccupied: boolean;
@@ -11,51 +11,68 @@ interface ServiceItem {
   id: string;
   name: string;
   price: number;
-  unit: 'hour' | 'flat'; // 'hour': tính nhân theo giờ | 'flat': tính 1 lần
+  unit: 'hour' | 'flat'; 
 }
-
 
 interface BookingCardProps {
   complexId: string;
   complexName: string;
-  courtId: string;  
-  courtName: string;  
+  courtId?: string;  
+  courtName?: string;  
   sportType: string; 
-  basePricePerHour: number;
+  basePricePerHour?: number;
   onClearSelection: () => void;
 }
 
-  // Mock data để test UI
+interface CartItem {
+  courtName: string;
+  sportType: string;
+  basePricePerHour: number;
+  slots: string[];
+  services: string[];
+}
+
+// --- MOCK DATA ---
 const mockTimeSlotsData: Record<string, TimeSlot[]> = {
   "PB_001": [ 
-    { time: "17:00-18:00", isOccupied: false },
-    { time: "18:00-19:00", isOccupied: true },
-    { time: "19:00-20:00", isOccupied: false },
-    { time: "20:00-21:00", isOccupied: false },
-    { time: "21:00-22:00", isOccupied: true },
+    { time: "17:00 - 17:30", isOccupied: false },
+    { time: "17:30 - 18:00", isOccupied: false },
+    { time: "18:00 - 18:30", isOccupied: true },
+    { time: "18:30 - 19:00", isOccupied: true },
+    { time: "19:00 - 19:30", isOccupied: false },
+    { time: "19:30 - 20:00", isOccupied: false },
   ],
   "PB_VIP": [ 
-    { time: "17:00-18:00", isOccupied: true },
-    { time: "18:00-19:00", isOccupied: true },
-    { time: "19:00-20:00", isOccupied: false },
-    { time: "20:00-21:00", isOccupied: false },
-    { time: "21:00-22:00", isOccupied: false },
+    { time: "17:00 - 17:30", isOccupied: true },
+    { time: "17:30 - 18:00", isOccupied: true },
+    { time: "18:00 - 18:30", isOccupied: false },
+    { time: "18:30 - 19:00", isOccupied: false },
+    { time: "19:00 - 19:30", isOccupied: false },
+    { time: "19:30 - 20:00", isOccupied: false },
   ],
   "BM_001": [ 
-    { time: "17:00-18:00", isOccupied: false },
-    { time: "18:00-19:00", isOccupied: false },
-    { time: "19:00-20:00", isOccupied: true },
-    { time: "20:00-21:00", isOccupied: true },
-    { time: "21:00-22:00", isOccupied: false },
+    { time: "17:00 - 17:30", isOccupied: false },
+    { time: "17:30 - 18:00", isOccupied: false },
+    { time: "18:00 - 18:30", isOccupied: false },
+    { time: "18:30 - 19:00", isOccupied: true },
+    { time: "19:00 - 19:30", isOccupied: true },
+    { time: "19:30 - 20:00", isOccupied: false },
   ],
   "BM_002": [ 
-    { time: "17:00-18:00", isOccupied: false },
-    { time: "18:00-19:00", isOccupied: false },
-    { time: "19:00-20:00", isOccupied: false },
-    { time: "20:00-21:00", isOccupied: false },
-    { time: "21:00-22:00", isOccupied: false },
+    { time: "17:00 - 17:30", isOccupied: false },
+    { time: "17:30 - 18:00", isOccupied: false },
+    { time: "18:00 - 18:30", isOccupied: false },
+    { time: "18:30 - 19:00", isOccupied: false },
+    { time: "19:00 - 19:30", isOccupied: false },
+    { time: "19:30 - 20:00", isOccupied: false },
   ]
 };
+
+const availableServices: ServiceItem[] = [
+  { id: "referee", name: "Thuê trọng tài", price: 200000, unit: "hour" },
+  { id: "racket", name: "Thuê vợt", price: 200000, unit: "flat" },
+  { id: "ballboy", name: "Thuê nhặt banh", price: 50000, unit: "hour" },
+];
 
 const BookingCard: React.FC<BookingCardProps> = ({ 
   complexId,
@@ -67,64 +84,106 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onClearSelection 
 }) => {
 
-  const timeSlots: TimeSlot[] = mockTimeSlotsData[courtId] || [];
-  
-  const availableServices: ServiceItem[] = [
-    { id: "referee", name: "Thuê trọng tài", price: 200000, unit: "hour" },
-    { id: "racket", name: "Thuê vợt", price: 200000, unit: "flat" },
-    { id: "ballboy", name: "Thuê nhặt banh", price: 50000, unit: "hour" },
-  ];
-//State
-  const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
-  const [selectedServices, setSelectedServices] = useState<string[]>([]); 
+  // --- State giỏ hàng ---
+  const [cart, setCart] = useState<Record<string, CartItem>>({});
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+
+  // logic Đổi ngày là dọn sạch hóa đơn
   useEffect(() => {
-    setSelectedSlots([]);
-    setSelectedServices([]);
-  }, [courtId]);
+    //Đảm bảo 1 bill thanh toán chỉ dành cho 1 ngày duy nhất
+    setCart({});
+  }, [selectedDate]);
+
+  // Lấy dữ liệu của sân "đang được xem" trên màn hình
+  const timeSlots: TimeSlot[] = courtId ? (mockTimeSlotsData[courtId] || []) : [];
+  const currentActiveSlots = courtId ? (cart[courtId]?.slots || []) : [];
+  const currentActiveServices = courtId ? (cart[courtId]?.services || []) : [];
 
   const handleToggleSlot = (slotTime: string, isOccupied: boolean) => {
-    if (isOccupied) return;
-    setSelectedSlots((prev) =>
-      prev.includes(slotTime) ? prev.filter((s) => s !== slotTime) : [...prev, slotTime]
-    );
+    if (isOccupied || !courtId || !courtName || !basePricePerHour) return;
+
+    setCart(prev => {
+      const courtCart = prev[courtId] || { courtName, sportType, basePricePerHour, slots: [], services: [] };
+      const hasSlot = courtCart.slots.includes(slotTime);
+      const newSlots = hasSlot 
+        ? courtCart.slots.filter(s => s !== slotTime) 
+        : [...courtCart.slots, slotTime].sort(); 
+
+      return { ...prev, [courtId]: { ...courtCart, slots: newSlots } };
+    });
   };
 
   const handleToggleService = (serviceId: string) => {
-    setSelectedServices((prev) =>
-      prev.includes(serviceId) ? prev.filter((id) => id !== serviceId) : [...prev, serviceId]
-    );
+    if (!courtId || !courtName || !basePricePerHour) return;
+
+    setCart(prev => {
+      const courtCart = prev[courtId] || { courtName, sportType, basePricePerHour, slots: [], services: [] };
+      const hasService = courtCart.services.includes(serviceId);
+      const newServices = hasService 
+        ? courtCart.services.filter(s => s !== serviceId) 
+        : [...courtCart.services, serviceId];
+
+      return { ...prev, [courtId]: { ...courtCart, services: newServices } };
+    });
   };
 
-  const totalHours = selectedSlots.length;
-  
-  const totalServicesPrice = selectedServices.reduce((total, serviceId) => {
-    const service = availableServices.find(s => s.id === serviceId);
-    if (!service) return total;
-    const cost = service.unit === 'hour' ? service.price * totalHours : service.price;
-    return total + cost;
-  }, 0);
+  const handleRemoveCartItem = (idToRemove: string) => {
+    setCart(prev => {
+      const newCart = { ...prev };
+      delete newCart[idToRemove];
+      return newCart;
+    });
+    if (idToRemove === courtId) {
+      onClearSelection();
+    }
+  };
 
-  const totalPrice = (totalHours * basePricePerHour) + totalServicesPrice;
+  // --- TÍNH TỔNG TIỀN ---
+  let globalTotalPrice = 0;
+  let totalSelectedCourts = 0;
+
+  Object.keys(cart).forEach(id => {
+    const item = cart[id];
+    if (item.slots.length === 0) return; 
+    
+    totalSelectedCourts += 1;
+    const hours = item.slots.length * 0.5; 
+    const courtCost = hours * item.basePricePerHour;
+    
+    const servicesCost = item.services.reduce((sum, sId) => {
+      const s = availableServices.find(x => x.id === sId);
+      if (!s) return sum;
+      return sum + (s.unit === 'hour' ? s.price * hours : s.price);
+    }, 0);
+
+    globalTotalPrice += (courtCost + servicesCost);
+  });
 
   const handlePayment = async () => {
     setIsSubmitting(true);
     
-    // Gói Payload được gửi
     const bookingPayload = {
       complexId, 
-      courtId,
-      slots: selectedSlots,
-      selectedServiceIds: selectedServices,
-      totalAmount: totalPrice,
+      date: selectedDate,
+      bookings: Object.keys(cart)
+        .filter(id => cart[id].slots.length > 0)
+        .map(id => ({
+          courtId: id,
+          slots: cart[id].slots,
+          selectedServiceIds: cart[id].services
+      })),
+      totalAmount: globalTotalPrice,
     };
 
-    console.log("Booking Payload:", bookingPayload);
+    console.log("Multi-Booking Payload:", bookingPayload);
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500)); 
-      alert(`Đã thanh toán: ${courtName} (${sportType}) tại ${complexName}. Check console!`);
+      alert(`Đã đặt thành công ${totalSelectedCourts} sân ngày ${selectedDate}!`);
+      setCart({}); 
+      onClearSelection();
     } catch (error) {
       console.error("Payment error:", error);
     } finally {
@@ -134,86 +193,134 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   return (
     <div className="booking-card-container">
-      <div className="booking-card-header">
-        <div className="booking-card-header-info">
-          {/* Hiển thị tên Cụm sân cho đẹp */}
-          <span style={{ fontSize: "11px", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "700" }}>
-             {complexName}
-          </span>
-          <h3 className="booking-card-title">Đặt {courtName}</h3>
-          
-          <span className="booking-sport-badge">
-            Môn: {sportType} 
-          </span>
-          <p className="booking-card-subtitle">Giá: {basePricePerHour.toLocaleString("vi-VN")}đ/h</p>
-        </div>
-        <button className="booking-clear-btn" onClick={onClearSelection}>
-          Đổi sân
-        </button>
-      </div>
-
-      <hr className="booking-divider" />
-
-      <div className="booking-section">
-        <h4 className="booking-section-title">Chọn khung giờ chi tiết</h4>
-        <div className="time-pill-grid">
-          {timeSlots.map((slot) => {
-            const isSelected = selectedSlots.includes(slot.time);
-            return (
-              <button
-                key={slot.time}
-                type="button"
-                className={`time-pill ${isSelected ? "active" : ""} ${slot.isOccupied ? "occupied" : ""}`}
-                onClick={() => handleToggleSlot(slot.time, slot.isOccupied)}
-                disabled={isSubmitting || slot.isOccupied} 
-              >
-                {slot.time}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <hr className="booking-divider" />
-
-      {availableServices.length > 0 && (
-        <div className="booking-section">
-          <h4 className="booking-section-title">Dịch vụ tiện ích</h4>
-          {availableServices.map((service) => (
-            <div className="service-row" key={service.id}>
-              <div className="service-info">
-                <span className="service-name">{service.name}</span>
-                <span className="service-price">
-                  +{service.price.toLocaleString("vi-VN")}k {service.unit === 'hour' ? '/h' : '(Cố định)'}
-                </span>
-              </div>
-              <label className="toggle-switch">
-                <input 
-                  type="checkbox" 
-                  checked={selectedServices.includes(service.id)} 
-                  onChange={() => handleToggleService(service.id)} 
-                  disabled={isSubmitting || totalHours === 0} 
-                />
-                <span className="toggle-slider"></span>
-              </label>
+      {courtId ? (
+        <>
+          <div className="booking-card-header">
+            <div className="booking-card-header-info">
+              <span className="booking-complex-name">📍 {complexName}</span>
+              <h3 className="booking-card-title">Đặt {courtName}</h3>
+              <span className="booking-sport-badge">Môn: {sportType}</span>
+              <p className="booking-card-subtitle">Giá: {(basePricePerHour || 0).toLocaleString("vi-VN")}đ/h</p>
             </div>
-          ))}
+            <button className="booking-clear-btn" onClick={onClearSelection}>Đóng</button>
+          </div>
+
+          <hr className="booking-divider" />
+
+          {/* CHỌN NGÀY */}
+          <div className="booking-section">
+            <div className="date-picker-wrapper">
+              <label className="booking-section-title" style={{marginBottom: 0}}>Ngày chơi:</label>
+              <input 
+                type="date" 
+                className="date-picker-input"
+                value={selectedDate} 
+                onChange={(e) => setSelectedDate(e.target.value)} 
+                min={new Date().toISOString().split('T')[0]} 
+                disabled={isSubmitting}
+              />
+            </div>
+          </div>
+
+          <hr className="booking-divider" />
+
+          {/* CHỌN GIỜ */}
+          <div className="booking-section">
+            <h4 className="booking-section-title">Chọn khung giờ chi tiết</h4>
+            <div className="time-pill-grid">
+              {timeSlots.map((slot) => {
+                const isSelected = currentActiveSlots.includes(slot.time);
+                return (
+                  <button
+                    key={slot.time}
+                    type="button"
+                    className={`time-pill ${isSelected ? "active" : ""} ${slot.isOccupied ? "occupied" : ""}`}
+                    onClick={() => handleToggleSlot(slot.time, slot.isOccupied)}
+                    disabled={isSubmitting || slot.isOccupied} 
+                  >
+                    {slot.time}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <hr className="booking-divider" />
+
+          {/* DỊCH VỤ */}
+          {availableServices.length > 0 && (
+            <div className="booking-section">
+              <h4 className="booking-section-title">Dịch vụ tiện ích</h4>
+              {availableServices.map((service) => (
+                <div className="service-row" key={service.id}>
+                  <div className="service-info">
+                    <span className="service-name">{service.name}</span>
+                    <span className="service-price">
+                      +{service.price.toLocaleString("vi-VN")}k {service.unit === 'hour' ? '/h' : '(Cố định)'}
+                    </span>
+                  </div>
+                  <label className="toggle-switch">
+                    <input 
+                      type="checkbox" 
+                      checked={currentActiveServices.includes(service.id)} 
+                      onChange={() => handleToggleService(service.id)} 
+                      disabled={isSubmitting || currentActiveSlots.length === 0} 
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="empty-selection-state">
+          <h3>Chưa chọn sân</h3>
+          <p>Vui lòng chọn một sân ở cột bên trái để xem lịch</p>
         </div>
       )}
 
-      <div className="booking-footer-box">
-        <div className="total-price-row">
-          <span className="total-label">Tổng tiền:</span>
-          <span className="total-amount">{totalPrice.toLocaleString("vi-VN")}đ</span>
+      {/* HÓA ĐƠN MINI-CART */}
+      {totalSelectedCourts > 0 && (
+        <div className="booking-footer-box">
+          <h4 className="mini-cart-title">Hóa đơn ngày {selectedDate.split('-').reverse().join('/')}</h4>
+          
+          <div className="mini-cart-list">
+            {Object.keys(cart).map(id => {
+              const item = cart[id];
+              if (item.slots.length === 0) return null;
+
+              return (
+                <div className="mini-cart-item" key={id}>
+                  <div className="mini-cart-item-header">
+                    <span className="mini-cart-court-name">
+                      {item.courtName} ({item.sportType})
+                    </span>
+                    <button className="remove-item-btn" onClick={() => handleRemoveCartItem(id)} title="Xóa sân này">✕</button>
+                  </div>
+                  <div className="mini-cart-item-details">
+                    <div>⏱ {item.slots.length * 0.5} giờ: {item.slots.join(', ')}</div>
+                    {item.services.length > 0 && (
+                      <div style={{marginTop: '4px'}}>
+                        🛠 Dịch vụ: {item.services.map(sId => availableServices.find(s => s.id === sId)?.name).join(', ')}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="total-price-row">
+            <span className="total-label">Tổng tiền ({totalSelectedCourts} sân):</span>
+            <span className="total-amount">{globalTotalPrice.toLocaleString("vi-VN")}đ</span>
+          </div>
+          
+          <button className="booking-pay-btn" onClick={handlePayment} disabled={isSubmitting}>
+            {isSubmitting ? "Đang xử lý..." : "Thanh toán ngay"}
+          </button>
         </div>
-        <button 
-          className="booking-pay-btn" 
-          onClick={handlePayment}
-          disabled={totalHours === 0 || isSubmitting}
-        >
-          {isSubmitting ? "Đang xử lý..." : totalHours === 0 ? "Vui lòng chọn giờ" : "Thanh toán"}
-        </button>
-      </div>
+      )}
     </div>
   );
 };

@@ -45,11 +45,14 @@
 
 .booking-sport-badge {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+  text-transform: capitalize;
 }
 
 /* --- Nút Đổi sân  --- */
@@ -132,6 +135,123 @@
   background-color: #eff6ff;
   color: #3d5a80;
   border-color: #3d5a80;
+}
+
+/* --- Tách inline CSS --- */
+.booking-complex-name {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+/* --- Empty State Nội Bộ --- */
+.empty-selection-state {
+  padding: 40px 20px;
+  text-align: center;
+  opacity: 0.6;
+}
+.empty-selection-state h3 {
+  color: #374151; font-size: 18px; margin: 0 0 8px 0;
+}
+.empty-selection-state p {
+  color: #6b7280; font-size: 14px; margin: 0;
+}
+
+/* --- Date Picker --- */
+.date-picker-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-picker-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.date-picker-input:focus {
+  border-color: #3d5a80;
+  box-shadow: 0 0 0 3px rgba(61, 90, 128, 0.1);
+}
+
+.date-picker-input:hover {
+  border-color: #9ca3af;
+}
+
+/* --- Hóa đơn Mini-Cart --- */
+.mini-cart-title {
+  font-size: 14px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+.mini-cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mini-cart-item {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  position: relative;
+}
+
+.mini-cart-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mini-cart-court-name {
+  font-weight: 700;
+  color: #1e3a5f;
+  font-size: 14px;
+}
+
+.remove-item-btn {
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remove-item-btn:hover {
+  background: #f87171;
+  color: white;
+}
+
+.mini-cart-item-details {
+  font-size: 13px;
+  color: #4b5563;
+  line-height: 1.5;
 }
 
 /* ===== Các hàng Dịch vụ & Toggle ===== */
