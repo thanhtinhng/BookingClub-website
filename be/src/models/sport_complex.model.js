@@ -15,21 +15,16 @@ const sportComplexSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    location:{
-        type:
-        {
-            type: {
+    location: {
+        type: {
             type: String,
             enum: ['Point'],
             required: true
-        },
+            },
         coordinates: {
             type: [Number],
             required: true
-        }
-        
-    },
-    required: true
+            }
     },
     phone:{
         type: String,
