@@ -10,18 +10,22 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    content:{
+    content: {
         type: String,
         required: true
     },
-    image_url:{
+    image_url: {
         type: String,
         required: false
-    },  
+    },
     created_at: {
         type: Date,
         default: Date.now
     }
-});
+}
+    ,
+    {
+        timestamps: true // tự tạo createdAt, updatedAt
+    });
 
 export default mongoose.model("Post", postSchema);

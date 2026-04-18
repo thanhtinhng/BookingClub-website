@@ -28,6 +28,9 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: false
     }
-});
+},
+    {
+        timestamps: true // tự tạo createdAt, updatedAt
+    });
 
 export default mongoose.model("Booking", bookingSchema);
