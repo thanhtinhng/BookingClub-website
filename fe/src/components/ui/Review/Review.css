@@ -1,0 +1,131 @@
+.ui-review-container {
+  max-width: 900px;
+  font-family: sans-serif;
+  color: #333;
+}
+
+/* --- Phần Header & Metrics --- */
+.review-header {
+  display: flex;
+  margin-bottom: 40px;
+}
+
+.rating-overview {
+  width: 250px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.rating-overview .title {
+  font-size: 24px;
+  margin: 0;
+}
+
+.score-display {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.star-icon {
+  color: #FFB700;
+  margin-right: 5px;
+}
+
+.metrics-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Chia 2 cột cho các thanh đánh giá */
+  column-gap: 40px;
+  row-gap: 15px;
+}
+
+.metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metric-label {
+  flex: 1;
+  font-size: 15px;
+}
+
+.progress-track {
+  width: 120px;
+  height: 4px;
+  background-color: #e0e0e0;
+  border-radius: 2px;
+  margin: 0 15px;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #003B95; 
+  border-radius: 2px;
+}
+
+.metric-score {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* --- Phần Danh sách bình luận --- */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.avatar, .avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.avatar-placeholder {
+  background-color: #888;
+}
+
+.reviewer-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.review-date {
+  color: #888;
+  font-size: 14px;
+}
+
+.review-text {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* --- Nút bấm --- */
+.btn-show-all {
+  color: #333;
+  background-color: transparent;
+  border: 1px solid #333;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-show-all:hover {
+  background-color: #003B95;
+  color: white;
+}

@@ -1,0 +1,16 @@
+.star-rating-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.star {
+  font-size: 40px;
+  color: #e4e5e9; 
+  transition: color 0.2s; 
+}
+
+.star.active {
+  color: #ffc107; 
+}
