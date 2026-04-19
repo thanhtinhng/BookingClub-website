@@ -6,9 +6,9 @@ const bookingSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    sub_field_id: {
+    complex_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "SubField",
+        ref: "SportComplex",
         required: true
     },
     total_price: {
