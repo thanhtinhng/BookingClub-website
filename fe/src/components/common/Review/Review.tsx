@@ -1,20 +1,21 @@
 import React from 'react';
-import './Review.css'; 
+import { StarRating } from '../StarRating/StarRating';
+import './Review.css';
 
 interface ReviewItem {
-  review_id: number;     
-  userName: string;     
-  avatarUrl?: string;    
-  rating: number;        
-  comment: string;       
-  created_at: string;    
+  review_id: number;
+  userName: string;
+  avatarUrl?: string;
+  rating: number;
+  comment: string;
+  created_at: string;
 }
 
 export interface ReviewProps {
   overallRating: number;
   totalReviews: number;
   reviews: ReviewItem[];
-  onShowAllClick?: () => void; 
+  onShowAllClick?: () => void;
 }
 
 export const Review: React.FC<ReviewProps> = ({
@@ -25,7 +26,7 @@ export const Review: React.FC<ReviewProps> = ({
 }) => {
   return (
     <div className="ui-review-container">
-      
+
       {/* TỔNG QUAN ĐIỂM SỐ */}
       <div className="review-header-simple">
         <h2 className="title">Reviews</h2>
@@ -50,7 +51,10 @@ export const Review: React.FC<ReviewProps> = ({
               )}
               <div className="reviewer-details">
                 <div className="reviewer-name">{review.userName}</div>
-                <div className="review-date">{review.created_at}</div>
+                <div className="individual-rating">
+                  <StarRating rating={review.rating} readonly={true} />
+                  <span className="review-date">{review.created_at}</span>
+                </div>
               </div>
             </div>
             <p className="review-text">{review.comment}</p>

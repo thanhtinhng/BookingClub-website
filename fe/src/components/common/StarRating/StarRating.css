@@ -14,3 +14,12 @@
 .star.active {
   color: #ffc107; 
 }
+
+.star-rating-input.readonly .star {
+  font-size: 14px;
+  padding: 0 1px;
+}
+
+.star-rating-input.readonly .star.active {
+  color: #ffc107; 
+}
