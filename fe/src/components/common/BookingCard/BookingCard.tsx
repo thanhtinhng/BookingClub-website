@@ -84,11 +84,10 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onClearSelection 
 }) => {
 
-  // --- State giỏ hàng ---
+  // --- State giỏ hàng --- //
   const [cart, setCart] = useState<Record<string, CartItem>>({});
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
 
   // logic Đổi ngày là dọn sạch hóa đơn
   useEffect(() => {
@@ -161,24 +160,53 @@ const BookingCard: React.FC<BookingCardProps> = ({
     globalTotalPrice += (courtCost + servicesCost);
   });
 
-  const handlePayment = async () => {
+const handlePayment = async () => {
     setIsSubmitting(true);
     
+    // --- BƯỚC 1: LOGIC GOM NHÓM GIỜ ---
+    const formattedBookingDetails: any[] = [];
+
+    Object.keys(cart).forEach(courtId => {
+      const item = cart[courtId];
+      if (item.slots.length === 0) return;
+
+      const sortedSlots = [...item.slots].sort();
+
+      let currentBlock = {
+        sub_field_id: courtId, 
+        startTime: sortedSlots[0].split(' - ')[0],
+        endTime: sortedSlots[0].split(' - ')[1],
+        services: item.services 
+      };
+
+      for (let i = 1; i < sortedSlots.length; i++) {
+        const [nextStart, nextEnd] = sortedSlots[i].split(' - ');
+        
+        if (currentBlock.endTime === nextStart) {
+          currentBlock.endTime = nextEnd;
+        } else {
+          formattedBookingDetails.push({ ...currentBlock });
+          currentBlock = {
+            sub_field_id: courtId,
+            startTime: nextStart,
+            endTime: nextEnd,
+            services: item.services 
+          };
+        }
+      }
+      formattedBookingDetails.push(currentBlock);
+    });
+
+    // --- BƯỚC 2: ĐÓNG GÓI PAYLOAD ---
     const bookingPayload = {
-      complexId, 
-      date: selectedDate,
-      bookings: Object.keys(cart)
-        .filter(id => cart[id].slots.length > 0)
-        .map(id => ({
-          courtId: id,
-          slots: cart[id].slots,
-          selectedServiceIds: cart[id].services
-      })),
-      totalAmount: globalTotalPrice,
+      complex_id: complexId,         
+      booking_date: selectedDate,    
+      total_price: globalTotalPrice, 
+      booking_details: formattedBookingDetails, 
     };
 
-    console.log("Multi-Booking Payload:", bookingPayload);
-
+    console.log("Payload:", JSON.stringify(bookingPayload, null, 2));
+//Đợi tạm thời 1.5s
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500)); 
       alert(`Đã đặt thành công ${totalSelectedCourts} sân ngày ${selectedDate}!`);
@@ -197,7 +225,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <>
           <div className="booking-card-header">
             <div className="booking-card-header-info">
-              <span className="booking-complex-name">📍 {complexName}</span>
+              <span className="booking-complex-name"> {complexName}</span>
               <h3 className="booking-card-title">Đặt {courtName}</h3>
               <span className="booking-sport-badge">Môn: {sportType}</span>
               <p className="booking-card-subtitle">Giá: {(basePricePerHour || 0).toLocaleString("vi-VN")}đ/h</p>
