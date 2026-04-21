@@ -1,4 +1,151 @@
 {
+  "User": [
+  {
+    "_id": "65f2a1a1a1a1a1a1a1a1a101",
+    "name": "Le Van C",
+    "phone": "0901111222",
+    "password": "$2b$10$hashedpassword3",
+    "email": "user1@example.com",
+    "email_verified": true,
+    "status": "Active",
+    "avatar_url": "https://i.pravatar.cc/150?img=1",
+    "created_at": "2024-03-17T00:00:00Z"
+  },
+  {
+    "_id": "65f2a1a1a1a1a1a1a1a1a102",
+    "name": "Pham Thi D",
+    "phone": "0902222333",
+    "password": "$2b$10$hashedpassword4",
+    "email": "user2@example.com",
+    "email_verified": true,
+    "status": "Active",
+    "avatar_url": "https://i.pravatar.cc/150?img=2",
+    "created_at": "2024-03-18T00:00:00Z"
+  },
+{
+    "_id": "65f1a1a1a1a1a1a1a1a1a1a1",
+    "name": "Nguyen Van A",
+    "phone": "0912345678",
+    "password": "$2b$10$hashedpassword1",
+    "email": "owner1@example.com",
+    "email_verified": true,
+    "status": "Active",
+    "role": "Owner",
+    "id_card_number": "012345678901",
+    "business_license": "https://example.com/license1.jpg",
+    "bank_info": {
+      "bank_name": "Vietcombank",
+      "account_number": "123456789"
+    },
+    "approval_status": "Approved",
+    "verified_at": "2024-03-10T00:00:00Z",
+    "created_at": "2024-03-10T00:00:00Z"
+  },
+  {
+    "_id": "65f1a1a1a1a1a1a1a1a1a1a2",
+    "name": "Tran Thi B",
+    "phone": "0987654321",
+    "password": "$2b$10$hashedpassword2",
+    "email": "owner2@example.com",
+    "email_verified": true,
+    "status": "Active",
+    "role": "Owner",
+    "id_card_number": "098765432109",
+    "business_license": "https://example.com/license2.jpg",
+    "bank_info": {
+      "bank_name": "Techcombank",
+      "account_number": "987654321"
+    },
+    "approval_status": "Approved",
+    "verified_at": "2024-03-11T00:00:00Z",
+    "created_at": "2024-03-11T00:00:00Z"
+  }
+  ],
+
+  "Review": [
+  {
+    "_id": "65f3a1a1a1a1a1a1a1a1a101",
+    "booking_id": "65f9b1b1b1b1b1b1b1b1b101",
+    "user_id": "65f2a1a1a1a1a1a1a1a1a101",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "rating": 5,
+    "comment": "Sân rất đẹp, ánh sáng tốt, nhân viên nhiệt tình!"
+  },
+  {
+    "_id": "65f3a1a1a1a1a1a1a1a1a102",
+    "booking_id": "65f9b1b1b1b1b1b1b1b1b102",
+    "user_id": "65f2a1a1a1a1a1a1a1a1a102",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "rating": 4,
+    "comment": "Sân ok nhưng hơi đông giờ cao điểm."
+  },
+  {
+    "_id": "65f3a1a1a1a1a1a1a1a1a103",
+    "booking_id": "65f9b1b1b1b1b1b1b1b1b103",
+    "user_id": "65f2a1a1a1a1a1a1a1a1a101",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+    "rating": 3,
+    "comment": "Sân ổn nhưng cần cải thiện vệ sinh."
+  }
+  ], 
+
+  "Booking": [
+  {
+    "_id": "65f9b1b1b1b1b1b1b1b1b101",
+    "user_id": "65f2a1a1a1a1a1a1a1a1a101",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "total_price": { "$numberDecimal": "300000" },
+    "booking_date": "2024-03-20T10:00:00Z",
+    "status": "completed",
+    "qr_code_url": "https://example.com/qr1.png"
+  },
+  {
+    "_id": "65f9b1b1b1b1b1b1b1b1b102",
+    "user_id": "65f2a1a1a1a1a1a1a1a1a102",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "total_price": { "$numberDecimal": "200000" },
+    "booking_date": "2024-03-21T10:00:00Z",
+    "status": "completed",
+    "qr_code_url": "https://example.com/qr2.png"
+  },
+  {
+    "_id": "65f9b1b1b1b1b1b1b1b1b103",
+    "user_id": "65f2a1a1a1a1a1a1a1a1a101",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+    "total_price": { "$numberDecimal": "250000" },
+    "booking_date": "2024-03-22T10:00:00Z",
+    "status": "completed",
+    "qr_code_url": null
+  }
+],
+
+  "BookingDetails": [
+  {
+    "_id": "65f8d1d1d1d1d1d1d1d1d101",
+    "booking_id": "65f9b1b1b1b1b1b1b1b1b101",
+    "sub_field_id": "65f1b1b1b1b1b1b1b1b1b101",
+    "play_date": "2024-03-20",
+    "start_time": "18:00",
+    "end_time": "19:00"
+  },
+  {
+    "_id": "65f8d1d1d1d1d1d1d1d1d102",
+    "booking_id": "65f9b1b1b1b1b1b1b1b1b102",
+    "sub_field_id": "65f1b1b1b1b1b1b1b1b1b102",
+    "play_date": "2024-03-21",
+    "start_time": "19:00",
+    "end_time": "20:00"
+  },
+  {
+    "_id": "65f8d1d1d1d1d1d1d1d1d103",
+    "booking_id": "65f9b1b1b1b1b1b1b1b1b103",
+    "sub_field_id": "65f1b1b1b1b1b1b1b1b1b103",
+    "play_date": "2024-03-22",
+    "start_time": "08:00",
+    "end_time": "09:00"
+  }
+  ],
+
   "SportComplex": [
     {
       "_id": "65f1a2b3c4d5e6f7a8b90123" ,
@@ -11,6 +158,7 @@
       },
       "phone": "0901234567",
       "email": "contact@namsaigon.com",
+      "slug": "san-mega-pickleball-pong",
       "opening_hours": "06:00",
       "closing_hours": "22:00",
       "created_at":  "2024-03-15T00:00:00Z" 
@@ -26,6 +174,7 @@
       },
       "phone": "02838112233",
       "email": null,
+      "slug": "san-bong-thang-long",
       "opening_hours": "07:00",
       "closing_hours": "23:00",
       "created_at":  "2024-03-16T00:00:00Z" 

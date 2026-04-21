@@ -13,6 +13,9 @@ const publicRoutes = [
     { method: "GET", path: "/api/reviews/with-stats" },
     { method: "GET", path: "/api/reviews/" }, // để match /reviews/:id
 
+
+    { method: "GET", path: "/api/v1/sportcomplex" },
+    { method: "GET", path: "/api/v1/sportcomplex/" }, // để match /sportcomplex/:slug
 ];
 
 const isPublicRoute = (req) => {

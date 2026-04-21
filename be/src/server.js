@@ -3,6 +3,7 @@ import { connectDB } from './config/db.js';
 import express from 'express';
 import routes from './routes/route.js';
 import cors from 'cors';
+import sportComplexRouter from './routes/sport_complex.route.js';
 
 dotenv.config();
 
@@ -20,6 +21,10 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 app.use('/api', routes);
+app.use('/api/v1/sportcomplex', sportComplexRouter);
+
+
+
 app.listen(PORT, () => {
   console.log("Server is running on port", PORT);
 });
