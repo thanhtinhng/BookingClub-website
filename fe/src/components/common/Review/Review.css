@@ -1,0 +1,133 @@
+.ui-review-container {
+  max-width: 900px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  padding: 20px 0;
+}
+
+/* --- Phần Header rút gọn --- */
+.review-header-simple {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.review-header-simple .title {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.score-badge {
+  display: flex;
+  align-items: center;
+  background-color: #f0f7ff;
+  padding: 8px 15px;
+  border-radius: 20px;
+}
+
+.score-number {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 8px;
+  color: #003B95;
+}
+
+.total-count {
+  color: #666;
+  font-size: 14px;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin-bottom: 30px;
+}
+
+/* --- Danh sách bình luận --- */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Chia 2 cột */
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Responsive cho mobile: chuyển về 1 cột */
+@media (max-width: 768px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.review-card {
+  padding-bottom: 10px;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.avatar, .avatar-placeholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  background-color: #d1d1d1;
+}
+
+.reviewer-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.review-date {
+  color: #717171;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.review-text {
+  color: #484848;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+  /* Giới hạn hiển thị 3 dòng nếu text quá dài */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Cho trình duyệt Chrome, Safari */
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+/* --- Nút bấm --- */
+.btn-show-all {
+  color: #222;
+  background-color: white;
+  border: 1px solid #222;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-show-all:hover {
+  background-color: #f7f7f7;
+  transform: scale(1.02);
+}
+
+.reviewer-sub-info {
+  margin-top: 2px;
+}
+
+/* Thu nhỏ kích thước sao trong danh sách */
+.reviewer-sub-info .star-icon {
+  font-size: 14px; 
+}
