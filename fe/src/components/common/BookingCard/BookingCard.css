@@ -1,0 +1,338 @@
+/* ===== Form Tổng thể ===== */
+.booking-card-container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+}
+
+/* ===== Header ===== */
+.booking-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.booking-complex-name {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.booking-card-title {
+  color: #1e3a5f;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* --- Header Info & Badge Môn thể thao --- */
+.booking-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.booking-card-header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.booking-sport-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+  text-transform: capitalize;
+}
+
+/* --- Nút Đổi sân  --- */
+.booking-clear-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.booking-clear-btn:hover {
+  background-color: #fee2e2;
+}
+
+/* --- CSS cho ô bị khóa --- */
+.time-pill.occupied {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  border: 1.5px dashed #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.time-pill.occupied:hover {
+  background-color: #f3f4f6;
+}
+
+.booking-card-subtitle {
+  color: #f59e0b; /* Màu cam cho giá */
+  font-weight: 600;
+  margin: 0;
+  font-size: 16px;
+  padding-top: 10px;
+}
+
+.booking-divider {
+  border: none;
+  border-top: 1px dashed #e5e7eb;
+  margin: 20px 0;
+}
+
+/* ===== Tiêu đề các mục ===== */
+.booking-section-title {
+  font-size: 15px;
+  color: #374151;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+}
+
+/* ===== Ma trận Pill UI Chọn Giờ ===== */
+.time-pill-grid {
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.time-pill {
+  width: 100%; 
+  padding: 10px 4px; 
+  text-align: center; 
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 15px; 
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.time-pill:hover {
+  background-color: #e5e7eb;
+}
+
+.time-pill.active {
+  background-color: #eff6ff;
+  color: #3d5a80;
+  border-color: #3d5a80;
+}
+
+/* --- Tách inline CSS --- */
+.booking-complex-name {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+/* --- Empty State Nội Bộ --- */
+.empty-selection-state {
+  padding: 40px 20px;
+  text-align: center;
+  opacity: 0.6;
+}
+.empty-selection-state h3 {
+  color: #374151; font-size: 18px; margin: 0 0 8px 0;
+}
+.empty-selection-state p {
+  color: #6b7280; font-size: 14px; margin: 0;
+}
+
+/* --- Date Picker --- */
+.date-picker-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-picker-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.date-picker-input:focus {
+  border-color: #3d5a80;
+  box-shadow: 0 0 0 3px rgba(61, 90, 128, 0.1);
+}
+
+.date-picker-input:hover {
+  border-color: #9ca3af;
+}
+
+/* --- Hóa đơn Mini-Cart --- */
+.mini-cart-title {
+  font-size: 14px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+.mini-cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mini-cart-item {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  position: relative;
+}
+
+.mini-cart-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.mini-cart-court-name {
+  font-weight: 700;
+  color: #1e3a5f;
+  font-size: 14px;
+}
+
+.remove-item-btn {
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remove-item-btn:hover {
+  background: #f87171;
+  color: white;
+}
+
+.mini-cart-item-details {
+  font-size: 13px;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+/* ===== Các hàng Dịch vụ & Toggle ===== */
+.service-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.service-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.service-name {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.service-price {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.time-pill.occupied {
+  background-color: #e5e7eb; 
+  color: #9ca3af;            
+  border: 1.5px solid #d1d5db;
+  cursor: not-allowed;       
+  opacity: 0.7;
+}
+
+.time-pill.occupied:hover {
+  background-color: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+/* CSS Toggle Switch */
+.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #d1d5db; transition: .3s; border-radius: 24px; }
+.toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.toggle-switch input:checked + .toggle-slider { background-color: #3d5a80; }
+.toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+/* ===== Footer TÍnh Tiền ===== */
+.booking-footer-box {
+  margin-top: 24px;
+  background-color: #f9fafb;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.total-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.total-label { font-size: 15px; color: #4b5563; font-weight: 600; }
+.total-amount { font-size: 22px; color: #1e3a5f; font-weight: 800; }
+
+.booking-pay-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #3d5a80;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.booking-pay-btn:hover:not(:disabled) { background-color: #2e4568; }
+.booking-pay-btn:active:not(:disabled) { transform: scale(0.98); }
+.booking-pay-btn:disabled { background-color: #d1d5db; cursor: not-allowed; opacity: 0.7; }

@@ -1,0 +1,177 @@
+/* ===== Layout Tổng thể ===== */
+.booking-wrapper {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 40px 20px;
+}
+
+.booking-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start; 
+  gap: 32px;
+}
+
+/* ===== Cột Trái 68% ===== */
+.booking-main {
+  flex: 6.8;
+  width: 68%;
+}
+
+.booking-placeholder-content {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.booking-fake-scroll {
+  height: 1500px;
+  background: repeating-linear-gradient(45deg, #f9fafb, #f9fafb 20px, #f3f4f6 20px, #f3f4f6 40px);
+  margin-top: 24px;
+  border-radius: 8px;
+}
+
+.sport-filter-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.sport-filter-btn {
+  padding: 8px 20px;
+  border-radius: 24px;
+  border: none;
+  background-color: #e5e7eb;
+  color: #4b5563;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.sport-filter-btn:hover {
+  background-color: #d1d5db;
+}
+
+.sport-filter-btn.active {
+  background-color: #3d5a80;
+  color: #ffffff;
+}
+
+/* ===== Danh sách nút chọn sân ===== */
+.court-list-container {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.court-btn {
+  padding: 16px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.court-btn:hover {
+  border-color: #9ca3af;
+}
+
+.court-btn.active {
+  border-color: #3d5a80;
+  background-color: #eff6ff;
+}
+
+.court-btn-name {
+  font-weight: 700;
+  color: #374151;
+  font-size: 16px;
+}
+
+.court-btn.active .court-btn-name {
+  color: #1e3a5f;
+}
+
+.court-btn-price {
+  color: #f59e0b;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ===== Cột Phải 32% (Sticky) ===== */
+.booking-sidebar {
+  flex: 3.2;
+  width: 32%;
+  position: sticky;
+  top: 40px;
+  max-height: calc(100vh - 80px); /* Giới hạn độ cao */
+  overflow-y: auto;               /* Nếu Card dài quá giới hạn, cho phép tự cuộn bên trong Card */
+}
+
+/*Làm đẹp thanh sidebar */
+.booking-sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+.booking-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.booking-sidebar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 10px;
+}
+.booking-sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+.booking-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start; 
+  gap: 32px;
+}
+
+.booking-title {
+  color: #1e3a5f;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ===== Cái bên phải khi trống ===== */
+.empty-state-card {
+  padding: 40px 20px;
+  border-radius: 16px;
+  text-align: center;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.empty-state-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+  filter: grayscale(100%);
+}
+
+.empty-state-title {
+  color: #797b7d;
+  font-size: 16px;
+  margin: 0 0 8px 0;
+}
+
+.empty-state-desc {
+  color: #797b7d;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media screen and (max-width: 900px) {
+  .booking-container { flex-direction: column; }
+  .booking-main, .booking-sidebar { width: 100%; flex: none; }
+  .booking-sidebar { position: static; }
+}
