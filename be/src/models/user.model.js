@@ -51,6 +51,10 @@ const userSchema = new mongoose.Schema({
     enum: ["Admin", "User", "Owner", "Guest"],
     default: "User"
   },
+  avatar_url: {
+    type: String,
+    required: false
+  },
   created_at: {
     type: Date,
     default: Date.now

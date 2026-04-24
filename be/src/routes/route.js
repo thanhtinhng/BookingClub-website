@@ -10,6 +10,19 @@ import {
 import rateLimit from 'express-rate-limit';
 import auth from "../middlewares/auth.middleware.js";
 import { getMe } from "../controllers/user.controller.js";
+import {
+  createReview,
+  getReviews,
+  getReviewById,
+  updateReview,
+  deleteReview,
+  getReviewsWithStats
+} from "../controllers/review.controller.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import {
+  createReviewSchema,
+  updateReviewSchema,
+} from "../validators/review.validation.js";
 
 const router = express.Router();
 
@@ -28,5 +41,13 @@ router.post("/resend-verification-email", resendVerificationEmail);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.get("/me", getMe);
+
+//review
+router.post("/reviews", validate(createReviewSchema), createReview);
+router.get("/reviews", getReviews);
+router.get("/reviews/with-stats", getReviewsWithStats);
+router.get("/reviews/:id", getReviewById);
+router.put("/reviews/:id", validate(updateReviewSchema), updateReview);
+router.delete("/reviews/:id", deleteReview);
 
 export default router;

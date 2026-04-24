@@ -5,7 +5,7 @@ import { Decimal128 } from "bson";
 const paymentSchema = new mongoose.Schema({
     booking_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Booking", 
+        ref: "Booking",
         required: true
     },
 
@@ -24,15 +24,18 @@ const paymentSchema = new mongoose.Schema({
         vnp_BankCode: String,      // Ngân hàng khách sử dụng
         vnp_PayDate: String        // Thời gian giao dịch thành công
     },
-    transaction_date: { 
-    type: Date, 
-    default: Date.now 
+    transaction_date: {
+        type: Date,
+        default: Date.now
     },
     status: {
         type: String,
         enum: ["Pending", "Completed", "Failed"],
         default: "Pending"
     }
-});
+},
+    {
+        timestamps: true // tự tạo createdAt, updatedAt
+    });
 
 export default mongoose.model("Payment", paymentSchema);
