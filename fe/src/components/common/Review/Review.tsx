@@ -15,14 +15,16 @@ export interface ReviewProps {
   overallRating: number;
   totalReviews: number;
   reviews: ReviewItem[];
-  onShowAllClick?: () => void;
+  onLoadMore?: () => void;
+  hasMore?: boolean;
 }
 
 export const Review: React.FC<ReviewProps> = ({
   overallRating,
   totalReviews,
   reviews,
-  onShowAllClick
+  onLoadMore,
+  hasMore
 }) => {
   return (
     <div className="ui-review-container">
@@ -63,8 +65,8 @@ export const Review: React.FC<ReviewProps> = ({
       </div>
 
       {/* NÚT BẤM XEM THÊM */}
-      {totalReviews > reviews.length && (
-        <button className="btn-show-all" onClick={onShowAllClick}>
+      {hasMore && (
+        <button className="btn-show-all" onClick={onLoadMore}>
           Show All {totalReviews} Reviews
         </button>
       )}
