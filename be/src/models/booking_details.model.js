@@ -24,3 +24,5 @@ const bookingDetailsSchema = new mongoose.Schema({
         required: true
     }
 });
+
+export default mongoose.model("BookingDetails", bookingDetailsSchema);

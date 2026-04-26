@@ -5,23 +5,42 @@ import SubField from "../models/sub_field.model.js";
 import ImageField from "../models/field_image.model.js";
 import { connectDB } from "../config/db.js";
 import dotenv from 'dotenv';
-
+import Owner from "../models/owner.model.js";
+import Review from "../models/review.model.js";
+import User from "../models/user.model.js";
+import Booking from "../models/booking.model.js";
+import BookingDetails from "../models/booking_details.model.js";
 dotenv.config();
 const importData = async () => {
     try{
         await connectDB();
 
         const data = JSON.parse(fs.readFileSync("./src/scripts/data.json", "utf-8"));
+        // 1. XÓA TRƯỚC
+    await BookingDetails.deleteMany();
+    await Booking.deleteMany();
+    await Review.deleteMany();
+    await SubField.deleteMany();
+    await PricingRule.deleteMany();
+    await ImageField.deleteMany();
+    await SportComplex.deleteMany();
+    await User.deleteMany(); // Owner cũng nằm trong đây
 
-        await SportComplex.deleteMany();
-        await PricingRule.deleteMany();
-        await SubField.deleteMany();
-        await ImageField.deleteMany();
+    // 2. INSERT THEO THỨ TỰ
 
-        await SportComplex.create(data.SportComplex);
-        await PricingRule.create(data.PricingRule);
-        await SubField.create(data.SubField);
-        await ImageField.create(data.FieldImage);
+    // User + Owner (discriminator tự xử)
+    await User.create(data.User);
+
+    await SportComplex.create(data.SportComplex);
+    await SubField.create(data.SubField);
+    await ImageField.create(data.FieldImage);
+    await PricingRule.create(data.PricingRule);
+
+    await Booking.create(data.Booking);
+    await BookingDetails.create(data.BookingDetails);
+    await Review.create(data.Review);
+
+
         console.log("Du lieu da duoc import thanh cong!");
         process.exit(0);
     }

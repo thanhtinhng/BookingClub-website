@@ -35,6 +35,11 @@ const sportComplexSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    slug:{
+        type: String,
+        required: true,
+        unique: true
+    },
     opening_hours:{
         type: String,
         required: true
