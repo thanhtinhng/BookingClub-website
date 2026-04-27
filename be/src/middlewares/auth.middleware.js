@@ -1,17 +1,17 @@
 import jwt from "jsonwebtoken";
 
 const publicRoutes = [
-    { method: "POST", path: "/api/register" },
-    { method: "POST", path: "/api/login" },
-    { method: "POST", path: "/api/verify-email" },
-    { method: "GET", path: "/api/verify-email" },
-    { method: "POST", path: "/api/resend-verification-email" },
-    { method: "POST", path: "/api/forgot-password" },
-    { method: "POST", path: "/api/reset-password" },
+    { method: "POST", path: "/api/v1/register" },
+    { method: "POST", path: "/api/v1/login" },
+    { method: "POST", path: "/api/v1/verify-email" },
+    { method: "GET", path: "/api/v1/verify-email" },
+    { method: "POST", path: "/api/v1/resend-verification-email" },
+    { method: "POST", path: "/api/v1/forgot-password" },
+    { method: "POST", path: "/api/v1/reset-password" },
 
-    { method: "GET", path: "/api/reviews" },
-    { method: "GET", path: "/api/reviews/with-stats" },
-    { method: "GET", path: "/api/reviews/" }, // để match /reviews/:id
+    { method: "GET", path: "/api/v1/reviews" },
+    { method: "GET", path: "/api/v1/reviews/with-stats" },
+    { method: "GET", path: "/api/v1/reviews/" }, // để match /reviews/:id
 
 
     { method: "GET", path: "/api/v1/sportcomplex" },
