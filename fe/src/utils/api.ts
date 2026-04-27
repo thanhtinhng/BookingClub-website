@@ -7,7 +7,7 @@ const createUserApi = (
   phone: string,
   password: string
 ) => {
-  const URL_API = "/api/register";
+  const URL_API = "/api/v1/register";
   const data = {
     name,
     email,
@@ -28,7 +28,7 @@ const loginApi = (
   phone: string,
   password: string
 ): Promise<LoginResponse> => {
-  const URL_API = "/api/login";
+  const URL_API = "/api/v1/login";
   return axios.post(URL_API, { phone, password });
 };
 
@@ -41,7 +41,7 @@ interface User {
 }
 
 const getMeApi = (): Promise<User> => {
-  return axios.get("/api/me");
+  return axios.get("/api/v1/me");
 };
 
 export {
