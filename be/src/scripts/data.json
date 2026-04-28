@@ -181,26 +181,71 @@
     }
   ],
 
-  "SubField": [
-    {
-      "_id":  "65f1b1b1b1b1b1b1b1b1b101" ,
-      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
-      "field_type": "Football",
-      "status": "Available"
-    },
-    {
-      "_id": "65f1b1b1b1b1b1b1b1b1b102",
-      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
-      "field_type": "Badminton",
-      "status": "Booked"
-    },
-    {
-      "_id":  "65f1b1b1b1b1b1b1b1b1b103" ,
-      "complex_id":  "65f1a2b3c4d5e6f7a8b90124" ,
-      "field_type": "Tennis",
-      "status": "Maintenance"
-    }
-  ],
+ "SubField": [
+  {
+    "_id": "65f1b1b1b1b1b1b1b1b1b101",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d101",
+    "field_name": "Sân bóng A1",
+    "status": "Available"
+  },
+  {
+    "_id": "65f1b1b1b1b1b1b1b1b1b104",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d101",
+    "field_name": "Sân bóng A2",
+    "status": "Booked"
+  },
+  {
+    "_id": "65f1b1b1b1b1b1b1b1b1b105",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d102",
+    "field_name": "Sân cầu lông B1",
+    "status": "Available"
+  },
+  {
+    "_id": "65f1b1b1b1b1b1b1b1b1b106",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d102",
+    "field_name": "Sân cầu lông B2",
+    "status": "Maintenance"
+  },
+  {
+    "_id": "65f1b1b1b1b1b1b1b1b1b107",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d103",
+    "field_name": "Sân tennis C1",
+    "status": "Available"
+  },
+  {
+    "_id": "65f1b1b1b1b1b1b1b1b1b108",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d104",
+    "field_name": "Sân bóng rổ D1",
+    "status": "Available"
+  },
+  {
+    "_id": "65f1b1b1b1b1b1b1b1b1b109",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d105",
+    "field_name": "Sân bóng chuyền E1",
+    "status": "Booked"
+  },
+  {
+  "_id": "65f1b1b1b1b1b1b1b1b1b110",
+  "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+  "config_id": "65f1d1d1d1d1d1d1d1d1d106",
+  "field_name": "Sân pickleball P1",
+  "status": "Available"
+},
+{
+  "_id": "65f1b1b1b1b1b1b1b1b1b111",
+  "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+  "config_id": "65f1d1d1d1d1d1d1d1d1d106",
+  "field_name": "Sân pickleball P2",
+  "status": "Booked"
+}
+],
 
   "FieldImage": [
     {
@@ -241,26 +286,160 @@
     }
   ],
 
+"FieldTypeConfig": [
+   {
+    "_id": "65f1d1d1d1d1d1d1d1d1d101",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "field_type": "Football",
+    "base_price": 200000,
+    "min_duration": 90,
+    "slot_step": 30,
+    "buffer_time": 10,
+    "description": "Sân bóng đá mini 5 người",
+    "is_active": true
+  },
+  {
+    "_id": "65f1d1d1d1d1d1d1d1d1d102",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "field_type": "Badminton",
+    "base_price": 80000,
+    "min_duration": 60,
+    "slot_step": 30,
+    "buffer_time": 5,
+    "description": "Sân cầu lông tiêu chuẩn",
+    "is_active": true
+  },
+  {
+    "_id": "65f1d1d1d1d1d1d1d1d1d103",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+    "field_type": "Tennis",
+    "base_price": 150000,
+    "min_duration": 60,
+    "slot_step": 30,
+    "buffer_time": 10,
+    "description": "Sân tennis ngoài trời",
+    "is_active": true
+  },
+  {
+    "_id": "65f1d1d1d1d1d1d1d1d1d104",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+    "field_type": "Basketball",
+    "base_price": 120000,
+    "min_duration": 60,
+    "slot_step": 30,
+    "buffer_time": 5,
+    "description": "Sân bóng rổ trong nhà",
+    "is_active": true
+  },
+  {
+    "_id": "65f1d1d1d1d1d1d1d1d1d105",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "field_type": "Volleyball",
+    "base_price": 100000,
+    "min_duration": 60,
+    "slot_step": 30,
+    "buffer_time": 5,
+    "description": "Sân bóng chuyền ngoài trời",
+    "is_active": true
+  },
+  {
+  "_id": "65f1d1d1d1d1d1d1d1d1d106",
+  "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+  "field_type": "Pickleball",
+  "base_price": 90000,
+  "min_duration": 60,
+  "slot_step": 30,
+  "buffer_time": 5,
+  "description": "Sân pickleball tiêu chuẩn trong nhà",
+  "is_active": true
+  } 
+],
+
+
   "PricingRule": [
-    {
-      "_id":  "65f1c1c1c1c1c1c1c1c1c101" ,
-      "complex_id": "65f1a2b3c4d5e6f7a8b90123",
-      "field_type": "Football",
-      "day_of_week": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      "start_hour": "17:00",
-      "end_hour": "21:00",
-      "price_multiplier": 1.5,
-      "is_active": true
-    },
-    {
-      "_id":  "65f1c1c1c1c1c1c1c1c1c102" ,
-      "complex_id":  "65f1a2b3c4d5e6f7a8b90124" ,
-      "field_type": "Tennis",
-      "day_of_week": ["Saturday", "Sunday"],
-      "start_hour": "08:00",
-      "end_hour": "22:00",
-      "price_multiplier": 2.0,
-      "is_active": true
-    }
-  ]
+  {
+    "_id": "65f1c1c1c1c1c1c1c1c1c101",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d101",
+    "rule_name": "Giờ cao điểm bóng đá",
+    "day_of_week": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+    "start_hour": "17:00",
+    "end_hour": "21:00",
+    "price_multiplier": 1.5,
+    "priority": 2,
+    "is_active": true
+  },
+  {
+    "_id": "65f1c1c1c1c1c1c1c1c1c103",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d101",
+    "rule_name": "Giờ thường bóng đá",
+    "day_of_week": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+    "start_hour": "06:00",
+    "end_hour": "17:00",
+    "price_multiplier": 1.0,
+    "priority": 1,
+    "is_active": true
+  },
+  {
+    "_id": "65f1c1c1c1c1c1c1c1c1c104",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d102",
+    "rule_name": "Cầu lông buổi tối",
+    "day_of_week": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+    "start_hour": "18:00",
+    "end_hour": "22:00",
+    "price_multiplier": 1.3,
+    "priority": 2,
+    "is_active": true
+  },
+  {
+    "_id": "65f1c1c1c1c1c1c1c1c1c105",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d103",
+    "rule_name": "Tennis cuối tuần",
+    "day_of_week": ["Saturday","Sunday"],
+    "start_hour": "08:00",
+    "end_hour": "22:00",
+    "price_multiplier": 2.0,
+    "priority": 2,
+    "is_active": true
+  },
+  {
+    "_id": "65f1c1c1c1c1c1c1c1c1c106",
+    "complex_id": "65f1a2b3c4d5e6f7a8b90124",
+    "config_id": "65f1d1d1d1d1d1d1d1d1d104",
+    "rule_name": "Basketball giờ thường",
+    "day_of_week": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+    "start_hour": "06:00",
+    "end_hour": "18:00",
+    "price_multiplier": 1.0,
+    "priority": 1,
+    "is_active": true
+  },
+  {
+  "_id": "65f1c1c1c1c1c1c1c1c1c107",
+  "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+  "config_id": "65f1d1d1d1d1d1d1d1d1d106",
+  "rule_name": "Pickleball giờ cao điểm",
+  "day_of_week": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+  "start_hour": "18:00",
+  "end_hour": "22:00",
+  "price_multiplier": 1.4,
+  "priority": 2,
+  "is_active": true
+},
+{
+  "_id": "65f1c1c1c1c1c1c1c1c1c108",
+  "complex_id": "65f1a2b3c4d5e6f7a8b90123",
+  "config_id": "65f1d1d1d1d1d1d1d1d1d106",
+  "rule_name": "Pickleball giờ thường",
+  "day_of_week": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+  "start_hour": "06:00",
+  "end_hour": "18:00",
+  "price_multiplier": 1.0,
+  "priority": 1,
+  "is_active": true
+}
+]
 }

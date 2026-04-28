@@ -7,10 +7,14 @@ const pricingRuleSchema = new mongoose.Schema({
         ref: "SportComplex",
         required: true
     },
-    field_type:{
-        type: String,
-        enum: ["Badminton", "Football", "Tennis", "Basketball", "Volleyball"],
+    config_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FieldTypeConfig",
         required: true
+    },
+    rule_name: {
+        type: String,
+        required: true,
     },
     day_of_week: [{
         type: String,
@@ -28,6 +32,10 @@ const pricingRuleSchema = new mongoose.Schema({
         match: /^(0[6-9]|1\d|2[0-3]):([0-5]\d)$/
     },
     price_multiplier: {
+        type: Number,
+        default: 1
+    },
+    priority: {
         type: Number,
         default: 1
     },

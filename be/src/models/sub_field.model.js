@@ -7,15 +7,19 @@ const subFieldSchema = new mongoose.Schema({
         ref: "SportComplex",
         required: true
     },
-    field_type:{
-        type: String,
-        enum: ["Badminton", "Football", "Tennis", "Basketball", "Volleyball"],
+    config_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FieldTypeConfig",
         required: true
+    },
+    field_name: {
+        type: String,
+        required: true,
     },
     status:{
         type: String,
         enum: ["Available", "Booked", "Maintenance"],
-        required: true
+        default: "Available"
     }
 });
 
