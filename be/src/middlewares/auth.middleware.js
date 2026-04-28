@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 const publicRoutes = [
     { method: "POST", path: "/api/v1/register" },
     { method: "POST", path: "/api/v1/login" },
+    { method: "POST", path: "/api/v1/refresh" },
     { method: "POST", path: "/api/v1/verify-email" },
     { method: "GET", path: "/api/v1/verify-email" },
     { method: "POST", path: "/api/v1/resend-verification-email" },
@@ -38,33 +39,27 @@ const isPublicRoute = (req) => {
 
 const auth = (req, res, next) => {
 
-    // bỏ qua nếu là public route
     if (isPublicRoute(req)) {
         return next();
     }
 
-    // check token
-    if (req.headers && req.headers.authorization) {
-        try {
-            const token = req.headers.authorization.split(" ")[1];
+    try {
+        const token = req.cookies?.access_token;
 
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-            req.user = decoded;
-
-            return next();
-        } catch (error) {
-            return res.status(401).json({
-                message: "Invalid token/Expired token",
-            });
+        if (!token) {
+            return res.status(401).json({ message: "Unauthorized" });
         }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        req.user = decoded;
+        return next();
+
+    } catch (error) {
+        return res.status(401).json({
+            message: "Invalid/Expired token",
+        });
     }
-
-    return res.status(401).json({
-        message: "Unauthorized",
-    });
-
-
-}
+};
 
 export default auth;

@@ -41,7 +41,7 @@ interface User {
 }
 
 const getMeApi = (): Promise<User> => {
-  return axios.get("/api/v1/me");
+  return axios.post("/api/v1/me");
 };
 
 export {

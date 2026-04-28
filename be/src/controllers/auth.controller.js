@@ -4,9 +4,12 @@ import {
   verifyEmailService,
   resendVerificationEmailService,
   forgotPasswordService,
-  resetPasswordService
+  resetPasswordService,
+  refreshTokenService
 } from "../services/auth.service.js";
 import { validatePassword } from "../validators/validate.js";
+import cookieUtils from "../utils/cookie.js";
+
 const isProduction = process.env.NODE_ENV === "production";
 
 const getTokenFromRequest = (req) => req.query.token || req.body.token;
@@ -49,14 +52,41 @@ export const login = async (req, res) => {
 
     const rs = await loginService({ phone, password });
 
+    await cookieUtils.setAuthCookies(res, String(rs.user._id), rs.access_token, rs.refresh_token);
+
     return res.json({
-      access_token: rs.access_token,
+      id: rs.user.id,
       phone: rs.user.phone,
       email: rs.user.email
     });
 
   } catch (err) {
     return res.status(400).json({ message: err.message });
+  }
+};
+
+export const refreshController = async (req, res) => {
+  try {
+    const refreshToken = req.cookies?.refresh_token;
+
+    const result = await refreshTokenService(refreshToken);
+
+    // set lại cookie
+    await cookieUtils.setAuthCookies(
+      res,
+      result.userId,
+      result.accessToken,
+      result.refreshToken
+    );
+
+    return res.json({
+      message: "Token refreshed",
+    });
+
+  } catch (err) {
+    return res.status(401).json({
+      message: err.message || "Refresh failed",
+    });
   }
 };
 

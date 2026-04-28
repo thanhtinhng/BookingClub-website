@@ -5,7 +5,8 @@ import {
   verifyEmail,
   resendVerificationEmail,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  refreshController
 } from "../controllers/auth.controller.js";
 import rateLimit from 'express-rate-limit';
 import auth from "../middlewares/auth.middleware.js";
@@ -23,6 +24,7 @@ import {
   createReviewSchema,
   updateReviewSchema,
 } from "../validators/review.validation.js";
+import cookieUtils from "../utils/cookie.js";
 
 const router = express.Router();
 
@@ -35,12 +37,13 @@ router.all("*", auth)
 
 router.post("/register", register);
 router.post("/login", limiter, login); //trong 1 phut chi request duoc 10 lan
+router.post("/refresh", cookieUtils.requireCsrf, refreshController);
 router.get("/verify-email", verifyEmail);
 router.post("/verify-email", verifyEmail);
 router.post("/resend-verification-email", resendVerificationEmail);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
-router.get("/me", getMe);
+router.post("/me", cookieUtils.requireCsrf, getMe);
 
 //review
 router.post("/reviews", validate(createReviewSchema), createReview);
