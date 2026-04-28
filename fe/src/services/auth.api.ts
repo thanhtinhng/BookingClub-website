@@ -1,4 +1,4 @@
-import axios from "./axios.customize";
+import axios from "../utils/axios.customize";
 
 //register
 const createUserApi = (
