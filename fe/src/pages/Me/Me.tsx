@@ -27,8 +27,9 @@ function Home() {
         const res = await getMeApi();
         setUser(res);
       } catch (error: any) {
-        alert("Hết phiên đăng nhập. Vui lòng đăng nhập lại");
-        navigate("/login");
+        if (error.response?.status === 401) {
+          alert("Hết phiên đăng nhập. Vui lòng đăng nhập lại");
+        }
       }
     };
 

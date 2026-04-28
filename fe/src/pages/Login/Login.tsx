@@ -40,8 +40,8 @@ const Login: React.FC = () => {
       try {
         const res = await loginApi(phone, password);
         console.log(">>> res:", res);
-        localStorage.setItem("access_token", res.access_token)
-
+        // localStorage.setItem("access_token", res.access_token)
+        console.log(document.cookie);
         alert("Đăng nhập thành công");
         navigate("/home");
       } catch (error: any) {

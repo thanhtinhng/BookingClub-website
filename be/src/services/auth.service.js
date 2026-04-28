@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { sendMail } from "./email.service.js";
+import { createAccessToken, createRefreshToken } from "../utils/jwt.js"
 
 const getApiBaseUrl = () => (process.env.API_BASE_URL || "http://localhost:5001").replace(/\/$/, "");
 const getClientUrl = () => (process.env.CLIENT_URL || "http://localhost:5173").replace(/\/$/, "");
@@ -107,28 +108,51 @@ export const loginService = async ({ phone, password }) => {
     throw new Error("Wrong email or password");
   }
 
-  //tao access token
-  const payload = {
-    id: user._id,
-    phone: user.phone,
-    email: user.email
-  }
-
-  const access_token = jwt.sign(
-    payload,
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_EXPIRE
-    }
-  )
+  //tao token
+  const access_token = createAccessToken(user);
+  const refresh_token = createRefreshToken(user);
 
   return {
     access_token,
+    refresh_token,
     user: {
+      id: user._id,
       phone: user.phone,
       email: user.email
     }
   }
+};
+
+export const refreshTokenService = async (refreshToken) => {
+  if (!refreshToken) {
+    throw new Error("No refresh token");
+  }
+
+  // verify refresh token
+  const decoded = jwt.verify(
+    refreshToken,
+    process.env.JWT_REFRESH_SECRET
+  );
+
+  if (decoded.type !== "refresh") {
+    throw new Error("Invalid refresh token type");
+  }
+
+  const user = await User.findById(decoded.id);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // tạo token mới
+  const newAccessToken = createAccessToken(user);
+  const newRefreshToken = createRefreshToken(user);
+
+  return {
+    userId: decoded.userId,
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+  };
 };
 
 export const verifyEmailService = async ({ token }) => {

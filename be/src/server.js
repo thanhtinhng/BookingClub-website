@@ -4,6 +4,7 @@ import express from 'express';
 import routes from './routes/route.js';
 import cors from 'cors';
 import sportComplexRouter from './routes/sport_complex.route.js';
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -11,10 +12,31 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 //config cors
-app.use(cors());
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(",") || [];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Cho phép request không có origin (Postman, curl)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      // Nếu nằm trong whitelist
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Nếu không hợp lệ → reject
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 
 console.log(process.env.MONGO_URI);
 connectDB();
+app.use(cookieParser());
 app.use(express.json());
 
 app.get('/', (req, res) => {
