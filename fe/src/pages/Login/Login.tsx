@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Image } from "lucide-react";
 import "./Login.css";
 import InputField from "../../components/layout/InputField/InputField";
-import { loginApi } from "../../utils/api";
+import { loginApi } from "../../services/auth.api";
 import { useNavigate } from "react-router-dom";
 
 

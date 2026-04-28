@@ -3,7 +3,7 @@ import { Image } from "lucide-react";
 import InputField from "../../components/layout/InputField/InputField";
 import "./Register.css";
 import "./Register.css";
-import { createUserApi } from "../../utils/api";
+import { createUserApi } from "../../services/auth.api";
 
 
 const Register: React.FC = () => {

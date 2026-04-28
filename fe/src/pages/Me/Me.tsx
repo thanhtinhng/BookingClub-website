@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getMeApi } from "../../utils/api";
+import { getMeApi } from "../../services/auth.api";
 
 interface User {
   _id: string;
