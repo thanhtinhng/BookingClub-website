@@ -10,6 +10,7 @@ import Review from "../models/review.model.js";
 import User from "../models/user.model.js";
 import Booking from "../models/booking.model.js";
 import BookingDetails from "../models/booking_details.model.js";
+import FieldTypeConfig from "../models/field_type_configs.model.js";
 dotenv.config();
 const importData = async () => {
     try{
@@ -25,13 +26,14 @@ const importData = async () => {
     await ImageField.deleteMany();
     await SportComplex.deleteMany();
     await User.deleteMany(); // Owner cũng nằm trong đây
-
+    await FieldTypeConfig.deleteMany();
     // 2. INSERT THEO THỨ TỰ
 
     // User + Owner (discriminator tự xử)
     await User.create(data.User);
 
     await SportComplex.create(data.SportComplex);
+    await FieldTypeConfig.create(data.FieldTypeConfig);
     await SubField.create(data.SubField);
     await ImageField.create(data.FieldImage);
     await PricingRule.create(data.PricingRule);
