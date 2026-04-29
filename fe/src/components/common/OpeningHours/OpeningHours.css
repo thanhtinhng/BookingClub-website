@@ -1,0 +1,55 @@
+.opening-hours-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #eee;
+  width: 100%;
+}
+
+.opening-hours-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #1a1a1a;
+}
+
+.opening-hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.3rem;
+}
+
+.opening-day-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #4b5563; 
+}
+
+.day-name {
+  font-weight: 500;
+}
+
+.day-time {
+  font-weight: 600;
+  color: #111827; 
+}
+
+.opening-day-item.active-today {
+  color: #059669; 
+  font-weight: 700; 
+  background-color: #ecfdf5;
+  padding: 4px 8px;
+  margin: 0 -8px; 
+  border-radius: 6px;
+}
+
+.opening-day-item.active-today .day-time {
+  color: #059669; 
+}
+
+.today-dot {
+  margin-left: 4px;
+  font-size: 14px;
+  color: #059669;
+}
