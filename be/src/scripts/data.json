@@ -151,7 +151,10 @@
       "_id": "65f1a2b3c4d5e6f7a8b90123" ,
       "owner_id": "65f1a1a1a1a1a1a1a1a1a1a1" ,
       "name": "Sân Mega Pickleball & Pong",
+      
       "address": "Số 1 Tân Mỹ, Tân Phú, Quận 7, TP.HCM",
+      "city": "TPHCM",
+      "district": "Quan 7",
       "location": {
         "type": "Point",
         "coordinates": [106.7123, 10.7289]
@@ -167,7 +170,10 @@
       "_id": "65f1a2b3c4d5e6f7a8b90124",
       "owner_id": "65f1a1a1a1a1a1a1a1a1a1a2",
       "name": "Sân Bóng Thăng Long",
+      
       "address": "Phan Thúc Duyện, Tân Bình, TP.HCM",
+      "city": "TPHCM",
+      "district": "Tan Binh",
       "location": {
         "type": "Point",
         "coordinates": [106.6634, 10.8012]
@@ -290,7 +296,7 @@
    {
     "_id": "65f1d1d1d1d1d1d1d1d1d101",
     "complex_id": "65f1a2b3c4d5e6f7a8b90123",
-    "field_type": "Football",
+    "field_type": "football",
     "base_price": 200000,
     "min_duration": 90,
     "slot_step": 30,
@@ -301,7 +307,7 @@
   {
     "_id": "65f1d1d1d1d1d1d1d1d1d102",
     "complex_id": "65f1a2b3c4d5e6f7a8b90123",
-    "field_type": "Badminton",
+    "field_type": "badminton",
     "base_price": 80000,
     "min_duration": 60,
     "slot_step": 30,
@@ -312,7 +318,7 @@
   {
     "_id": "65f1d1d1d1d1d1d1d1d1d103",
     "complex_id": "65f1a2b3c4d5e6f7a8b90124",
-    "field_type": "Tennis",
+    "field_type": "tennis",
     "base_price": 150000,
     "min_duration": 60,
     "slot_step": 30,
@@ -323,7 +329,7 @@
   {
     "_id": "65f1d1d1d1d1d1d1d1d1d104",
     "complex_id": "65f1a2b3c4d5e6f7a8b90124",
-    "field_type": "Basketball",
+    "field_type": "basketball",
     "base_price": 120000,
     "min_duration": 60,
     "slot_step": 30,
@@ -334,7 +340,7 @@
   {
     "_id": "65f1d1d1d1d1d1d1d1d1d105",
     "complex_id": "65f1a2b3c4d5e6f7a8b90123",
-    "field_type": "Volleyball",
+    "field_type": "volleyball",
     "base_price": 100000,
     "min_duration": 60,
     "slot_step": 30,
@@ -345,7 +351,7 @@
   {
   "_id": "65f1d1d1d1d1d1d1d1d1d106",
   "complex_id": "65f1a2b3c4d5e6f7a8b90123",
-  "field_type": "Pickleball",
+  "field_type": "pickleball",
   "base_price": 90000,
   "min_duration": 60,
   "slot_step": 30,

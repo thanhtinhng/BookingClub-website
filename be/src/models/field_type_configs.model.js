@@ -9,7 +9,7 @@ const fieldTypeConfigSchema = new mongoose.Schema({
     },
     field_type:{
         type: String,
-        enum: ["Badminton", "Football", "Tennis", "Basketball", "Volleyball", "Pickleball"],
+        enum: ["badminton", "football", "tennis", "basketball", "volleyball", "pickleball"],
         required: true
     },
     // GIÁ GỐC: Dùng để nhân với price_multiplier trong PricingRules

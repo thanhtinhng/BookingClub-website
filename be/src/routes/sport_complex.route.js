@@ -1,7 +1,7 @@
 import express from 'express';
-import { getSportComplexDetails } from '../controllers/sport_complex.controller.js';
+import { getSportComplexDetails, searchSportComplex } from '../controllers/sport_complex.controller.js';
 const sportComplexRouter = express.Router();
 
-sportComplexRouter.get('/:slug', getSportComplexDetails);
-
+sportComplexRouter.get('/detail/:slug', getSportComplexDetails);
+sportComplexRouter.get('/search', searchSportComplex);
 export default sportComplexRouter;
