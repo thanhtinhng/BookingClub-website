@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./BookingCard.css";
+import { useNavigate } from 'react-router-dom';
 
 // --- INTERFACES ---
 interface TimeSlot {
@@ -84,18 +85,14 @@ const BookingCard: React.FC<BookingCardProps> = ({
   onClearSelection 
 }) => {
 
-  // --- State giỏ hàng --- //
   const [cart, setCart] = useState<Record<string, CartItem>>({});
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const navigate = useNavigate(); 
 
-  // logic Đổi ngày là dọn sạch hóa đơn
   useEffect(() => {
-    //Đảm bảo 1 bill thanh toán chỉ dành cho 1 ngày duy nhất
     setCart({});
   }, [selectedDate]);
 
-  // Lấy dữ liệu của sân "đang được xem" trên màn hình
   const timeSlots: TimeSlot[] = courtId ? (mockTimeSlotsData[courtId] || []) : [];
   const currentActiveSlots = courtId ? (cart[courtId]?.slots || []) : [];
   const currentActiveServices = courtId ? (cart[courtId]?.services || []) : [];
@@ -139,7 +136,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
     }
   };
 
-  // --- TÍNH TỔNG TIỀN ---
   let globalTotalPrice = 0;
   let totalSelectedCourts = 0;
 
@@ -160,10 +156,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
     globalTotalPrice += (courtCost + servicesCost);
   });
 
-const handlePayment = async () => {
-    setIsSubmitting(true);
-    
-    // --- BƯỚC 1: LOGIC GOM NHÓM GIỜ ---
+const handlePayment = () => {
     const formattedBookingDetails: any[] = [];
 
     Object.keys(cart).forEach(courtId => {
@@ -172,32 +165,74 @@ const handlePayment = async () => {
 
       const sortedSlots = [...item.slots].sort();
 
+      // Khởi tạo block đầu tiên
       let currentBlock = {
         sub_field_id: courtId, 
+        courtName: item.courtName, // THÊM: Tên sân để hiển thị Checkout
         startTime: sortedSlots[0].split(' - ')[0],
         endTime: sortedSlots[0].split(' - ')[1],
-        services: item.services 
+        slotCount: 1 // Đếm số slot (30p) để tính tiền
       };
 
+      const courtBlocks = [];
+
+      // Logic gộp các giờ liền kề
       for (let i = 1; i < sortedSlots.length; i++) {
         const [nextStart, nextEnd] = sortedSlots[i].split(' - ');
         
         if (currentBlock.endTime === nextStart) {
           currentBlock.endTime = nextEnd;
+          currentBlock.slotCount++;
         } else {
-          formattedBookingDetails.push({ ...currentBlock });
+          courtBlocks.push({ ...currentBlock });
           currentBlock = {
             sub_field_id: courtId,
+            courtName: item.courtName,
             startTime: nextStart,
             endTime: nextEnd,
-            services: item.services 
+            slotCount: 1
           };
         }
       }
-      formattedBookingDetails.push(currentBlock);
+      courtBlocks.push(currentBlock);
+
+      // Map giá tiền và dịch vụ cho từng Block
+      courtBlocks.forEach((block, index) => {
+        const blockHours = block.slotCount * 0.5;
+        const blockPrice = blockHours * item.basePricePerHour;
+
+        let detailedServices: any[] = [];
+        
+        // Gắn dịch vụ vào tất cả các block
+        if (item.services.length > 0) {
+          detailedServices = item.services.map(sId => {
+            const s = availableServices.find(x => x.id === sId);
+            let sPrice = 0;
+
+            if (s) {
+              if (s.unit === 'hour') {
+                // Dịch vụ tính theo giờ (Trọng tài): Tính theo số giờ của riêng block này
+                sPrice = s.price * blockHours;
+              } else if (s.unit === 'flat') {
+                // Dịch vụ cố định (Thuê vợt): Chỉ tính tiền ở block đầu tiên, block sau giá 0đ
+                sPrice = index === 0 ? s.price : 0;
+              }
+            }
+            return { id: sId, name: s?.name || sId, price: sPrice }; 
+          });
+        }
+
+        formattedBookingDetails.push({
+          sub_field_id: block.sub_field_id,
+          courtName: block.courtName,
+          startTime: block.startTime,
+          endTime: block.endTime,
+          price: blockPrice,
+          services: detailedServices 
+        });
+      });
     });
 
-    // --- BƯỚC 2: ĐÓNG GÓI PAYLOAD ---
     const bookingPayload = {
       complex_id: complexId,         
       booking_date: selectedDate,    
@@ -205,18 +240,8 @@ const handlePayment = async () => {
       booking_details: formattedBookingDetails, 
     };
 
-    console.log("Payload:", JSON.stringify(bookingPayload, null, 2));
-//Đợi tạm thời 1.5s
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500)); 
-      alert(`Đã đặt thành công ${totalSelectedCourts} sân ngày ${selectedDate}!`);
-      setCart({}); 
-      onClearSelection();
-    } catch (error) {
-      console.error("Payment error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    sessionStorage.setItem('pendingBooking', JSON.stringify(bookingPayload)); 
+    navigate('/checkout'); 
   };
 
   return (
@@ -235,7 +260,7 @@ const handlePayment = async () => {
 
           <hr className="booking-divider" />
 
-          {/* CHỌN NGÀY */}
+          
           <div className="booking-section">
             <div className="date-picker-wrapper">
               <label className="booking-section-title" style={{marginBottom: 0}}>Ngày chơi:</label>
@@ -245,14 +270,13 @@ const handlePayment = async () => {
                 value={selectedDate} 
                 onChange={(e) => setSelectedDate(e.target.value)} 
                 min={new Date().toISOString().split('T')[0]} 
-                disabled={isSubmitting}
               />
             </div>
           </div>
 
           <hr className="booking-divider" />
 
-          {/* CHỌN GIỜ */}
+          
           <div className="booking-section">
             <h4 className="booking-section-title">Chọn khung giờ chi tiết</h4>
             <div className="time-pill-grid">
@@ -264,7 +288,7 @@ const handlePayment = async () => {
                     type="button"
                     className={`time-pill ${isSelected ? "active" : ""} ${slot.isOccupied ? "occupied" : ""}`}
                     onClick={() => handleToggleSlot(slot.time, slot.isOccupied)}
-                    disabled={isSubmitting || slot.isOccupied} 
+                    disabled={slot.isOccupied} 
                   >
                     {slot.time}
                   </button>
@@ -275,7 +299,7 @@ const handlePayment = async () => {
 
           <hr className="booking-divider" />
 
-          {/* DỊCH VỤ */}
+          
           {availableServices.length > 0 && (
             <div className="booking-section">
               <h4 className="booking-section-title">Dịch vụ tiện ích</h4>
@@ -292,7 +316,7 @@ const handlePayment = async () => {
                       type="checkbox" 
                       checked={currentActiveServices.includes(service.id)} 
                       onChange={() => handleToggleService(service.id)} 
-                      disabled={isSubmitting || currentActiveSlots.length === 0} 
+                      disabled={currentActiveSlots.length === 0} 
                     />
                     <span className="toggle-slider"></span>
                   </label>
@@ -308,7 +332,7 @@ const handlePayment = async () => {
         </div>
       )}
 
-      {/* HÓA ĐƠN MINI-CART */}
+      
       {totalSelectedCourts > 0 && (
         <div className="booking-footer-box">
           <h4 className="mini-cart-title">Hóa đơn ngày {selectedDate.split('-').reverse().join('/')}</h4>
@@ -344,8 +368,8 @@ const handlePayment = async () => {
             <span className="total-amount">{globalTotalPrice.toLocaleString("vi-VN")}đ</span>
           </div>
           
-          <button className="booking-pay-btn" onClick={handlePayment} disabled={isSubmitting}>
-            {isSubmitting ? "Đang xử lý..." : "Thanh toán ngay"}
+          <button className="booking-pay-btn" onClick={handlePayment}>
+             Thanh toán ngay
           </button>
         </div>
       )}
