@@ -4,6 +4,8 @@ import Login from "../pages/Login/Login.tsx"
 import Register from "../pages/Register/Register"
 import Me from "../pages/Me/Me"
 import CourtDetailGalleryDemo from "../pages/CourtDetail/CourtDetailGalleryDemo"
+import BookingTest from "../pages/BookingForm/BookingTest.tsx"
+import CheckoutPage from "../pages/CheckoutPage/CheckoutPage.tsx" 
 
 function AppRoutes() {
   return (
@@ -13,6 +15,8 @@ function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/me" element={<Me />} />
       <Route path="/court-detail-demo" element={<CourtDetailGalleryDemo />} />
+      <Route path="/BookingTest" element={<BookingTest />} />
+      <Route path="/checkout" element={<CheckoutPage/>} />
     </Routes>
   )
 }
