@@ -36,9 +36,9 @@ export const register = async (req, res) => {
       ...(isProduction
         ? {}
         : {
-            verificationToken: result.verificationToken,
-            verificationLink: result.verificationLink
-          })
+          verificationToken: result.verificationToken,
+          verificationLink: result.verificationLink
+        })
     });
 
   } catch (err) {
@@ -58,6 +58,19 @@ export const login = async (req, res) => {
       id: rs.user.id,
       phone: rs.user.phone,
       email: rs.user.email
+    });
+
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    cookieUtils.clearAuthCookies(res);
+
+    return res.json({
+      message: "logout success",
     });
 
   } catch (err) {
