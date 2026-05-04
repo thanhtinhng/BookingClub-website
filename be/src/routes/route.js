@@ -6,7 +6,8 @@ import {
   resendVerificationEmail,
   forgotPassword,
   resetPassword,
-  refreshController
+  refreshController,
+  logout
 } from "../controllers/auth.controller.js";
 import rateLimit from 'express-rate-limit';
 import auth from "../middlewares/auth.middleware.js";
@@ -38,6 +39,7 @@ router.all("*", auth)
 router.post("/register", register);
 router.post("/login", limiter, login); //trong 1 phut chi request duoc 10 lan
 router.post("/refresh", cookieUtils.requireCsrf, refreshController);
+router.post("/logout",cookieUtils.requireCsrf, logout);
 router.get("/verify-email", verifyEmail);
 router.post("/verify-email", verifyEmail);
 router.post("/resend-verification-email", resendVerificationEmail);

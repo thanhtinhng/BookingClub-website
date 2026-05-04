@@ -1,9 +1,11 @@
 import crypto from "node:crypto";
-
+import dotenv from 'dotenv';
 
 const ACCESS_COOKIE = "access_token";
 const REFRESH_COOKIE = "refresh_token";
 const CSRF_COOKIE = "csrf_token";
+
+dotenv.config();
 
 const COOKIE_SECURE = process.env.COOKIE_SECURE === "true";
 
@@ -42,7 +44,7 @@ const createCsrfToken = () => {
 const setAuthCookies = (res, userId, accessToken, refreshToken) => {
   const csrfToken = createCsrfToken();
 
-  const accessMaxAge = 15 * 60 * 1000;
+  const accessMaxAge = 45 * 60 * 1000;
   const refreshMaxAge = 7 * 24 * 60 * 60 * 1000;
 
   res.cookie(ACCESS_COOKIE, accessToken, createCookieOptions(accessMaxAge));

@@ -1,0 +1,188 @@
+/* Layout Tổng */
+.checkout-wrapper {
+  min-height: 100vh;
+  background-color: #ffffff;
+  padding: 40px;
+  font-family: 'Inter', sans-serif; 
+}
+
+.checkout-header {
+  max-width: 1100px;
+  margin: 0 auto 20px auto;
+}
+
+.checkout-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  gap: 40px;
+  align-items: stretch;
+}
+
+/* === Cột Trái === */
+.checkout-left {
+  flex: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.user-info-box {
+  background-color: #d9d9d9; /* Màu xám */
+  border: 3px solid #3b82f6; /* Viền xanh */
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.info-label {
+  width: 200px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #000;
+}
+
+.info-value {
+  font-weight: 600;
+  font-size: 15px;
+  color: #000;
+}
+
+/* Bảng Chi tiết đơn */
+.details-table-wrapper {
+  padding: 0 16px;
+}
+
+.details-table-header {
+  display: flex;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.details-table-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.table-row {
+  display: flex;
+  font-size: 15px;
+  align-items: center;
+}
+
+.col-item { flex: 2; text-transform: uppercase; }
+.col-info { flex: 2; text-align: left; }
+.col-price { flex: 1; text-align: right; }
+
+.fw-bold { font-weight: 700; }
+
+.details-divider {
+  border-top: 1px solid #000;
+  margin: 24px 0;
+}
+
+.details-total-row {
+  display: flex;
+  font-size: 16px;
+  align-items: center;
+}
+
+/* === Cột Phải === */
+.checkout-right {
+  flex: 4;
+  background-color: #d9d9d9;
+  border-radius: 4px;
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.timer-text {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.timer-countdown {
+  font-size: 24px;
+  font-weight: 800;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+.qr-box {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 32px;
+}
+
+.qr-box img {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+}
+
+.bank-info-box {
+  width: 100%;
+}
+
+.bank-label {
+  font-size: 13px;
+  color: #4b5563;
+  margin: 0;
+}
+
+.bank-value {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 4px 0 0 0;
+}
+
+.mt-3 { margin-top: 16px; }
+
+.total-amount-box {
+  font-size: 24px;
+  font-weight: 800;
+  margin-top: 40px;
+}
+
+.confirm-payment-btn {
+  margin-top: 32px;
+  width: 100%;
+  padding: 16px;
+  background-color: #1e3a5f;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.confirm-payment-btn:hover {
+  opacity: 0.9;
+}
+
+.confirm-payment-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .checkout-container {
+    flex-direction: column;
+  }
+}
