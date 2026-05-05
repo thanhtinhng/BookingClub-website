@@ -7,7 +7,7 @@ import cors from 'cors';
 import sportComplexRouter from './routes/sport_complex.route.js';
 import cookieParser from "cookie-parser";
 import { cancelExpiredBookings } from './services/payment.service.js';
-
+import subFieldRouter from './routes/subfield.route.js';
 dotenv.config();
 
 const app = express();
@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1', routes);
 app.use('/api/v1', paymentRouter);
 app.use('/api/v1/sportcomplex', sportComplexRouter);
-
+app.use('/api/v1/subfield', subFieldRouter);
 
 
 app.listen(PORT, () => {
