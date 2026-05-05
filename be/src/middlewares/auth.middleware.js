@@ -17,6 +17,8 @@ const publicRoutes = [
 
     { method: "GET", path: "/api/v1/sportcomplex" },
     { method: "GET", path: "/api/v1/sportcomplex/" }, // để match /sportcomplex/:slug
+
+    { method: "GET", path: "/api/v1/payments/vnpay/return" },
 ];
 
 const isPublicRoute = (req) => {

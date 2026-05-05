@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bookingModel from "./booking.model";
+// import bookingModel from "./booking.model";
 import { Decimal128 } from "bson";
 
 const paymentSchema = new mongoose.Schema({
@@ -21,8 +21,13 @@ const paymentSchema = new mongoose.Schema({
     vnpay_details: {
         vnp_TxnRef: String,        // Mã đơn hàng của bạn
         vnp_TransactionNo: String, // Mã giao dịch của VNPAY
+        vnp_CardType: String,
         vnp_BankCode: String,      // Ngân hàng khách sử dụng
-        vnp_PayDate: String        // Thời gian giao dịch thành công
+        vnp_PayDate: String,       // Thời gian giao dịch thành công
+        vnp_TransactionStatus: String,
+        vnp_ResponseCode: String,
+        vnpayMessages: String
+
     },
     transaction_date: {
         type: Date,
@@ -30,8 +35,14 @@ const paymentSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["Pending", "Completed", "Failed"],
+        enum: ["Pending", "Completed", "Failed", "Expired"],
         default: "Pending"
+    },
+    expired_at: {
+        type: Date,
+        required: false,
+        default: null,
+        index: true,
     }
 },
     {
