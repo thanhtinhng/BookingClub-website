@@ -103,7 +103,38 @@
   font-size: 15px;
   color: #374151;
   font-weight: 700;
-  margin: 0 0 16px 0;
+}
+
+.booking-section-title.time {
+  margin-bottom: 16px;
+}
+
+.booking-section-title.start-time,
+.booking-section-title.end-time {
+  font-size: 14px;
+}
+
+.error-msg {
+  color: #d9534f;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* Khung chứa giới hạn 6 dòng */
+.time-grid-scroll-container {
+  max-height: 250px; 
+  overflow-y: auto; 
+  padding-right: 8px; 
+  margin-bottom: 10px;
+}
+
+/* Tùy chỉnh thanh cuộn */
+.time-grid-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+.time-grid-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 10px;
 }
 
 /* ===== Ma trận Pill UI Chọn Giờ ===== */
@@ -137,6 +168,45 @@
   border-color: #3d5a80;
 }
 
+.booking-field-value {
+  flex: 1;
+  text-align: right;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+/* Dropdown thời gian */
+.time-picker-row {
+  display: flex;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.time-select-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* Style cho thẻ select giống ảnh mẫu */
+.time-select-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #374151;
+  background-color: #ffffff;
+  outline: none;
+  cursor: pointer;
+}
+
+.time-select-input:focus {
+  border-color: #3d5a80;
+}
+
 /* --- Tách inline CSS --- */
 .booking-complex-name {
   font-size: 11px;
@@ -159,15 +229,18 @@
   color: #6b7280; font-size: 14px; margin: 0;
 }
 
-/* --- Date Picker --- */
-.date-picker-wrapper {
+/* --- Chọn ngày & Giờ --- */
+.date-picker-wrapper,
+.sub-field-picker-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  margin-bottom: 16px;
 }
 
-.date-picker-input {
+.date-picker-input,
+.sub-field-picker-input {
   flex: 1;
   padding: 8px 12px;
   border: 1px solid #d1d5db;
@@ -178,6 +251,7 @@
   cursor: pointer;
   outline: none;
   transition: all 0.2s;
+  max-width: 200px;
 }
 
 .date-picker-input:focus {
@@ -213,6 +287,19 @@
   border-radius: 8px;
   padding: 12px;
   position: relative;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.mini-cart-item:hover {
+  border-color: #3d5a80;
+  transform: translateY(-2px);
+  background-color: #f8fafc;
+}
+
+.mini-cart-item.is-editing {
+  border: 2px solid #3d5a80;
+  background-color: #eff6ff;
 }
 
 .mini-cart-item-header {
@@ -248,10 +335,37 @@
   color: white;
 }
 
-.mini-cart-item-details {
+.mini-cart-item-details {  
   font-size: 13px;
   color: #4b5563;
   line-height: 1.5;
+}
+
+.mini-cart-item-details .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; 
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.mini-cart-item-details .info-label {
+  font-weight: 600; 
+  color: #4b5563;
+  font-size: 13px;
+  width: 60%;
+}
+
+.mini-cart-item-details .info-value {
+  text-align: right;
+  color: #1f2937;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.mini-cart-item-details .price-highlight {
+  font-weight: 600;
+  color: #e44d26;
 }
 
 /* ===== Các hàng Dịch vụ & Toggle ===== */
@@ -312,13 +426,14 @@
 }
 
 .total-price-row {
-  display: flex;
+  display:contents;
   justify-content: space-between;
   align-items: flex-end;
 }
 
 .total-label { font-size: 15px; color: #4b5563; font-weight: 600; }
 .total-amount { font-size: 22px; color: #1e3a5f; font-weight: 800; }
+.total-note { font-size: 12px; color: #ef4444; margin-bottom: 16px;}
 
 .booking-pay-btn {
   width: 100%;
