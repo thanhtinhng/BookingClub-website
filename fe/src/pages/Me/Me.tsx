@@ -1,40 +1,31 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getMeApi } from "../../services/auth.api";
-
-interface User {
-  _id: string;
-  email: string;
-  phone: string;
-  name: string;
-}
+import { useAuth } from "../../contexts/authContext";
+import { logoutApi } from "../../services/auth.api";
+import { useNavigate } from "react-router";
 
 function Home() {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, setUser, loading  } = useAuth();
+  console.log("User in Home:", user);
+  console.log("Loading in Home:", loading);
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
+  if (loading) return <p>Loading...</p>;
 
-    if (!token) {
-      alert("Bạn chưa đăng nhập");
-      navigate("/login");
-      return;
-    }
+   if (!user) return <p>Not logged in</p>;
 
-    const fetchUser = async () => {
-      try {
-        const res = await getMeApi();
-        setUser(res);
-      } catch (error: any) {
-        if (error.response?.status === 401) {
-          alert("Hết phiên đăng nhập. Vui lòng đăng nhập lại");
-        }
-      }
-    };
+const handleLogout = async () => {
+  // Implementation for logout
+  try{
+    await logoutApi();
+    setUser(null);
+    alert("Đăng xuất thành công");
+    navigate("/login");
+  }catch(error) {
+    console.error("Logout failed:", error);
+    setUser(null); // Dù logout thất bại, vẫn setUser về null để cập nhật UI
+  }
 
-    fetchUser();
-  }, []);
+};
 
   return (
     <div>
@@ -49,6 +40,12 @@ function Home() {
       ) : (
         <p>Loading...</p>
       )}
+      <button 
+      onClick={handleLogout}
+      style={{ padding: '8px 16px', backgroundColor: '#ff4d4f', color: '#fff', border: 'none', cursor: 'pointer' }}
+    >
+      Đăng xuất
+    </button>
     </div>
   );
 }

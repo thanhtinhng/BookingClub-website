@@ -4,12 +4,13 @@ import "./Login.css";
 import InputField from "../../components/layout/InputField/InputField";
 import { loginApi } from "../../services/auth.api";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
 
 
 const Login: React.FC = () => {
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+  const {fetchMe} = useAuth();
   const navigate = useNavigate();
 
   // State lưu thông báo lỗi
@@ -42,8 +43,13 @@ const Login: React.FC = () => {
         console.log(">>> res:", res);
         // localStorage.setItem("access_token", res.access_token)
         console.log(document.cookie);
-        alert("Đăng nhập thành công");
+        if(res)
+        {
+          await fetchMe();
+          alert("Đăng nhập thành công");
         navigate("/home");
+        }
+        
       } catch (error: any) {
         console.log(">>> error: ", error);
 

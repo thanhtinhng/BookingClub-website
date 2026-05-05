@@ -38,14 +38,25 @@ interface User {
   email: string;
   phone: string;
   name: string;
+  role: string;
 }
 
 const getMeApi = (): Promise<User> => {
   return axios.post("/api/v1/me");
 };
 
+interface LogoutResponse {
+  message: string;
+}
+
+const logoutApi = (): Promise<LogoutResponse> => {
+  localStorage.removeItem("isLoggedIn");
+  return axios.post("/api/v1/logout");
+};
+
 export {
   createUserApi,
   loginApi,
-  getMeApi
-}
+  getMeApi,
+  logoutApi
+};
