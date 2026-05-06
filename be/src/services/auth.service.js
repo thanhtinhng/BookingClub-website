@@ -24,7 +24,7 @@ const mapUser = (user) => ({
   created_at: user.created_at
 });
 
-const buildVerificationLink = (token) => `${getApiBaseUrl()}/api/verify-email?token=${token}`;
+const buildVerificationLink = (token) => `${getApiBaseUrl()}/api/v1/verify-email?token=${token}`;
 const buildResetLink = (token) => `${getClientUrl()}/reset-password?token=${token}`;
 
 const sendVerificationEmail = async ({ email, phone, token }) => {
