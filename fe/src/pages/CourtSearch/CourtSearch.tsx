@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "../../components/common/SearchBar/SearchBar";
 import CourtSearchCard from "../../components/common/CourtSearchCard/CourtSearchCard";
 import Pagination from "../../components/common/Pagination/Pagination";
+import axios from "../../utils/axios.customize";
 import "./CourtSearch.css";
 
 interface CourtItem {
@@ -13,34 +14,73 @@ interface CourtItem {
   images: string[];
 }
 
-const MOCK_DATA: CourtItem[] = Array.from({ length: 36 }).map((_, i) => ({
-  id: `C${i + 1}`,
-  name: `Sân Thứ ${i + 1}`,
-  address: i % 3 === 0 ? "Quận 1, TP.HCM" : i % 3 === 1 ? "Quận 3, TP.HCM" : "Thủ Đức, TP.HCM",
-  priceRange: "100.000đ - 300.000đ",
-  rating: Math.round((4 + Math.random()) * 10) / 10,
-  images: ["https://picsum.photos/400/300?random=" + i],
-}));
+interface SearchResponse {
+  sportComplexes: CourtItem[];
+  pagination: {
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+    limit: number;
+  };
+}
 
 function CourtSearch() {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<CourtItem[]>([]);
   const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [totalPages, setTotalPages] = useState(0);
   const pageSize = 9;
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return MOCK_DATA;
-    return MOCK_DATA.filter((c) => c.name.toLowerCase().includes(q) || c.address.toLowerCase().includes(q));
-  }, [query]);
+  const handleSearch = async (keyword: string) => {
+    setIsLoading(true);
+    setError(null);
+    setPage(1);
 
-  const total = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    try {
+      const response = await axios.get<SearchResponse>('/api/v1/sportcomplex/search', {
+        params: {
+          keyword: keyword.trim(),
+          page: 1,
+          limit: pageSize
+        }
+      });
 
-  useEffect(() => {
-    if (page > totalPages) setPage(1);
-  }, [totalPages]);
+      setResults(response.data.sportComplexes);
+      setTotalPages(response.data.pagination.totalPages);
+    } catch (err: any) {
+      console.error('Search failed:', err);
+      setError(err.response?.data?.message || 'Tìm kiếm thất bại. Vui lòng thử lại.');
+      setResults([]);
+      setTotalPages(0);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const handlePageChange = async (newPage: number) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get<SearchResponse>('/api/v1/sportcomplex/search', {
+        params: {
+          keyword: query.trim(),
+          page: newPage,
+          limit: pageSize
+        }
+      });
+
+      setResults(response.data.sportComplexes);
+      setPage(newPage);
+    } catch (err: any) {
+      console.error('Page change failed:', err);
+      setError('Tải trang thất bại. Vui lòng thử lại.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="court-search-page">
@@ -49,17 +89,48 @@ function CourtSearch() {
         <p>Tìm sân theo tên hoặc vị trí</p>
       </header>
 
-      <SearchBar value={query} onChange={(v) => { setQuery(v); setPage(1); }} />
+      <SearchBar 
+        value={query} 
+        onChange={(v) => setQuery(v)}
+        onSearch={handleSearch}
+        isLoading={isLoading}
+      />
 
-      <section className="results">
-        <div className="results-grid">
-          {pageItems.map((c) => (
-            <CourtSearchCard key={c.id} court={c} />
-          ))}
+      {error && (
+        <div className="error-message" style={{ padding: '20px', color: '#dc2626', textAlign: 'center' }}>
+          {error}
         </div>
+      )}
 
-        <Pagination page={page} totalPages={totalPages} onChange={setPage} />
-      </section>
+      {isLoading && !results.length && (
+        <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+          Đang tìm kiếm...
+        </div>
+      )}
+
+      {!isLoading && results.length === 0 && !error && query && (
+        <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+          Không tìm thấy sân nào phù hợp
+        </div>
+      )}
+
+      {results.length > 0 && (
+        <section className="results">
+          <div className="results-grid">
+            {results.map((c) => (
+              <CourtSearchCard key={c.id} court={c} />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination 
+              page={page} 
+              totalPages={totalPages} 
+              onChange={handlePageChange} 
+            />
+          )}
+        </section>
+      )}
     </main>
   );
 }
