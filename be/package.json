@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "nodemon --dns-result-order=ipv4first src/server.js",
     "start": "node src/server.js",
-    "import": "node src/scripts/seeder.js"
+    "import": "node src/scripts/seeder.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -20,6 +21,7 @@
     "vnpay": "^2.5.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "jest": "^29.6.4"
   }
 }
