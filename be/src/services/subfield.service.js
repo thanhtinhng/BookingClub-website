@@ -3,7 +3,7 @@ import FieldTypeConfig from "../models/field_type_configs.model.js";
 import PricingRule from "../models/pricing_rule.model.js";
 import dayjs from "dayjs";
 
-const CalculatePrice = async (subField_id, bookingDate, startTime, endTime) => { 
+const CalculatePrice = async (subField_id, playDate, startTime, endTime) => { 
     const subField = await SubField.findById(subField_id);
     if (!subField) throw new Error("Sub-field not found");
 
@@ -13,7 +13,7 @@ const CalculatePrice = async (subField_id, bookingDate, startTime, endTime) => {
     const basePrice = fieldTypeConfig.base_price;
     let finalPrice = basePrice;
 
-    const dayName = dayjs(bookingDate).format('dddd');
+    const dayName = dayjs(playDate).format('dddd');
 
     // convert time → minutes
     const toMinutes = (time) => {

@@ -29,4 +29,14 @@ const bookingDetailsSchema = new mongoose.Schema({
     }
 });
 
+bookingDetailsSchema.index(
+  {
+    sub_field_id: 1,
+    play_date: 1,
+    start_time: 1,
+    end_time: 1,
+  },
+  { unique: true }
+);
+
 export default mongoose.model("BookingDetails", bookingDetailsSchema);
