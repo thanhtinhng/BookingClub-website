@@ -9,6 +9,7 @@ function Navbar() {
       <Link to="/me">Me</Link>
       <Link to="/court-detail-demo">Court Detail</Link>
       <Link to="/BookingTest"> BookingTest</Link>
+      <Link to="/ProfilePage"> ProfilePage</Link>
     </nav>
   )
 }

@@ -6,6 +6,7 @@ import Me from "../pages/Me/Me"
 import CourtDetailGalleryDemo from "../pages/CourtDetail/CourtDetailGalleryDemo"
 import BookingTest from "../pages/BookingForm/BookingTest.tsx"
 import CheckoutPage from "../pages/CheckoutPage/CheckoutPage.tsx" 
+import ProfilePage from "../pages/Profile/ProfilePage.tsx"
 
 function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ function AppRoutes() {
       <Route path="/court-detail-demo" element={<CourtDetailGalleryDemo />} />
       <Route path="/BookingTest" element={<BookingTest />} />
       <Route path="/checkout" element={<CheckoutPage/>} />
+      <Route path="/ProfilePage" element={<ProfilePage/>} />
     </Routes>
   )
 }

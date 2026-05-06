@@ -1,0 +1,240 @@
+/* Tổng quan */
+.profile-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+
+.profile-container {
+  width: 100%;
+  max-width: 800px;
+  background-color: #aeb4be; 
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #788599;
+}
+
+.profile-header h2 {
+  margin: 0;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.btn-update-mode {
+  background-color: #1e3a5f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-update-mode:hover {
+  opacity: 0.8;
+}
+
+/* Table Layout (Grid) */
+.profile-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-row {
+  display: flex;
+  border-bottom: 1px solid #788599;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+/* Cột Label (Trái) */
+.profile-col-label {
+  flex: 3;
+  padding: 24px;
+  font-weight: 700;
+  color: white;
+  border-right: 1px solid #788599;
+  display: flex;
+  align-items: center;
+}
+
+/* Cột Value (Phải) */
+.profile-col-value {
+  flex: 7;
+  padding: 24px;
+  background-color: #b5bbc6; 
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.read-only-text {
+  font-weight: 600;
+  color: #3d5a80;
+  font-size: 16px;
+}
+
+.email-text {
+  text-decoration: underline;
+}
+
+/* Inputs khi chỉnh sửa */
+.edit-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: inherit;
+  background-color: white;
+  color: #1e3a5f;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #3d5a80;
+}
+
+.small-input {
+  margin-top: 6px;
+  padding: 8px;
+}
+
+/* Avatar Section */
+.avatar-col {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.avatar-circle {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  border: 2px solid #5a6b8a;
+}
+
+.avatar-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-upload {
+  background-color: white;
+  color: #3d5a80;
+  border: 1px solid white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-delete {
+  background-color: #5a6b8a;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Personalization Section */
+.personal-col {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.personal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.personal-info {
+  display: flex;
+  flex-direction: column;
+  color: #4b5563;
+  width: 100%;
+}
+
+.personal-info strong {
+  color: #3d5a80;
+  margin-bottom: 4px;
+}
+
+.corner-edit-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 18px;
+  opacity: 0.5;
+}
+
+/* Footer Actions */
+.profile-footer {
+  display: flex;
+  background-color: #f3f4f6; /* Nền xám nhạt cho footer */
+}
+
+.btn-cancel-action,
+.btn-save-action {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-cancel-action {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.btn-cancel-action:hover {
+  background-color: #e5e7eb;
+}
+
+.btn-save-action {
+  background-color: #5a6b8a; /* Màu nút xanh xám */
+  color: white;
+}
+
+.btn-save-action:hover {
+  background-color: #485773;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .profile-row {
+    flex-direction: column;
+  }
+  .profile-col-label {
+    border-right: none;
+    border-bottom: 1px solid #788599;
+    padding: 12px 24px;
+  }
+}

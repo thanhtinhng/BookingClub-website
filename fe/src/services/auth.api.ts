@@ -54,9 +54,19 @@ const logoutApi = (): Promise<LogoutResponse> => {
   return axios.post("/api/v1/logout");
 };
 
+// Thêm hàm này vào để gọi BE update
+const updateProfileApi = (data: FormData) => {
+  return axios.put("/api/v1/update-profile", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
 export {
   createUserApi,
   loginApi,
   getMeApi,
-  logoutApi
+  logoutApi,
+  updateProfileApi 
 };
