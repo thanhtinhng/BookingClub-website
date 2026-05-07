@@ -11,7 +11,7 @@ import {
 } from "../controllers/auth.controller.js";
 import rateLimit from 'express-rate-limit';
 import auth from "../middlewares/auth.middleware.js";
-import { getMe } from "../controllers/user.controller.js";
+import { getMe, updateMe, updatePassword } from "../controllers/user.controller.js";
 import {
   createReview,
   getReviews,
@@ -46,7 +46,8 @@ router.post("/resend-verification-email", resendVerificationEmail);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.post("/me", cookieUtils.requireCsrf, getMe);
-
+router.put("/me/update", cookieUtils.requireCsrf, updateMe);
+router.patch("/me/update-password", cookieUtils.requireCsrf, updatePassword);
 //review
 router.post("/reviews", validate(createReviewSchema), createReview);
 router.get("/reviews", getReviews);

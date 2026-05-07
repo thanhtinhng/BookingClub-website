@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
     unique: true,
     sparse: true
   },
+  date_of_birth: {
+    type: Date,
+    default: null
+  },
   email_verified: {
     type: Boolean,
     default: false

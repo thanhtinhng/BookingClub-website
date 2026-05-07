@@ -7,7 +7,10 @@ interface User{
     email: string,
     phone: string,
     name: string,
-    role: string
+    status: string;
+    role: string;
+    avatar_url: string;
+    date_of_birth: Date;
 }
 
 interface AuthContextType {
