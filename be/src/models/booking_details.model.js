@@ -15,6 +15,10 @@ const bookingDetailsSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    price:{
+        type: Number,
+        required: true
+    },
     start_time:{
         type: String,
         required: true

@@ -137,7 +137,7 @@ const getSportComplexDetailsService = async (slug) => {
   ]);
 
   if (!result.length) throw new Error("Sport complex not found");
-
+  
   return result[0];
 };
 
