@@ -24,8 +24,20 @@ interface SearchResponse {
   };
 }
 
+interface SearchParams {
+  keyword: string;
+  city: string;
+  district: string;
+  fieldTypes: string;
+}
+
 function CourtSearch() {
-  const [query, setQuery] = useState("");
+  const [searchParams, setSearchParams] = useState<SearchParams>({
+    keyword: "",
+    city: "",
+    district: "",
+    fieldTypes: ""
+  });
   const [results, setResults] = useState<CourtItem[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,22 +45,29 @@ function CourtSearch() {
   const [totalPages, setTotalPages] = useState(0);
   const pageSize = 9;
 
-  const handleSearch = async (keyword: string) => {
+  useEffect(() => {
+    void fetchCourts(searchParams, 1);
+  }, []);
+
+  const fetchCourts = async (params: SearchParams, targetPage: number) => {
     setIsLoading(true);
     setError(null);
-    setPage(1);
 
     try {
       const response = await axios.get<SearchResponse>('/api/v1/sportcomplex/search', {
         params: {
-          keyword: keyword.trim(),
-          page: 1,
+          keyword: params.keyword.trim(),
+          city: params.city.trim(),
+          district: params.district.trim(),
+          fieldTypes: params.fieldTypes.trim(),
+          page: targetPage,
           limit: pageSize
         }
       });
 
       setResults(response.data.sportComplexes);
       setTotalPages(response.data.pagination.totalPages);
+      setPage(targetPage);
     } catch (err: any) {
       console.error('Search failed:', err);
       setError(err.response?.data?.message || 'Tìm kiếm thất bại. Vui lòng thử lại.');
@@ -59,27 +78,12 @@ function CourtSearch() {
     }
   };
 
+  const handleSearch = async () => {
+    await fetchCourts(searchParams, 1);
+  };
+
   const handlePageChange = async (newPage: number) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await axios.get<SearchResponse>('/api/v1/sportcomplex/search', {
-        params: {
-          keyword: query.trim(),
-          page: newPage,
-          limit: pageSize
-        }
-      });
-
-      setResults(response.data.sportComplexes);
-      setPage(newPage);
-    } catch (err: any) {
-      console.error('Page change failed:', err);
-      setError('Tải trang thất bại. Vui lòng thử lại.');
-    } finally {
-      setIsLoading(false);
-    }
+    await fetchCourts(searchParams, newPage);
   };
 
   return (
@@ -90,8 +94,14 @@ function CourtSearch() {
       </header>
 
       <SearchBar 
-        value={query} 
-        onChange={(v) => setQuery(v)}
+        keyword={searchParams.keyword}
+        city={searchParams.city}
+        district={searchParams.district}
+        fieldTypes={searchParams.fieldTypes}
+        onKeywordChange={(value) => setSearchParams((prev) => ({ ...prev, keyword: value }))}
+        onCityChange={(value) => setSearchParams((prev) => ({ ...prev, city: value }))}
+        onDistrictChange={(value) => setSearchParams((prev) => ({ ...prev, district: value }))}
+        onFieldTypesChange={(value) => setSearchParams((prev) => ({ ...prev, fieldTypes: value }))}
         onSearch={handleSearch}
         isLoading={isLoading}
       />
@@ -108,7 +118,7 @@ function CourtSearch() {
         </div>
       )}
 
-      {!isLoading && results.length === 0 && !error && query && (
+      {!isLoading && results.length === 0 && !error && Object.values(searchParams).some((value) => value.trim()) && (
         <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
           Không tìm thấy sân nào phù hợp
         </div>

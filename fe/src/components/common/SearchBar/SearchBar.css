@@ -1,15 +1,28 @@
 .searchbar-wrapper {
   display: flex;
-  gap: 8px;
-  align-items: center;
+  gap: 12px;
+  align-items: flex-end;
   margin: 12px 0 8px 0;
+  flex-wrap: wrap;
+}
+
+.searchbar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  flex: 1;
 }
 .searchbar-input {
-  flex: 1;
   padding: 10px 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
+  background: #fff;
+  min-width: 0;
+}
+
+.searchbar-select {
+  cursor: pointer;
 }
 .searchbar-button {
   padding: 10px 14px;
@@ -20,3 +33,19 @@
   cursor: pointer;
 }
 .searchbar-button:hover { background: #0063d1 }
+
+@media (max-width: 900px) {
+  .searchbar-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .searchbar-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .searchbar-grid {
+    grid-template-columns: 1fr;
+  }
+}
