@@ -1,14 +1,15 @@
 import React, { createContext, useEffect } from "react";
-import { getMeApi } from "../services/auth.api";
+// import { getMeApi } from "../services/auth.api";
 
 export interface User {
     _id: string;
     email: string;
     phone: string;
     name: string;
+    status: string; 
     role: string;
-    avatar?: string;
-    dob?: string;
+    avatar_url: string; // Đổi từ avatar
+    date_of_birth: string | Date; // Đổi từ dob
     location?: string;
     sportLevel?: string;
     goal?: string;
@@ -38,8 +39,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const fetchMe = async () => {
         try {
             setLoading(true);
-            const data = await getMeApi();
-            setUser(data);
+            
+            // ❌ 1. COMMENT LẠI DÒNG GỌI API 
+            // const data = await getMeApi();
+            
+            // ✅ 2. TẠO DATA GIẢ (MOCK DATA) ĐÚNG CHUẨN MỚI CỦA BACKEND
+            const mockData: User = {
+                _id: "fake-123",
+                email: "Nguyen@gmail.com",
+                phone: "0123456789",
+                name: "Nguyen (Test Bypass)",
+                status: "active", // Data giả cho status
+                role: "user",
+                location: "Quận 1, TP.HCM",
+                sportLevel: "Cầu lông - Trung bình",
+                goal: "Giảm cân",
+                avatar_url: "", // Đã cập nhật key
+                date_of_birth: "2000-01-01" // Đã cập nhật key
+            };
+
+            // ✅ 3. NHÉT DATA GIẢ VÀO CONTEXT
+            setUser(mockData);
 
         } catch (error) {
             setUser(null);
@@ -50,7 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     useEffect(() => {
         fetchMe();
-    }, []); // Chỉ chạy 1 lần duy nhất khi Mount ứng dụng
+    }, []); 
 
     return (
         <AuthContext.Provider value={{ user, setUser, loading, fetchMe }}>

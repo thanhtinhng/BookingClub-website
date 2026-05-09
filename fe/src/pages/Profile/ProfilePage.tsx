@@ -2,24 +2,37 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, type User } from "../../contexts/AuthContext";
 import { logoutApi } from "../../services/auth.api";
-import { Image, Map, Award, Target, SquarePen } from 'lucide-react';
+import { Image, Map, Award, Target, Lock, ShieldAlert } from 'lucide-react';
 import "./ProfilePage.css";
+
+// Interface nội bộ 
+// interface User {
+//   _id: string;
+//   email: string;
+//   phone: string;
+//   name: string;
+//   status: string;
+//   role: string;
+//   avatar_url: string;
+//   date_of_birth: Date | string;
+//   location?: string;
+//   sportLevel?: string;
+//   goal?: string;
+// }
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
-  
-  // GỌI CONTEXT LẤY DATA
   const { user, setUser, loading } = useAuth();
   
+  // Chỉ dùng isEditing cho nhóm thông tin cơ bản
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<User>>({});
-
-  // --- STATE CHO AVATAR (GIỮ NGUYÊN LOGIC API) ---
+  
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // DỌN RÁC CHỐNG MEMORY LEAK
+  // Clear memory leak
   useEffect(() => {
     return () => {
       if (avatarPreview && avatarPreview.startsWith("blob:")) {
@@ -28,15 +41,14 @@ const ProfilePage: React.FC = () => {
     };
   }, [avatarPreview]);
 
-  // ĐỔ DATA TỪ CONTEXT VÀO FORM KHI LOAD XONG
+  // Đổ dữ liệu
   useEffect(() => {
     if (user) {
       setFormData(user);
-      setAvatarPreview(user.avatar || null);
+      setAvatarPreview(user.avatar_url || null);
     }
   }, [user]);
 
-  // CHẶN NGƯỜI CHƯA ĐĂNG NHẬP
   useEffect(() => {
     if (!loading && !user) {
       alert("Bạn chưa đăng nhập");
@@ -44,31 +56,19 @@ const ProfilePage: React.FC = () => {
     }
   }, [user, loading, navigate]);
 
-  // --- CÁC HÀM XỬ LÝ SỰ KIỆN ---
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
+  const handleUploadClick = () => fileInputRef.current?.click();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    
     if (file) {
-      if (!file.type.startsWith("image/")) {
-        alert("Lỗi: Vui lòng chỉ tải lên file hình ảnh!");
-        return; 
-      }
-
-      const MAX_SIZE = 5 * 1024 * 1024; // 5MB
-      if (file.size > MAX_SIZE) {
-        alert("Lỗi: Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 5MB.");
-        return; 
-      }
-
+      if (!file.type.startsWith("image/")) return alert("Vui lòng chọn file hình ảnh!");
+      const MAX_SIZE = 5 * 1024 * 1024;
+      if (file.size > MAX_SIZE) return alert("Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 5MB.");
+      
       setAvatarFile(file); 
       setAvatarPreview(URL.createObjectURL(file)); 
     }
@@ -76,22 +76,63 @@ const ProfilePage: React.FC = () => {
 
   const handleDeleteAvatar = () => {
     setAvatarFile(null);
-    setAvatarPreview(null);
+    setAvatarPreview(null); // Preview null tương đương với việc muốn xóa avatar
     if (fileInputRef.current) fileInputRef.current.value = ""; 
   };
 
-  const handleLogout = async () => {
-    if (window.confirm("Bạn có chắc chắn muốn đăng xuất?")) {
-      try {
-        await logoutApi(); 
-      } catch (error) {
-        console.error("Lỗi khi gọi API logout:", error);
-      } finally {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("isLoggedIn"); 
-        sessionStorage.clear();
-        navigate("/login");
+  // ===================== LOGIC KIỂM TRA THAY ĐỔI (DIRTY CHECK) =====================
+  const checkIsDirty = () => {
+    if (!user) return false;
+    
+    // 1. Kiểm tra có thay đổi file ảnh không
+    if (avatarFile !== null) return true;
+    
+    // 2. Kiểm tra trường hợp user bấm Xóa ảnh (avatarPreview thành null trong khi gốc có ảnh)
+    if (avatarPreview === null && user.avatar_url) return true;
+
+    // 3. Kiểm tra các trường text (name)
+    if (formData.name !== user.name) return true;
+
+    // 4. Kiểm tra date_of_birth (Cần format về cùng chuẩn YYYY-MM-DD để so sánh)
+    const originDob = user.date_of_birth ? new Date(user.date_of_birth).toISOString().split('T')[0] : "";
+    const formDob = formData.date_of_birth ? new Date(formData.date_of_birth).toISOString().split('T')[0] : "";
+    if (formDob !== originDob) return true;
+
+    return false;
+  };
+
+  // ===================== XỬ LÝ LƯU =====================
+  const handleSave = async () => {
+    // DIRTY CHECK: Nếu không có gì thay đổi thì tắt form, ko gọi API
+    if (!checkIsDirty()) {
+      setIsEditing(false);
+      return; 
+    }
+
+    try {
+      const submitData = new FormData();
+      submitData.append("name", formData.name || "");
+      
+      // Xử lý ngày sinh gửi lên BE
+      if (formData.date_of_birth) {
+        submitData.append("date_of_birth", formData.date_of_birth as string);
       }
+      
+      // Xử lý Avatar
+      if (avatarFile) {
+        submitData.append("avatar_url", avatarFile); // Đổi tên field theo backend 
+      } else if (avatarPreview === null) {
+        submitData.append("removeAvatar", "true"); 
+      }
+
+      console.log("Payload gửi đi:", Object.fromEntries(submitData.entries()));
+      
+      // GIẢ LẬP GỌI API THÀNH CÔNG -> Update Context
+      setUser({ ...user, ...formData, avatar_url: avatarPreview } as User); 
+      setIsEditing(false); 
+      alert("Cập nhật hồ sơ thành công!");
+    } catch (error) {
+      alert("Lỗi khi cập nhật!");
     }
   };
 
@@ -99,34 +140,28 @@ const ProfilePage: React.FC = () => {
     setIsEditing(false);
     if (user) {
       setFormData(user); 
-      setAvatarPreview(user.avatar || null); 
-      setAvatarFile(null); 
+      setAvatarPreview(user.avatar_url || null); 
+      setAvatarFile(null);
     }
   };
 
-  const handleSave = async () => {
-    try {
-      const submitData = new FormData();
-      submitData.append("name", formData.name || "");
-      submitData.append("dob", formData.dob || "");
-      submitData.append("location", formData.location || "");
-      submitData.append("sportLevel", formData.sportLevel || "");
-      submitData.append("goal", formData.goal || "");
-      
-      if (avatarFile) {
-        submitData.append("avatar", avatarFile); 
-      } else if (avatarPreview === null) {
-        submitData.append("removeAvatar", "true"); 
-      }
+  const handleLogout = async () => {
+    if (window.confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+      try { await logoutApi(); } catch (e) {}
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("isLoggedIn"); 
+      sessionStorage.clear();
+      navigate("/login");
+    }
+  };
 
-      console.log(Object.fromEntries(submitData.entries()));
-      
-      // Giả lập lưu vào Context tạm thời
-      setUser({ ...user, ...formData, avatar: avatarPreview } as User); 
-      setIsEditing(false); 
-      alert("Cập nhật hồ sơ thành công!");
+  // Hàm hỗ trợ parse Date ra value cho thẻ <input type="date">
+  const getFormattedDateForInput = (dateValue: Date | string | undefined) => {
+    if (!dateValue) return "";
+    try {
+      return new Date(dateValue).toISOString().split('T')[0];
     } catch (error) {
-      alert("Lỗi khi cập nhật!");
+      return "";
     }
   };
 
@@ -137,44 +172,28 @@ const ProfilePage: React.FC = () => {
     <div className="profile-wrapper">
       <div className="profile-container">
         
-        {/* HEADER */}
         <div className="profile-header">
           <h2>Thiết lập hồ sơ cá nhân</h2>
           {!isEditing && (
-            <button className="btn-update-mode" onClick={() => setIsEditing(true)}>
-              Cập nhật
-            </button>
+            <button className="btn-update-mode" onClick={() => setIsEditing(true)}>Cập nhật cơ bản</button>
           )}
         </div>
 
-        {/* BẢNG THÔNG TIN */}
         <div className="profile-table">
-          
-          {/* Row: Ảnh đại diện */}
+          {/* ================= NHÓM THÔNG TIN CƠ BẢN (Cho phép Edit cùng lúc) ================= */}
+          <div style={{ paddingBottom: '8px', fontWeight: 'bold', color: '#1e3a5f', fontSize: '18px' }}>
+            Thông tin cơ bản
+          </div>
+
           <div className="profile-row">
             <div className="profile-col-label">Ảnh đại diện</div>
             <div className="profile-col-value avatar-col">
               <div className="avatar-circle">
-                {avatarPreview ? (
-                  <img 
-                    src={avatarPreview} 
-                    alt="Avatar" 
-                    className="avatar-img"
-                  />
-                ) : (
-                  <Image size={24} color="#9ca3af" />
-                )}
+                {avatarPreview ? <img src={avatarPreview} alt="Avatar" className="avatar-img" /> : <Image size={24} color="#9ca3af" />}
               </div>
-              
               {isEditing && (
                 <div className="avatar-actions">
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    ref={fileInputRef} 
-                    onChange={handleFileChange} 
-                    className="hidden-file-input"
-                  />
+                  <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden-file-input" />
                   <button className="btn-upload" onClick={handleUploadClick}>Tải lên</button>
                   <button className="btn-delete" onClick={handleDeleteAvatar}>Xóa</button>
                 </div>
@@ -182,9 +201,8 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Row: Tên hiển thị */}
           <div className="profile-row">
-            <div className="profile-col-label">Tên hiển thị</div>
+            <div className="profile-col-label">Tên hiển thị (Username)</div>
             <div className="profile-col-value">
               {isEditing ? (
                 <input type="text" name="name" value={formData.name || ""} onChange={handleChange} className="edit-input" />
@@ -194,77 +212,93 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Row: Email (Không cho sửa) */}
-          <div className="profile-row">
-            <div className="profile-col-label">Email</div>
-            <div className="profile-col-value">
-              <span className="read-only-text email-text">{user.email}</span>
-            </div>
-          </div>
-
-          {/* Row: Ngày sinh */}
-          <div className="profile-row">
+          <div className="profile-row" style={{marginBottom: '20px'}}>
             <div className="profile-col-label">Ngày sinh</div>
             <div className="profile-col-value">
               {isEditing ? (
-                <input type="date" name="dob" value={formData.dob || ""} onChange={handleChange} className="edit-input" />
+                <input 
+                  type="date" 
+                  name="date_of_birth" 
+                  value={getFormattedDateForInput(formData.date_of_birth)} 
+                  onChange={handleChange} 
+                  className="edit-input" 
+                />
               ) : (
-                <span className="read-only-text">{user.dob ? user.dob.split('-').reverse().join('/') : "Chưa cập nhật"}</span>
-              )}
-            </div>
-          </div>
-
-          {/* Row: Cá nhân hóa */}
-          <div className="profile-row">
-            <div className="profile-col-label">Cá nhân hóa</div>
-            <div className="profile-col-value personal-col">
-              <div className="personal-item">
-                <Map size={16} />
-                <div className="personal-info">
-                  <strong>Vị trí:</strong>
-                  {isEditing ? (
-                    <input type="text" name="location" value={formData.location || ""} onChange={handleChange} className="edit-input" />
-                  ) : (
-                    <span>{user.location || "Chưa có dữ liệu"}</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="personal-item">
-                <Award size={16} />
-                <div className="personal-info">
-                  <strong>Trình độ:</strong>
-                  {isEditing ? (
-                    <input type="text" name="sportLevel" value={formData.sportLevel || ""} onChange={handleChange} className="edit-input" />
-                  ) : (
-                    <span>{user.sportLevel || "Chưa có dữ liệu"}</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="personal-item">
-                <Target size={16} />
-                <div className="personal-info">
-                  <strong>Mục tiêu:</strong>
-                  {isEditing ? (
-                    <input type="text" name="goal" value={formData.goal || ""} onChange={handleChange} className="edit-input" />
-                  ) : (
-                    <span>{user.goal || "Chưa có dữ liệu"}</span>
-                  )}
-                </div>
-              </div>
-              
-              {!isEditing && (
-                <span className="corner-edit-icon" onClick={() => setIsEditing(true)}>
-                  <SquarePen size={18} color="#3d5a80" />
+                <span className="read-only-text">
+                  {user.date_of_birth ? new Date(user.date_of_birth).toLocaleDateString('vi-VN') : "Chưa cập nhật"}
                 </span>
               )}
             </div>
           </div>
 
+          {/* ================= NHÓM THÔNG TIN NHẠY CẢM (Tách biệt logic Edit) ================= */}
+          <div style={{ paddingBottom: '8px', fontWeight: 'bold', color: '#1e3a5f', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            Thông tin bảo mật <ShieldAlert size={18} color="#ef4444" />
+          </div>
+
+          <div className="profile-row">
+            <div className="profile-col-label">Email</div>
+            <div className="profile-col-value" style={{ justifyContent: 'space-between' }}>
+              <span className="read-only-text email-text">{user.email}</span>
+              {!isEditing && (
+                <button 
+                  style={{ background: 'none', border: 'none', color: '#3d5a80', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center' }}
+                  onClick={() => alert("Tính năng đổi Email cần xác thực Mật khẩu hiện tại (Đang phát triển)")}
+                >
+                  <Lock size={14} /> Sửa
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="profile-row" style={{marginBottom: '20px'}}>
+            <div className="profile-col-label">Số điện thoại</div>
+            <div className="profile-col-value" style={{ justifyContent: 'space-between' }}>
+              <span className="read-only-text">{user.phone || "Chưa cập nhật"}</span>
+              {!isEditing && (
+                <button 
+                  style={{ background: 'none', border: 'none', color: '#3d5a80', cursor: 'pointer', display: 'flex', gap: '4px', alignItems: 'center' }}
+                  onClick={() => alert("Tính năng đổi Số điện thoại cần xác thực mã OTP (Đang phát triển)")}
+                >
+                  <Lock size={14} /> Sửa
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* ================= NHÓM CÁ NHÂN HÓA (Chỉ hiển thị tĩnh) ================= */}
+          <div style={{ paddingBottom: '8px', fontWeight: 'bold', color: '#1e3a5f', fontSize: '18px' }}>
+            Hồ sơ thể thao (Đang phát triển)
+          </div>
+          <div className="profile-row">
+            <div className="profile-col-label" style={{ backgroundColor: '#6b7280' }}>Cá nhân hóa</div>
+            <div className="profile-col-value personal-col" style={{ borderColor: '#6b7280' }}>
+              <div className="personal-item">
+                <Map size={16} />
+                <div className="personal-info">
+                  <strong>Vị trí:</strong>
+                  <span>{user.location || "Chưa có dữ liệu"}</span>
+                </div>
+              </div>
+              <div className="personal-item">
+                <Award size={16} />
+                <div className="personal-info">
+                  <strong>Trình độ:</strong>
+                  <span>{user.sportLevel || "Chưa có dữ liệu"}</span>
+                </div>
+              </div>
+              <div className="personal-item">
+                <Target size={16} />
+                <div className="personal-info">
+                  <strong>Mục tiêu:</strong>
+                  <span>{user.goal || "Chưa có dữ liệu"}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* FOOTER: Nút Lưu & Hủy */}
+        {/* ================= FOOTER ACTIONS ================= */}
         {isEditing && (
           <div className="profile-footer">
             <button className="btn-cancel-action" onClick={handleCancel}>Hủy</button>
@@ -272,15 +306,11 @@ const ProfilePage: React.FC = () => {
           </div>
         )}
         
-        {/* Nút Đăng Xuất */}
         {!isEditing && (
           <div className="profile-logout-wrapper">
-            <button className="btn-logout" onClick={handleLogout}>
-              Đăng Xuất
-            </button>
+            <button className="btn-logout" onClick={handleLogout}>Đăng Xuất</button>
           </div>
         )}
-
       </div>
     </div>
   );
