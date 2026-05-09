@@ -1,0 +1,4 @@
+.pagination { display:flex; gap:6px; justify-content:center; margin:18px 0 }
+.pagination button { padding:6px 10px; border-radius:6px; border:1px solid #ddd; background:#fff; cursor:pointer; color: #222 }
+.pagination button.active { background:#007bff; color:#fff; border-color:#007bff }
+.pagination button:disabled { opacity:0.5; cursor:default; color: #999 }
