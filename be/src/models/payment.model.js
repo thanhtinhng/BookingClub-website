@@ -26,8 +26,8 @@ const paymentSchema = new mongoose.Schema({
         vnp_PayDate: String,       // Thời gian giao dịch thành công
         vnp_TransactionStatus: String,
         vnp_ResponseCode: String,
-        vnpayMessages: String
-
+        vnpayMessages: String,
+        payment_url: String
     },
     transaction_date: {
         type: Date,

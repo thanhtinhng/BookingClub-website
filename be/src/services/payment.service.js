@@ -71,6 +71,12 @@ export const createVnpayPayment = async (bookingId, userId) => {
         vnp_ExpireDate: formatDate(expireDate),
     });
 
+    payment.vnpay_details = {
+        ...payment.vnpay_details,
+        payment_url: paymentUrl,
+    };
+    await payment.save();
+
     return paymentUrl;
 }
 
@@ -113,6 +119,7 @@ export const handleVnpayReturn = async (query) => {
     }
 
     payment.vnpay_details = {
+        ...payment.vnpay_details,
         vnp_TxnRef: query.vnp_TxnRef,
         vnp_TransactionNo: query.vnp_TransactionNo,
         vnp_CardType: query.vnp_CardType,
@@ -122,6 +129,7 @@ export const handleVnpayReturn = async (query) => {
         vnpayMessages: message,
         vnp_TransactionStatus: query.vnp_TransactionStatus
     };
+    await payment.save();
 
     if (responseCode === "00") {
         payment.status = "Completed";

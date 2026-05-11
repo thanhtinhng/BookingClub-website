@@ -89,7 +89,7 @@ const BookingTest: React.FC = () => {
         </div>
 
         {/* --- CỘT PHẢI --- */}
-        <div className="booking-sidebar">
+        {/* <div className="booking-sidebar">
           <BookingCard 
             complexId={currentComplex.id}       
             complexName={currentComplex.name}   
@@ -99,7 +99,7 @@ const BookingTest: React.FC = () => {
             basePricePerHour={selectedCourt?.price}
             onClearSelection={() => setSelectedCourt(null)}
           />
-        </div>
+        </div> */}
 
       </div>
     </div>

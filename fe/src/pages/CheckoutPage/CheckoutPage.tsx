@@ -1,50 +1,52 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './CheckoutPage.css';
-
-// Mock data giả lập kết quả trả về từ getMeApi
-const mockUser = {
-  _id: "USER_123456",
-  email: "test@gmail.com",
-  phone: "0901234567",
-  name: "NGUYỄN VĂN A"
-};
+import { useAuth } from "../../contexts/authContext";
+import {
+  createBookingApi,
+  createVnpayPaymentApi
+} from "../../services/booking.api";
 
 const CheckoutPage: React.FC = () => {
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState<number>(600); // 10 phút
+  const location = useLocation();
   const [bookingData, setBookingData] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const orderCode = useMemo(() => {
-      return `ORD-${Math.floor(Math.random() * 100000)}`;
-    }, []);
 
   useEffect(() => {
-    const savedData = sessionStorage.getItem('pendingBooking');
-    if (!savedData) {
-      alert("Không tìm thấy thông tin đơn hàng!");
-      navigate('/');
+    if (loading) return;
+
+    if (!user) {
+      alert("Vui lòng đăng nhập");
+      navigate("/login");
       return;
     }
-    setBookingData(JSON.parse(savedData));
-  }, [navigate]);
 
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      alert("Hết thời gian thanh toán! Đơn hàng đã bị hủy.");
-      sessionStorage.removeItem('pendingBooking');
-      navigate('/');
+    const stateBookingData = location.state?.bookingData;
+
+    if (stateBookingData) {
+      setBookingData(stateBookingData);
+      sessionStorage.setItem(
+        "pendingBooking",
+        JSON.stringify(stateBookingData)
+      );
       return;
     }
-    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft, navigate]);
 
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  };
+    const savedData = sessionStorage.getItem("pendingBooking");
+
+    if (savedData) {
+      setBookingData(JSON.parse(savedData));
+      return;
+    }
+
+    alert("Không tìm thấy thông tin đơn hàng!");
+    navigate("/courts/search"); //chuyển về trang search
+  }, [loading, user, navigate, location.state]);
+
+  if (loading) return <p>Loading...</p>;
+  if (!user || !bookingData) return null;
 
   const handleConfirmPayment = async () => {
     setIsProcessing(true);
@@ -52,27 +54,37 @@ const CheckoutPage: React.FC = () => {
       // làm sạch data trước khi gửi BE
       const backendPayload = {
         complex_id: bookingData.complex_id,
-        booking_date: bookingData.booking_date,
-        total_price: bookingData.total_price,
+        booking_date: new Date().toISOString(),
         booking_details: bookingData.booking_details.map((d: any) => ({
           sub_field_id: d.sub_field_id,
+          play_date: bookingData.booking_date,
           startTime: d.startTime,
           endTime: d.endTime,
           // Rút trích mảng Object services {id, name, price} về lại mảng string ID ["referee", "racket"]
-          services: d.services ? d.services.map((s: any) => s.id) : [] 
+          services: d.services ? d.services.map((s: any) => s.id) : []
         }))
       };
 
       console.log(JSON.stringify(backendPayload, null, 2));
-      
-      // Giả lập call API
-      await new Promise(resolve => setTimeout(resolve, 2000)); 
-      
-      alert("Xác nhận thành công! Vui lòng chờ admin duyệt.");
+
+      // call API
+      const bookingRes = await createBookingApi(backendPayload); //tạo booking
+
+      const bookingId = bookingRes.data._id;
+
+      const paymentRes = await createVnpayPaymentApi(bookingId); // lấy url vnpay
+
       sessionStorage.removeItem('pendingBooking');
-      navigate('/BookingTest'); 
-    } catch (error) {
-      alert("Có lỗi xảy ra khi xác nhận!");
+
+      window.location.href = paymentRes.paymentUrl; //chuyển đến site vnpay
+
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Có lỗi xảy ra khi xác nhận";
+
+      alert(message);
     } finally {
       setIsProcessing(false);
     }
@@ -81,31 +93,28 @@ const CheckoutPage: React.FC = () => {
   if (!bookingData) return null;
 
   // Cấu hình VietQR
-  const BANK_ID = "MB"; 
-  const ACCOUNT_NO = "0987654321"; 
-  const ACCOUNT_NAME = "NGUYEN CHU SAN";
-  const AMOUNT = bookingData.total_price;
-  const DESCRIPTION = `THANH TOAN SAN ${bookingData.booking_date.replace(/-/g, '')}`;
-  const QR_URL = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${AMOUNT}&addInfo=${encodeURIComponent(DESCRIPTION)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
+  // const BANK_ID = "MB"; 
+  // const ACCOUNT_NO = "0987654321"; 
+  // const ACCOUNT_NAME = "NGUYEN CHU SAN";
+  // const AMOUNT = bookingData.total_price;
+  // const DESCRIPTION = `THANH TOAN SAN ${bookingData.booking_date.replace(/-/g, '')}`;
+  // const QR_URL = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${AMOUNT}&addInfo=${encodeURIComponent(DESCRIPTION)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
 
   return (
     <div className="checkout-wrapper">
+      <h1 className="checkout-page-title">XÁC NHẬN ĐƠN HÀNG</h1>
 
       <div className="checkout-container">
         <div className="checkout-left">
-          
+
           <div className="user-info-box">
             <div className="info-row">
               <span className="info-label">TÊN NGƯỜI ĐẶT</span>
-              <span className="info-value">{mockUser.name}</span>
+              <span className="info-value">{user.name}</span>
             </div>
             <div className="info-row">
               <span className="info-label">SỐ ĐIỆN THOẠI</span>
-              <span className="info-value">{mockUser.phone}</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">MÃ ĐƠN</span>
-              <span className="info-value">{orderCode}</span>
+              <span className="info-value">{user.phone}</span>
             </div>
           </div>
 
@@ -125,7 +134,7 @@ const CheckoutPage: React.FC = () => {
                     <div className="col-info">{detail.startTime} - {detail.endTime}</div>
                     <div className="col-price">{detail.price.toLocaleString('vi-VN')}VND</div>
                   </div>
-                  
+
                   {/* Dòng hiển thị Tiền Dịch vụ (Nếu có) */}
                   {detail.services && detail.services.map((srv: any, sIdx: number) => (
                     <div className="table-row" key={`srv-${index}-${sIdx}`}>
@@ -149,33 +158,46 @@ const CheckoutPage: React.FC = () => {
         </div>
 
         <div className="checkout-right">
-          <div className="timer-text">CHUYỂN KHOẢN TRONG</div>
-          <div className="timer-countdown">{formatTime(timeLeft)}</div>
-
-          <div className="qr-box">
-            <img src={QR_URL} alt="QR Code" />
-          </div>
-
-          <div className="bank-info-box">
-            <p className="bank-label">TÊN TÀI KHOẢN</p>
-            <p className="bank-value">{ACCOUNT_NAME}</p>
-            <p className="bank-label mt-3">SỐ TÀI KHOẢN</p>
-            <p className="bank-value">{ACCOUNT_NO}</p>
-            <p className="bank-label mt-3">NGÂN HÀNG</p>
-            <p className="bank-value">MB BANK</p>
-          </div>
-
           <div className="total-amount-box">
-            {bookingData.total_price.toLocaleString('vi-VN')}VND
+            {bookingData.total_price.toLocaleString("vi-VN")} VND
           </div>
 
-          <button 
-            className="confirm-payment-btn" 
-            onClick={handleConfirmPayment}
-            disabled={isProcessing}
-          >
-            {isProcessing ? "ĐANG XỬ LÝ..." : "ĐÃ CHUYỂN KHOẢN"}
-          </button>
+          <div className="checkout-action-buttons">
+            <button
+              type="button"
+              className="edit-booking-btn"
+              onClick={() => navigate(`/complexes/${bookingData.complex_id}/booking`)}
+              disabled={isProcessing}
+            >
+              CHỈNH SỬA ĐƠN
+            </button>
+
+            <button
+              type="button"
+              className="cancel-booking-btn"
+              onClick={() => {
+                const confirmed = window.confirm(
+                  "Bạn có chắc muốn hủy đơn đã chọn không?"
+                );
+
+                if (!confirmed) return;
+                sessionStorage.removeItem("pendingBooking");
+                navigate("/courts/search");
+              }}
+              disabled={isProcessing}
+            >
+              HỦY ĐƠN
+            </button>
+
+            <button
+              type="button"
+              className="confirm-payment-btn"
+              onClick={handleConfirmPayment}
+              disabled={isProcessing}
+            >
+              {isProcessing ? "ĐANG XỬ LÝ..." : "XÁC NHẬN ĐẶT SÂN"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

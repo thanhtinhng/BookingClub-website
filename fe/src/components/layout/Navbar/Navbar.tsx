@@ -9,8 +9,16 @@ function Navbar() {
       <Link to="/register">Register</Link>
       <Link to="/me">Me</Link>
       <Link to="/court-detail-demo">Court Detail</Link>
-      <Link to="/BookingTest"> BookingTest</Link>
-      <Link to="/ProfilePage"> ProfilePage</Link>
+      
+      {/* ===== PHẦN ĐÃ MERGE CHUẨN ===== */}
+      <Link to="/profile">Profile</Link> {/* Link tới trang của bạn */}
+      <Link to="/complexes/65f1a2b3c4d5e6f7a8b90123/booking">TestBooking</Link>
+      {/* trang booking phải được chuyển từ trang danh sách complex:
+      <Link to={`/complexes/${complex._id}/booking`}>
+        Đặt sân
+      </Link> */}
+      {/* ================================ */}
+      
     </nav>
   )
 }
