@@ -57,13 +57,14 @@ const logoutApi = (): Promise<LogoutResponse> => {
   return axios.post("/api/v1/logout");
 };
 
-// Thêm hàm này vào để gọi BE update
-const updateProfileApi = (data: FormData) => {
-  return axios.put("/api/v1/update-profile", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+// Cập nhật thông tin cơ bản (Gửi JSON thuần)
+const updateMeApi = (data: { name?: string; avatar_url?: string; date_of_birth?: string | Date }) => {
+  return axios.put("/api/v1/me/update", data);
+};
+
+// Đổi mật khẩu
+const updatePasswordApi = (data: any) => {
+  return axios.patch("/api/v1/me/update-password", data);
 };
 
 export {
@@ -71,5 +72,6 @@ export {
   loginApi,
   getMeApi,
   logoutApi,
-  updateProfileApi 
+  updateMeApi,
+  updatePasswordApi
 };

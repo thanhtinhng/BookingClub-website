@@ -53,14 +53,19 @@
 .profile-table {
   display: flex;
   flex-direction: column;
-  padding: 24px; /* Thêm padding để các hàng không chạm sát mép card */
-  gap: 12px; /* Tạo khoảng cách giữa các hàng để lộ rõ viền */
+  padding: 24px;
+  gap: 12px;
 }
 
 .profile-row {
   display: flex;
   border-radius: 8px;
   overflow: hidden;
+}
+
+/* Helper Class */
+.mb-20 {
+  margin-bottom: 20px !important;
 }
 
 /* Cột Label (Xanh bên trái) */
@@ -80,12 +85,16 @@
   flex: 7;
   padding: 18px 24px;
   background-color: #ffffff;
-  border: 2px solid #3d5a80; /* Viền cùng màu với cột trái */
-  border-left: none; /* Bỏ viền trái để nối liền với nhãn */
-  border-radius: 0 8px 8px 0; /* Bo góc phải */
+  border: 2px solid #3d5a80;
+  border-left: none;
+  border-radius: 0 8px 8px 0;
   position: relative;
   display: flex;
   align-items: center;
+}
+
+.profile-col-value.between {
+  justify-content: space-between;
 }
 
 .read-only-text {
@@ -94,8 +103,50 @@
   font-size: 16px;
 }
 
+.pwd-dots {
+  font-size: 24px;
+  line-height: 10px;
+  padding-top: 6px;
+}
+
 .email-text {
   color: #4b5563;
+}
+
+.btn-inline-action {
+  background: transparent !important;
+  border: none !important;
+  color: #3d5a80 !important; 
+  cursor: pointer;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 0;
+  transition: none !important;
+  outline: none;
+}
+
+/* Vô hiệu hóa hiệu ứng hover */
+.btn-inline-action:hover, 
+.btn-inline-action:active,
+.btn-inline-action:focus {
+  background: transparent !important;
+  color: #3d5a80 !important;
+  opacity: 1 !important;
+  transform: none !important;
+  text-decoration: none;
+}
+
+/* Áp dụng tương tự cho nút có class security */
+.btn-inline-action.security {
+  color: #3d5a80 !important;
+}
+
+.btn-inline-action.security:hover {
+  color: #3d5a80 !important;
+  background: transparent !important;
 }
 
 /* Inputs khi chỉnh sửa */
@@ -199,15 +250,16 @@
   font-size: 13px;
 }
 
-.corner-edit-icon {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  opacity: 0.4;
-  cursor: pointer;
+/* Section Titles */
+.section-title {
+  padding-bottom: 8px;
+  font-weight: bold;
+  color: #1e3a5f;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-
-.corner-edit-icon:hover { opacity: 1; }
 
 /* Footer & Logout */
 .profile-footer {

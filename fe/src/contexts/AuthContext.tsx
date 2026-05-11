@@ -1,6 +1,5 @@
 import React, { createContext, useEffect } from "react";
-// import { getMeApi } from "../services/auth.api";
-
+import { getMeApi } from "../services/auth.api";
 
 export interface User {
     _id: string;
@@ -9,8 +8,8 @@ export interface User {
     name: string;
     status: string; 
     role: string;
-    avatar_url: string; // Đổi từ avatar
-    date_of_birth: string | Date; // Đổi từ dob
+    avatar_url: string; 
+    date_of_birth: string | Date; 
     location?: string;
     sportLevel?: string;
     goal?: string;
@@ -41,28 +40,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             setLoading(true);
             
-            // ❌ 1. COMMENT LẠI DÒNG GỌI API 
-            // const data = await getMeApi();
+            // Gọi API thật lấy dữ liệu User
+            const response: any = await getMeApi();
             
-            // ✅ 2. TẠO DATA GIẢ (MOCK DATA) ĐÚNG CHUẨN MỚI CỦA BACKEND
-            const mockData: User = {
-                _id: "fake-123",
-                email: "Nguyen@gmail.com",
-                phone: "0123456789",
-                name: "Nguyen (Test Bypass)",
-                status: "active", // Data giả cho status
-                role: "user",
-                location: "Quận 1, TP.HCM",
-                sportLevel: "Cầu lông - Trung bình",
-                goal: "Giảm cân",
-                avatar_url: "", // Đã cập nhật key
-                date_of_birth: "2000-01-01" // Đã cập nhật key
-            };
-
-            // ✅ 3. NHÉT DATA GIẢ VÀO CONTEXT
-            setUser(mockData);
+            // Tùy thuộc vào axios interceptor của project mà data nằm ở response hay response.data
+            setUser(response.data || response); 
 
         } catch (error) {
+            console.error("Lỗi khi fetch thông tin user:", error);
             setUser(null);
         } finally {
             setLoading(false);
