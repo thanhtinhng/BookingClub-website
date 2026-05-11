@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './CheckoutPage.css';
-import { useAuth } from "../../contexts/authContext";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   createBookingApi,
   createVnpayPaymentApi
