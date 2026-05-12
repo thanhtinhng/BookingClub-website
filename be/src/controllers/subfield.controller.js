@@ -1,5 +1,5 @@
 import e from "express";
-import { CalculatePrice } from "../services/subfield.service.js";
+import { CalculatePrice, getAvailableTimeSlots } from "../services/subfield.service.js";
 
 const getCalculatePrice = async (req, res) => {
     try {
@@ -11,4 +11,16 @@ const getCalculatePrice = async (req, res) => {
     }
 }
 
-export { getCalculatePrice };
+const getAvailableSlots = async (req, res) => {
+    try {
+        const { subField_id } = req.params;
+        const { playDate } = req.query;
+        const timeSlots = await getAvailableTimeSlots(subField_id, playDate);
+        return res.json({ timeSlots });
+
+    } catch (err) {
+        return res.status(400).json({ message: err.message });
+    }
+}
+
+export { getCalculatePrice, getAvailableSlots };

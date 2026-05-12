@@ -6,21 +6,24 @@ const timeSlotSchema = new mongoose.Schema({
     {
         type: mongoose.Schema.Types.ObjectId,
         ref: "SubField",
-        required: true
+        required: true,
+        index: true
     },
-    start_time: {
+    booked_date: {
         type: Date,
-        required: true
+        required:true,
+        index: true
     },
-    end_time: {
-        type: Date,
-        required: true
-    },
-    is_available: {
+    time:
+    {
         type: String,
-        enum: ["Available","Locked", "Booked", "Maintenance"],
+        required: true,
+    },
+    status: {
+        type: String,
+        enum: ["Locked", "Booked", "Maintenance"],
         required: true
     }
 });
-
+timeSlotSchema.index({ sub_field_id: 1, booked_date: 1, time: 1 }, { unique: true });
 export default mongoose.model("TimeSlot", timeSlotSchema);
