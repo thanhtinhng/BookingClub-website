@@ -1,0 +1,201 @@
+.navbar {
+    width: 100%;
+    background-color: #ffffff;
+
+    border-bottom: 1px solid #e4ebf5;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-container {
+    width: 100%;
+    height: 80px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.navbar-logo {
+    font-size: 1.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #2f5fa7;
+    letter-spacing: -1px;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.navbar-links a {
+    text-decoration: none;
+
+    color: #5c6470;
+
+    font-size: 0.96rem;
+    font-weight: 500;
+
+    transition: 0.2s;
+}
+
+.navbar-links a:hover {
+    color: #4e7ec7;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.register-link-nav {
+    text-decoration: none;
+
+    color: #4e7ec7;
+
+    font-weight: 600;
+}
+
+.register-link-nav:hover {
+    text-decoration: underline;
+}
+
+.login-btn-nav {
+    background-color: #4e7ec7;
+    color: white;
+
+    text-decoration: none;
+
+    padding: 10px 22px;
+
+    border-radius: 10px;
+
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.login-btn-nav:hover {
+    background-color: #3d6db5;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    text-decoration: none;
+
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    transition: 0.2s;
+
+    color: #2f5fa7;
+    font-weight: 600;
+}
+
+.profile-btn:hover {
+    background-color: #edf3ff;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 2px solid #4e7ec7;
+}
+
+.menu-toggle {
+    display: none;
+
+    border: none;
+    background: none;
+
+    font-size: 2rem;
+
+    color: #2f5fa7;
+
+    cursor: pointer;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+    .navbar-container {
+        height: 72px;
+        padding: 0 20px;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .navbar-right {
+        position: absolute;
+
+        top: 72px;
+        left: 0;
+
+        width: 100%;
+
+        background-color: white;
+
+        border-bottom: 1px solid #e4ebf5;
+
+        padding: 24px;
+
+        display: none;
+
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 24px;
+    }
+
+    .navbar-right.active {
+        display: flex;
+    }
+
+    .navbar-links {
+        flex-direction: column;
+        align-items: flex-start;
+
+        width: 100%;
+
+        gap: 20px;
+    }
+
+    .navbar-actions {
+        width: 100%;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 14px;
+    }
+
+    .login-btn-nav {
+        text-align: center;
+    }
+
+    .profile-btn {
+        width: 100%;
+    }
+}
