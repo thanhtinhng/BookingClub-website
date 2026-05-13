@@ -1,0 +1,112 @@
+.payment-result-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #f3f4f6;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.payment-result-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 40px 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.payment-icon-container {
+  margin-bottom: 24px;
+}
+
+.payment-result-title {
+  color: #1e3a5f;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+}
+
+.payment-result-message {
+  color: #4b5563;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.payment-info-box {
+  width: 100%;
+  background-color: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-box-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 14px;
+  text-align: left;
+}
+
+.info-box-label {
+  color: #6b7280;
+  font-weight: 600;
+  min-width: 100px;
+}
+
+.info-box-value {
+  color: #1e3a5f;
+  font-weight: 700;
+  flex: 1;
+  text-align: right;
+}
+
+.value-success { color: #10b981; }
+.value-error { color: #ef4444; }
+
+.payment-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #3d5a80;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.payment-btn:hover {
+  background-color: #2e4568;
+}
+
+.payment-btn-outline {
+  width: 100%;
+  padding: 14px;
+  background-color: #ffffff;
+  color: #3d5a80;
+  border: 1px solid #3d5a80;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+
+.payment-btn-outline:hover {
+  background-color: #f3f4f6;
+}
