@@ -1,6 +1,7 @@
 import SubField from "../models/sub_field.model.js";
 import FieldTypeConfig from "../models/field_type_configs.model.js";
 import PricingRule from "../models/pricing_rule.model.js";
+import TimeSlot from "../models/time_slot.model.js";
 import dayjs from "dayjs";
 
 const CalculatePrice = async (subField_id, playDate, startTime, endTime) => { 
@@ -47,4 +48,84 @@ const CalculatePrice = async (subField_id, playDate, startTime, endTime) => {
     return finalPrice;
 };
 
-export { CalculatePrice };
+const getAvailableTimeSlots = async (subField_id, playDate) => {
+    const config = await SubField.findById(subField_id).populate("config_id").populate("complex_id");
+
+    if(!config) throw new Error("Sub-field not found");
+
+    const openingHour = config.complex_id.opening_hours;
+    const closingHour = config.complex_id.closing_hours;
+    const slotStep = config.config_id.slot_step;
+
+    // 2. Tạo khung mặc định dựa trên thông tin vừa lấy
+    let allSlots = generateTimeSlots(openingHour, closingHour, playDate, slotStep);
+
+    console.log("All Slots:", allSlots);
+
+    console.log(dayjs(playDate).startOf('day').toDate());
+    // 3. Lấy các khung đã được đặt cho ngày đó
+    const bookedSlots = await TimeSlot.find({
+        sub_field_id: subField_id,
+        booked_date: dayjs(playDate).startOf('day').toDate(),
+        status: { $in: ["Locked", "Booked", "Maintenance"] }
+    });
+    
+    console.log("Booked Slots from DB:", bookedSlots);
+
+    // Chuyển mảng thành Map để tìm kiếm O(1) thay vì O(n)
+    const bookedMap = new Map(bookedSlots.map(s => [s.time, s.status]));
+
+    console.log("Booked Map:", bookedMap);
+
+    // Merge & kiem tra expired
+    const now = dayjs();
+    const isToday = dayjs(playDate).isSame(now, 'day');
+    
+
+    return allSlots.map(slot => {
+        //Kiểm tra giờ quá khứ
+        if(isToday)
+        {
+            const slotStartTime = dayjs(`${playDate} ${slot.startTime}`, "YYYY-MM-DD HH:mm");
+            if(slotStartTime.isBefore(now)) {
+                return { ...slot, status: "Expired" };
+            }
+        }
+
+        // 2. Check Busy (Đã đặt/Khóa)
+        const statusFromDB = bookedMap.get(slot.time);
+        if (statusFromDB) {
+            return { ...slot, status: statusFromDB };
+        }
+        return slot;
+    });
+}
+
+function generateTimeSlots(openingHour, closingHour, dateString, slotStep) {
+    const slots = [];
+    // Khởi tạo điểm bắt đầu: "2024-03-20 08:00"
+    let current = dayjs(`${dateString} ${openingHour}`, "YYYY-MM-DD HH:mm");
+    // Điểm kết thúc: "2024-03-20 22:00"
+    const end = dayjs(`${dateString} ${closingHour}`, "YYYY-MM-DD HH:mm");
+
+
+    while (current.isBefore(end)) {
+        const startStr = current.format("HH:mm");
+        const next = current.add(slotStep, 'minute'); // Cộng theo slot_step từ DB
+        const endStr = next.format("HH:mm");
+        
+        if (next.isAfter(end)) {
+            break; // Nếu vượt quá giờ đóng cửa, dừng lại
+        }
+
+        slots.push({
+            time: `${startStr} - ${endStr}`,
+            startTime: startStr,
+            status: "Available" // Mặc định là có thể đặt
+        });
+        current = next; // Cập nhật thời gian hiện tại
+        };
+    return slots;
+}
+
+export { CalculatePrice, getAvailableTimeSlots };
