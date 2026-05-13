@@ -4,7 +4,7 @@ import "./Login.css";
 import InputField from "../../components/layout/InputField/InputField";
 import { loginApi } from "../../services/auth.api";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/authContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 
 const Login: React.FC = () => {

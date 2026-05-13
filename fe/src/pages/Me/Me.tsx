@@ -1,4 +1,4 @@
-import { useAuth } from "../../contexts/authContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { logoutApi } from "../../services/auth.api";
 import { useNavigate } from "react-router";
 
