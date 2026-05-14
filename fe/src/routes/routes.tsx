@@ -6,6 +6,7 @@ import CourtDetailGalleryDemo from "../pages/CourtDetail/CourtDetailGalleryDemo"
 import CheckoutPage from "../pages/CheckoutPage/CheckoutPage.tsx"
 import CourtSearch from "../pages/CourtSearch/CourtSearch"
 import Booking from "../pages/BookingTest/Booking.tsx"
+import BookingTest from "../pages/BookingForm/BookingTest.tsx"
 import PaymentSuccess from "../pages/Payment/PaymentSuccess.tsx"
 import PaymentFailed from "../pages/Payment/PaymentFailed.tsx"
 
