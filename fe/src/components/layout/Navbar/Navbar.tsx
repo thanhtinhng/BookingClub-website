@@ -1,21 +1,85 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
+import "./Navbar.css"
+import avatarPlaceholder from "../../../assets/avatar-placeholder.png";
+import { useState } from "react";
+import { HiMenu, HiX } from "react-icons/hi";
 
 function Navbar() {
+  const { user } = useAuth();
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <nav>
-      <Link to="/">Home</Link>
-      <Link to="/courts/search">Tìm kiếm sân</Link>
-      <Link to="/login">Login</Link>
-      <Link to="/register">Register</Link>
-      <Link to="/me">Me</Link>
-      <Link to="/court-detail-demo">Court Detail</Link>
-      <Link to="complexes/65f1a2b3c4d5e6f7a8b90123/booking">TestBooking</Link>
-      {/* trang booking phải được chuyển từ trang danh sách complex:
-      <Link to={`/complexes/${complex._id}/booking`}>
-        Đặt sân
-      </Link> */}
-    </nav>
-  )
+    <header className="navbar">
+      <div className="navbar-container">
+        <Link to="/" className="navbar-logo">
+          BookingClub
+        </Link>
+
+        <div className={`navbar-right ${mobileMenuOpen ? "active" : ""}`}>
+          <nav className="navbar-links">
+
+            <Link to="/courts/search">
+              Tìm kiếm sân
+            </Link>
+
+            <Link to="/bookings">
+              Sân đã đặt
+            </Link>
+
+            <Link to="/map">
+              Bản đồ
+            </Link>
+
+            <Link to="/complexes/65f1a2b3c4d5e6f7a8b90123/booking">
+              Test Booking
+            </Link>
+
+            {/* Sau này có thêm thì thêm vào link nữa */}
+          </nav>
+
+          {!user ? (
+            <div className="navbar-actions">
+              <Link
+                to="/register"
+                className="register-link-nav"
+              >
+                Đăng ký
+              </Link>
+
+              <Link
+                to="/login"
+                className="login-btn-nav"
+              >
+                Đăng nhập
+              </Link>
+            </div>
+          ) : (
+            <Link to="/me" className="profile-btn">
+              <img
+                src={
+                  user.avatar_url || avatarPlaceholder
+                }
+                alt="avatar"
+                className="profile-avatar"
+              />
+
+              <span>{user.name}</span>
+            </Link>
+          )}
+        </div>
+        <button
+          className="menu-toggle"
+          onClick={() =>
+            setMobileMenuOpen(!mobileMenuOpen)
+          }
+        >
+          {mobileMenuOpen ? <HiX /> : <HiMenu />}
+        </button>
+      </div>
+    </header>
+  );
 }
 
-export default Navbar
+export default Navbar;
