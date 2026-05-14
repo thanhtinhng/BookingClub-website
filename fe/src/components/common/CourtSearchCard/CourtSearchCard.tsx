@@ -3,28 +3,35 @@ import "./CourtSearchCard.css";
 
 interface Props {
   court: {
-    id: string;
+    _id: string;
     name: string;
     address: string;
-    priceRange: string;
-    rating: number;
-    images: string[];
+    city: string;
+    district: string;
+    slug?: string;
+    phone?: string;
+    email?: string;
+    [key: string]: any;
   };
 }
 
 const CourtSearchCard: React.FC<Props> = ({ court }) => {
+  const defaultImage = "https://via.placeholder.com/300x200?text=" + encodeURIComponent(court.name);
+  const imageUrl = court.images && court.images[0] ? court.images[0] : defaultImage;
+  
   return (
     <article className="court-card">
       <div className="card-image-wrap">
-        <img src={court.images[0]} alt={court.name} />
+        <img src={imageUrl} alt={court.name} />
       </div>
       <div className="card-body">
         <h3 className="card-title">{court.name}</h3>
         <p className="card-address">{court.address}</p>
-        <div className="card-meta">
-          <span className="card-price">{court.priceRange}</span>
-          <span className="card-rating">⭐ {court.rating}</span>
-        </div>
+        <p className="card-location">
+          {court.district && <span>{court.district}</span>}
+          {court.city && <span> • {court.city}</span>}
+        </p>
+        {court.phone && <p className="card-phone">📞 {court.phone}</p>}
       </div>
     </article>
   );

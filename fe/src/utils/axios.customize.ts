@@ -50,8 +50,21 @@ instance.interceptors.response.use(
         // Do something with response error
         const originalRequest = error.config;
 
+        // Check if originalRequest and url exist
+        if (!originalRequest || !originalRequest.url) {
+            return Promise.reject(error);
+        }
+
         // Nếu là refresh thì không retry nữa
         if (originalRequest.url.includes("/refresh")) {
+            return Promise.reject(error);
+        }
+
+        if(originalRequest.url.includes("/login") || originalRequest.url.includes("/register")) {
+            return Promise.reject(error);
+        }
+
+        if(originalRequest.url.includes("/me")) {
             return Promise.reject(error);
         }
 
@@ -59,6 +72,7 @@ instance.interceptors.response.use(
             error.response?.status === 401 &&
             !originalRequest._retry
         ) {
+            
             originalRequest._retry = true;
 
             try {

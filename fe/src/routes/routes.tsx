@@ -18,7 +18,7 @@ function AppRoutes() {
       <Route path="/court-detail-demo" element={<CourtDetailGalleryDemo />} />
       <Route path="/BookingTest" element={<BookingTest />} />
       <Route path="/checkout" element={<CheckoutPage />} />
-      <Route path="/courts/search" element={<CourtSearch />} />
+      <Route path="/search" element={<CourtSearch />} />
     </Routes>
   )
 }

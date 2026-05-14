@@ -6,12 +6,15 @@ import axios from "../../utils/axios.customize";
 import "./CourtSearch.css";
 
 interface CourtItem {
-  id: string;
+  _id: string;
   name: string;
   address: string;
-  priceRange: string;
-  rating: number;
-  images: string[];
+  city: string;
+  district: string;
+  phone?: string;
+  email?: string;
+  slug?: string;
+  [key: string]: any;
 }
 
 interface SearchResponse {
@@ -37,8 +40,8 @@ function CourtSearch() {
     const map = new Map<string, CourtItem>();
 
     groups.flat().forEach((court) => {
-      if (!map.has(court.id)) {
-        map.set(court.id, court);
+      if (!map.has(court._id)) {
+        map.set(court._id, court);
       }
     });
 
@@ -78,8 +81,8 @@ function CourtSearch() {
         )
       );
 
-      const mergedCourts = mergeUniqueCourts(responses.map((response) => response.data.sportComplexes));
-      const maxPages = Math.max(...responses.map((response) => response.data.pagination.totalPages), 0);
+      const mergedCourts = mergeUniqueCourts(responses.map((response) => response.sportComplexes));
+      const maxPages = Math.max(...responses.map((response) => response.pagination.totalPages), 0);
 
       setResults(mergedCourts);
       setTotalPages(maxPages);
@@ -145,7 +148,7 @@ function CourtSearch() {
         <section className="results">
           <div className="results-grid">
             {results.map((c) => (
-              <CourtSearchCard key={c.id} court={c} />
+              <CourtSearchCard key={c._id} court={c} />
             ))}
           </div>
 
