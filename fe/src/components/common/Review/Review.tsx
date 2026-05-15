@@ -32,7 +32,7 @@ export const Review: React.FC<ReviewProps> = ({
         <h2 className="title">Reviews</h2>
         <div className="score-badge">
           <span className="star-icon">★</span>
-          <span className="score-number">{overallRating.toFixed(1)}</span>
+          <span className="score-number">{(overallRating || 0).toFixed(1)}</span>
           <span className="total-count">({totalReviews} reviews)</span>
         </div>
       </div>
@@ -41,7 +41,7 @@ export const Review: React.FC<ReviewProps> = ({
 
       {/* DANH SÁCH BÌNH LUẬN (CHIA 2 CỘT) */}
       <div className="reviews-grid">
-        {reviews.map((review) => (
+        {(reviews || []).map((review) => (
           <div key={review.review_id} className="review-card">
             <div className="reviewer-info">
               {review.avatarUrl ? (

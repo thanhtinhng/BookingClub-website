@@ -18,6 +18,7 @@ interface SubFieldProps {
     status: string;
     base_price: number;
     pricing: PricingRule[];
+    config_id?: any;
   };
 }
 
@@ -27,13 +28,15 @@ const SubFieldCard: React.FC<SubFieldProps> = ({ data }) => {
   // Nhóm các quy tắc giá theo khung giờ
   const groupedPricing = useMemo(() => {
     const groups: Record<string, PricingRule[]> = {};
-    data.pricing.forEach((slot) => {
+    const rules = data.config_id?.pricingRules || data.pricing || [];
+
+    rules.forEach((slot: any) => {
       const timeKey = `${slot.start_hour} - ${slot.end_hour}`;
       if (!groups[timeKey]) groups[timeKey] = [];
       groups[timeKey].push(slot);
     });
     return groups;
-  }, [data.pricing]);
+  }, [data]);
 
   return (
     <div className={`sub-field-card ${isMaintenance ? 'maintenance' : ''}`}>
@@ -53,8 +56,8 @@ const SubFieldCard: React.FC<SubFieldProps> = ({ data }) => {
               <React.Fragment key={timeRange}>
                 {slots.map((slot, sIdx) => {
                   const isWeekend = slot.day_of_week.includes('Saturday') || slot.day_of_week.includes('Sunday');
-
-                  const finalPrice = data.base_price * slot.price_multiplier;
+                  const basePrice = data.config_id?.base_price || data.base_price || 0;
+                  const finalPrice = basePrice * slot.price_multiplier;
 
                   return (
                     <tr key={sIdx}>

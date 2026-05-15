@@ -1,136 +1,54 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import "./CourtInfo.css"
 import CourtGallery from "../../components/ui/CourtGallery/CourtGallery";
 import OpeningHours from "../../components/common/OpeningHours/OpeningHours";
 import BookingCard from "../../components/common/BookingCard/BookingCard";
 import Review from "../../components/common/Review/Review"
-
-interface ReviewItem {
-  review_id: number;
-  userName: string;
-  avatarUrl?: string;
-  rating: number;
-  comment: string;
-  created_at: string;
-}
-interface CourtData {
-  id: string;
-  name: string;
-  address: string;
-  ownerName: string;
-  priceRange: string;
-  images: string[];
-
-  openTime: string;
-  closeTime: string;
-
-  fieldName: string;
-  fieldPrice: number;
-  sportType: string;
-
-  rating: number;
-  totalReviews: number;
-  reviews: ReviewItem[];
-}
+import SubFieldList from "../../features/SubFieldList/SubFieldList";
+import {getSportDetail, type SportComplexDetail, type SubFieldDetail} from "../../services/sportDetail.api";
 
 const CourtInfo = () => {
+  const { slug } = useParams<{ slug: string }>();
   // Lưu trữ dữ liệu và trạng thái loading
-  const [court, setCourt] = useState<CourtData | null>(null);
+  const [court, setCourt] = useState<SportComplexDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // const [selectedCourtId, setSelectedCourtId] = useState<string | undefined>(undefined);
-
-  // useEffect(() => {
-  //   // Fetch dữ liệu
-  //   const fetchCourtInfo = async () => {
-  //     try {
-  //       setLoading(true);
-  //       // API
-  //       const response = await fetch("https://api.your-domain.com/courts/123");
-
-  //       if (!response.ok) {
-  //         throw new Error("Không thể lấy dữ liệu sân!");
-  //       }
-
-  //       const data = await response.json();
-  //       setCourt(data);
-  //     } catch (err: any) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchCourtInfo();
-  // }, []); 
-
-  const [selectedCourtId, setSelectedCourtId] = useState<string | undefined>("PB_001");
+  const [selectedCourtId, setSelectedCourtId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const fetchCourtInfo = async () => {
-      try {
-        setLoading(true);
+    if (slug) {
+      setLoading(true);
+      getSportDetail(slug)
+        .then((data:SportComplexDetail) => {
+          setCourt(data);
+          if (data.subFields && data.subFields.length > 0) {
+            setSelectedCourtId(data.subFields[0].id);
+          }
+          setLoading(false);
+        })
+        .catch((err:Error) => { 
+          console.error("Lỗi", err);
+          setError(err.message);
+          setLoading(false);
+        });
+    }
+  }, [slug]);
 
-        // GIẢ LẬP GỌI API (Sẽ thay bằng fetch thật sau)
-        await new Promise((resolve) => setTimeout(resolve, 800)); // Đợi 0.8s cho giống thật
-
-        const mockResponse: CourtData = {
-          id: "CPX_001",
-          name: "Trung Tâm Thể Thao Rạch Miễu",
-          fieldName: "Sân Pickleball Số 1", // Tên sân cụ thể để hiện trong BookingCard
-          address: "Số 1 Hoa Phượng, Phường 2, Quận Phú Nhuận, TP.HCM",
-          ownerName: "Ban Quản Lý Rạch Miễu",
-          fieldPrice: 250000,
-          priceRange: "150.000đ - 350.000đ",
-          images: [
-            "https://picsum.photos/id/101/800/600",
-            "https://picsum.photos/id/102/400/300",
-            "https://picsum.photos/id/103/400/300",
-            "https://picsum.photos/id/104/400/300",
-          ],
-          sportType: "Pickleball",
-          openTime: "06:00",
-          closeTime: "22:00",
-          rating: 4.8,
-          totalReviews: 124,
-          reviews: [
-            {
-              review_id: 1,
-              userName: "Nguyễn Văn A",
-              rating: 5,
-              comment: "Sân cực kỳ chất lượng, thảm mới tinh!",
-              created_at: "20/04/2024"
-            },
-            {
-              review_id: 2,
-              userName: "Nguyễn Văn B",
-              rating: 5,
-              comment: "Sân rất đẹp, thảm mới và êm. Ánh sáng vừa đủ không bị chói mắt.",
-              created_at: "20/04/2024"
-            },
-            {
-              review_id: 3,
-              userName: "Trần Thị B",
-              rating: 4,
-              comment: "Chỗ để xe hơi chật tí vào giờ cao điểm, nhưng chất lượng sân thì tuyệt vời.",
-              created_at: "18/04/2024"
-            }
-          ]
-        };
-
-        setCourt(mockResponse);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourtInfo();
-  }, []);
+  // Lấy dữ liệu cho SubFieldList
+  const normalizedSubFields = useMemo(() => {
+      return court?.subFields.map((s:SubFieldDetail) => ({
+        ...s,
+        config_id: {
+            field_type: s.sportType,
+            base_price: s.basePrice,
+            pricingRules: s.pricingRules
+        }
+    })) || [];
+  }, [court]);
 
   // Xử lý các trạng thái 
+  if (!slug) return <div>Đường dẫn không hợp lệ.</div>;
   if (loading) return <div className="loading">Đang tải thông tin sân...</div>;
   if (error) return <div className="error">Lỗi: {error}</div>;
   if (!court) return <div>Không tìm thấy thông tin sân.</div>;
@@ -195,11 +113,15 @@ const CourtInfo = () => {
             </div>
           </section>
 
+          <section className="court-subfield-info">
+            <SubFieldList dataSource={normalizedSubFields} />
+          </section>
+
           <section className="court-reviews-wrapper">
             <Review
-              overallRating={court.rating}
-              totalReviews={court.totalReviews}
-              reviews={court.reviews}
+              overallRating={court?.rating || 0}
+              totalReviews={court?.totalReviews || 0}
+              reviews={court?.reviews || []}
               onShowAllClick={() => console.log("Mở modal xem hết review")}
             />
           </section>
@@ -213,10 +135,8 @@ const CourtInfo = () => {
           <BookingCard
             complexId={court.id}
             complexName={court.name}
+            courtsList={court.subFields} 
             courtId={selectedCourtId}
-            courtName={court.fieldName}
-            sportType={court.sportType}
-            basePricePerHour={court.fieldPrice}
             onClearSelection={() => setSelectedCourtId(undefined)}
           />
         </aside>

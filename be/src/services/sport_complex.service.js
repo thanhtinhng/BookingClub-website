@@ -104,7 +104,7 @@ const getSportComplexDetailsService = async (slug) => {
           { $sort: { field_type: 1 } },
           {
             $project: {
-              _id: 0,
+              _id: 1,
               complex_id: 1,
               field_type: 1,
               base_price: 1,

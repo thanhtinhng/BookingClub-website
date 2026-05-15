@@ -10,6 +10,7 @@ import Booking from "../pages/BookingTest/Booking.tsx"
 import PaymentSuccess from "../pages/Payment/PaymentSuccess.tsx"
 import PaymentFailed from "../pages/Payment/PaymentFailed.tsx"
 import HomePage from "../pages/HomePage/HomePage.tsx"
+import CourtInfo from "../pages/CourtInfo/CourtInfo.tsx"
 
 function AppRoutes() {
   return (
@@ -22,6 +23,9 @@ function AppRoutes() {
       <Route path="/profile" element={<ProfilePage />} /> {/* Đổi URL thành /profile */}
       {/* ================================ */}
       <Route path="/complexes/:complexId" element={<CourtDetailGalleryDemo />} />
+      {/* <Route path="/Booking" element={<Booking />} /> */}
+      <Route path="/complexes/:slug" element={<CourtInfo />} />
+      {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
       <Route path="/complexes/:complexId/booking" element={<Booking />} />
       <Route path="/complexes/:complexId/booking/confirm" element={<CheckoutPage />} />
       <Route path="/complexes/search" element={<CourtSearch />} />

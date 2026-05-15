@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./BookingCard.css";
 import { useNavigate } from 'react-router-dom';
+import {getTimeSlot} from "../../../services/sportDetail.api";
 
 // --- INTERFACES ---
 interface TimeSlot {
@@ -51,48 +52,6 @@ interface CartItem {
   date: string;
 }
 
-// --- MOCK DATA ---
-const mockTimeSlotsData: Record<string, TimeSlot[]> = {
-  "65f1b1b1b1b1b1b1b1b1b106": [
-    { time: "08:00 - 08:30", isOccupied: false },
-    { time: "08:30 - 09:00", isOccupied: true },
-    { time: "09:00 - 09:30", isOccupied: true },
-    { time: "09:30 - 10:00", isOccupied: false },
-    { time: "10:00 - 10:30", isOccupied: false },
-    { time: "10:30 - 11:00", isOccupied: true },
-    { time: "17:00 - 17:30", isOccupied: false },
-    { time: "17:30 - 18:00", isOccupied: false },
-    { time: "18:00 - 18:30", isOccupied: true },
-    { time: "18:30 - 19:00", isOccupied: true },
-    { time: "19:00 - 19:30", isOccupied: false },
-    { time: "19:30 - 20:00", isOccupied: false },
-  ],
-  "PB_VIP": [
-    { time: "17:00 - 17:30", isOccupied: true },
-    { time: "17:30 - 18:00", isOccupied: true },
-    { time: "18:00 - 18:30", isOccupied: false },
-    { time: "18:30 - 19:00", isOccupied: false },
-    { time: "19:00 - 19:30", isOccupied: false },
-    { time: "19:30 - 20:00", isOccupied: false },
-  ],
-  "BM_001": [
-    { time: "17:00 - 17:30", isOccupied: false },
-    { time: "17:30 - 18:00", isOccupied: false },
-    { time: "18:00 - 18:30", isOccupied: false },
-    { time: "18:30 - 19:00", isOccupied: true },
-    { time: "19:00 - 19:30", isOccupied: true },
-    { time: "19:30 - 20:00", isOccupied: false },
-  ],
-  "65f1b1b1b1b1b1b1b1b1b105": [
-    { time: "17:00 - 18:00", isOccupied: false },
-    { time: "18:00 - 19:00", isOccupied: false },
-    { time: "19:00 - 20:00", isOccupied: false },
-    { time: "20:00 - 21:00", isOccupied: false },
-    { time: "21:00 - 22:00", isOccupied: false },
-    { time: "22:00 - 23:00", isOccupied: false },
-  ]
-};
-
 const availableServices: ServiceItem[] = [
   { id: "referee", name: "Thuê trọng tài", price: 200000, unit: "hour" },
   { id: "racket", name: "Thuê vợt", price: 200000, unit: "flat" },
@@ -134,93 +93,52 @@ const BookingCard: React.FC<BookingCardProps> = ({
   }, [selectedDate]);
 
   useEffect(() => {
-    setSelectedCourtId(courtId || "");
+    if (courtId) setSelectedCourtId(courtId || "");
   }, [courtId]);
 
-  //   Fetch dữ liệu từ BE -> bỏ cmt để tháo dỡ xiềng xích
-  //   useEffect(() => {
-  //   if (!selectedCourtId) {
-  //     setCourtDetail(null);
-  //     setAvailableSlots([]);
-  //     return;
-  //   }
-
-  //   // Flag để chống Race Condition
-  //   let isCurrentRequest = true;
-
-  //   const syncDataWithBackend = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await fetch(
-  //         `/api/complexes/${complexId}/courts/${selectedCourtId}/availability?date=${selectedDate}`
-  //       );
-  //       if (!response.ok) throw new Error("Lỗi fetch");
-
-  //       const data = await response.json();
-  //       const staticInfo = courtsList.find(c => c.id === selectedCourtId);
-
-  //       if (isCurrentRequest) {
-  //         const { courtDetail, slots } = transformBackendData(data, staticInfo);
-
-  //         setCourtDetail(courtDetail);
-  //         setAvailableSlots(slots);
-  //       }
-  //     } catch (error) {
-  //       if (isCurrentRequest) console.error("Sync Error:", error);
-  //     } finally {
-  //       if (isCurrentRequest) setIsLoading(false);
-  //     }
-  //   };
-
-  //   syncDataWithBackend();
-
-  //   return () => { isCurrentRequest = false; }; // Hủy bỏ việc set state nếu component re-render
-  // }, [selectedCourtId, selectedDate, complexId, courtsList]);
-
-  //   const transformBackendData = (data: any, staticInfo: any) => {
-  //     return {
-  //       courtDetail: {
-  //         ...(staticInfo || {}),
-  //         name: data.name || staticInfo?.name,
-  //         basePrice: data.base_price || staticInfo?.basePrice,
-  //         // Đảm bảo các giá trị logic luôn có fallback
-  //         slotStep: data.slot_step || staticInfo?.slotStep || 30,
-  //         minDuration: data.min_duration || staticInfo?.minDuration || 60,
-  //         pricingRules: data.pricing_rules || staticInfo?.pricingRules || []
-  //       },
-  //       // Nếu BE trả về mảng string ["08:00", "08:30"], ta phải biến nó thành Object
-  //       slots: data.slots.map((s: any) => ({
-  //         time: typeof s === 'string' ? s : s.time,
-  //         isOccupied: s.isOccupied ?? false
-  //       }))
-  //     };
-  //   };
-
-  //Mock
   useEffect(() => {
-    if (!selectedCourtId) return;
+    setCart({});
+  }, [complexId]);
 
-    const updateCourtDisplay = async () => {
+  //Fetch dữ liệu từ BE 
+  useEffect(() => {
+    if (!selectedCourtId) {
+      setCourtDetail(null);
+      setAvailableSlots([]);
+      return;
+    }
+
+    let isCurrentRequest = true;
+
+    const syncDataWithBackend = async () => {
       setIsLoading(true);
-
-      //Test Loading
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      const selectedCourtData = courtsList.find(c => c.id === selectedCourtId);
-
-      if (selectedCourtData) {
-        setCourtDetail({
-          ...selectedCourtData,
-          name: selectedCourtData.name
+      try {
+        const response = await getTimeSlot({
+          subfield_id: selectedCourtId,
+          playDate: selectedDate
         });
-        setAvailableSlots(mockTimeSlotsData[selectedCourtId] || []);
-      }
-      setIsLoading(false);
-    };
-    updateCourtDisplay();
-  }, [selectedCourtId, selectedDate, courtsList]);
 
-  const cartItemKey = selectedCourtId ? selectedCourtId : "";
+        if (isCurrentRequest) {
+          const slotDetails = response?.timeSlots || [];
+          const slots = slotDetails.map((s: any) => ({
+            time: s.time,
+            isOccupied: s.status.toLowerCase() !== "available"
+          }));
+          setAvailableSlots(slots);
+          setCourtDetail(courtsList.find(c => String(c.id) === String(selectedCourtId)));
+        }
+      } catch (error) {
+        setAvailableSlots([]);
+      } finally {
+        if (isCurrentRequest) setIsLoading(false);
+      }
+    };
+
+    syncDataWithBackend();
+    return () => { isCurrentRequest = false; };
+  }, [selectedCourtId, selectedDate]);
+
+  const cartItemKey = (selectedCourtId && selectedDate) ? `${selectedCourtId}-${selectedDate}` : "";
   const currentActiveSlots = cartItemKey ? (cart[cartItemKey]?.slots || []) : [];
   const currentActiveServices = cartItemKey ? (cart[cartItemKey]?.services || []) : [];
 
@@ -357,7 +275,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
       if (item.slots.length === 0) return;
 
       const sortedSlots = [...item.slots].sort();
-      const actualCourtId = courtId.split('_')[0];
+      const actualCourtId = courtId.split('-')[0];
 
       // Khởi tạo block đầu tiên
       let currentBlock = {
@@ -517,7 +435,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
           <div className="sub-field-picker-wrapper">
             <label className="booking-section-title">Loại sân:</label>
             <div className="booking-field-value">
-              {courtDetail.sportType}
+              {courtDetail.sportType || "N/A"}
             </div>
           </div>
         )}
@@ -588,7 +506,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <h4 className="mini-cart-title">Hóa đơn</h4>
 
         <div className="mini-cart-list">
-          {Object.keys(cart).map(id => {
+          {Object.keys(cart)
+          .map(id => {
             const item = cart[id];
             if (item.slots.length === 0) return null;
 

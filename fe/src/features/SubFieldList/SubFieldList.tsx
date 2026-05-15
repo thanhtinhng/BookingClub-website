@@ -11,14 +11,14 @@ const SubFieldList: React.FC<SubFieldListProps> = ({dataSource}) => {
 
   // Lấy danh sách các loại sân để filter
   const fieldTypes = useMemo(() => {
-  const types = dataSource.map(item => item.field_type);
+  const types = dataSource.map(item => item.config_id?.field_type);
   return ['Tất cả', ...Array.from(new Set(types))];
   }, [dataSource]);
 
   // Logic lọc dữ liệu
   const filteredData = useMemo(() => {
     if (filterType === 'Tất cả') return dataSource;
-    return dataSource.filter(item => item.field_type === filterType);
+    return dataSource.filter(item => item.config_id?.field_type === filterType);
   }, [filterType, dataSource]);
 
   return (
@@ -32,9 +32,9 @@ const SubFieldList: React.FC<SubFieldListProps> = ({dataSource}) => {
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
             className="filter-select">
-            {fieldTypes.map((type) => (
-              <option key={type} value={type}>
-                  {type}
+            {fieldTypes.map((type, index) => (
+              <option key={`type-${type}-${index}`} value={type}>
+                {type || 'Chưa xác định'}
               </option>
             ))}
           </select>
@@ -42,9 +42,9 @@ const SubFieldList: React.FC<SubFieldListProps> = ({dataSource}) => {
       </div>
 
       <div className="list-wrapper">
-        {filteredData.map(item => (
+        {filteredData.map((item, index) => (
           <SubFieldCard 
-            key={item.sub_field_id} 
+            key={item._id?.toString() || item.id || `subfield-${index}`} 
             data={item} 
           />
         ))}
