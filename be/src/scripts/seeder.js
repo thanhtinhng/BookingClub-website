@@ -25,12 +25,12 @@ const importData = async () => {
     await PricingRule.deleteMany();
     await ImageField.deleteMany();
     await SportComplex.deleteMany();
-    await User.deleteMany(); // Owner cũng nằm trong đây
+    //await User.deleteMany(); // Owner cũng nằm trong đây
     await FieldTypeConfig.deleteMany();
     // 2. INSERT THEO THỨ TỰ
 
     // User + Owner (discriminator tự xử)
-    await User.create(data.User);
+    //await User.create(data.User);
 
     await SportComplex.create(data.SportComplex);
     await FieldTypeConfig.create(data.FieldTypeConfig);

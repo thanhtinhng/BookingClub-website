@@ -36,7 +36,7 @@ function Navbar() {
             <Link to="/complexes/san-bong-thang-long">
               Test Booking
             </Link>
-
+            <Link to="/management">Management</Link>
             {/* Sau này có thêm thì thêm vào link nữa */}
           </nav>
 

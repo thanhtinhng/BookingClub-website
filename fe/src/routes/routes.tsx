@@ -11,6 +11,7 @@ import PaymentSuccess from "../pages/Payment/PaymentSuccess.tsx"
 import PaymentFailed from "../pages/Payment/PaymentFailed.tsx"
 import HomePage from "../pages/HomePage/HomePage.tsx"
 import CourtInfo from "../pages/CourtInfo/CourtInfo.tsx"
+import ManagementPage from "../pages/ManagementPage/ManagementPage.tsx"
 
 function AppRoutes() {
   return (
@@ -29,6 +30,7 @@ function AppRoutes() {
       <Route path="/complexes/search" element={<CourtSearch />} />
       <Route path="/payment/success" element={<PaymentSuccess />} />
       <Route path="/payment/failed" element={<PaymentFailed />} />
+      <Route path="/management" element={<ManagementPage />} />
     </Routes>
   )
 }
