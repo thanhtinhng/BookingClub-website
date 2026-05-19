@@ -163,6 +163,7 @@
         "type": "Point",
         "coordinates": [106.7123, 10.7289]
       },
+      "sport_type": "complex",
       "phone": "0901234567",
       "email": "contact@namsaigon.com",
       "slug": "san-mega-pickleball-pong",
@@ -182,6 +183,7 @@
         "type": "Point",
         "coordinates": [106.6634, 10.8012]
       },
+      "sport_type": "football",
       "phone": "02838112233",
       "email": null,
       "slug": "san-bong-thang-long",
@@ -288,7 +290,7 @@
     {
       "_id": "65f1d1d1b1b1b1b1b1b1b105",
       "complex_id": "65f1a2b3c4d5e6f7a8b90124",
-      "image_url": "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?q=80&w=1000",
+      "image_url": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200",
       "image_type": "Overall",
       "is_primary": true,
       "alt_text": "Sân bóng Thăng Long lung linh dưới ánh đèn đêm",

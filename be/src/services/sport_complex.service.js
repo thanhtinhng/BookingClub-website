@@ -269,4 +269,88 @@ const getSportComplexByNearbyLocationService = async (lat, lng) => {
   return sportComplexes;
 };
 
+export const getComplexesMapService = async () => {
+  const complexes = await SportComplex.aggregate([
+    {
+      $lookup: {
+        from: "fieldimages",
+        let: {
+          complexId: "$_id",
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [
+                  "$complex_id",
+                  "$$complexId",
+                ],
+              },
+              image_type: "Overall",
+            },
+          },
+
+          {
+            $sort: {
+              is_primary: -1,
+              created_at: 1,
+            },
+          },
+
+          {
+            $limit: 1,
+          },
+        ],
+        as: "overall_image",
+      },
+    },
+
+    {
+      $project: {
+        type: {
+          $literal: "Feature",
+        },
+
+        geometry: {
+          type: "$location.type",
+          coordinates:
+            "$location.coordinates",
+        },
+
+        properties: {
+          _id: "$_id",
+          name: "$name",
+          slug: "$slug",
+          sport_type: "$sport_type",
+          address: "$address",
+          city: "$city",
+          district: "$district",
+          phone: "$phone",
+          opening_hours:
+            "$opening_hours",
+          closing_hours:
+            "$closing_hours",
+
+          image_url: {
+            $ifNull: [
+              {
+                $arrayElemAt: [
+                  "$overall_image.image_url",
+                  0,
+                ],
+              },
+              "",
+            ],
+          },
+        },
+      },
+    },
+  ]);
+
+  return {
+    type: "FeatureCollection",
+    features: complexes,
+  };
+};
+
 export { getSportComplexDetailsService, searchSportComplexService, getSportComplexByNearbyLocationService };

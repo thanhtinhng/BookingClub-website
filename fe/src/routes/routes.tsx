@@ -2,16 +2,15 @@ import { Routes, Route } from "react-router-dom"
 import Login from "../pages/Login/Login.tsx"
 import Register from "../pages/Register/Register"
 import Me from "../pages/Me/Me"
-import CourtDetailGalleryDemo from "../pages/CourtDetail/CourtDetailGalleryDemo"
 import CheckoutPage from "../pages/CheckoutPage/CheckoutPage.tsx" 
 import ProfilePage from "../pages/Profile/ProfilePage.tsx"
 import CourtSearch from "../pages/CourtSearch/CourtSearch"
-import Booking from "../pages/BookingTest/Booking.tsx"
 import PaymentSuccess from "../pages/Payment/PaymentSuccess.tsx"
 import PaymentFailed from "../pages/Payment/PaymentFailed.tsx"
 import HomePage from "../pages/HomePage/HomePage.tsx"
 import CourtInfo from "../pages/CourtInfo/CourtInfo.tsx"
 import ManagementPage from "../pages/ManagementPage/ManagementPage.tsx"
+import ComplexMapPage from "../pages/Map/ComplexMapPage.tsx"
 
 function AppRoutes() {
   return (
@@ -31,6 +30,7 @@ function AppRoutes() {
       <Route path="/payment/success" element={<PaymentSuccess />} />
       <Route path="/payment/failed" element={<PaymentFailed />} />
       <Route path="/management" element={<ManagementPage />} />
+      <Route path="/map" element={<ComplexMapPage />} />
     </Routes>
   )
 }

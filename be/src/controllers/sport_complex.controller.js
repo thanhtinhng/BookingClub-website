@@ -1,4 +1,4 @@
-import { getSportComplexDetailsService, searchSportComplexService } from "../services/sport_complex.service.js";
+import { getSportComplexDetailsService, searchSportComplexService, getComplexesMapService } from "../services/sport_complex.service.js";
 
 const getSportComplexDetails = async (req, res) => {
     try {
@@ -48,5 +48,23 @@ const getSportComplexByNearbyLocation = async (req, res) => {
         return res.status(400).json({ message: err.message });
     }
 }
+
+export const getComplexesMapController = async (req, res) => {
+    try {
+      const result = await getComplexesMapService();
+
+      return res.status(200).json(result);
+    } catch (error) {
+      console.error(
+        "Get map complexes error:",
+        error
+      );
+
+      return res.status(500).json({
+        message:
+          "Internal server error",
+      });
+    }
+  };
 
 export { getSportComplexDetails, searchSportComplex, getSportComplexByNearbyLocation };

@@ -39,7 +39,7 @@ const sportComplexSchema = new mongoose.Schema({
             required: true
             },
         coordinates: {
-            type: [Number],
+            type: [Number], //[kinh độ, vĩ độ] = [longitude, latitude] = [lng, lat]
             required: true
             }
     },
@@ -47,6 +47,10 @@ const sportComplexSchema = new mongoose.Schema({
         type: String,
         required: true,
         match: /^[0-9]{9,11}$/
+    },
+    sport_type:{
+        type: String,
+        required: true
     },
     email:{
         type: String,
