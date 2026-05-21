@@ -282,6 +282,9 @@
 }
 
 .mini-cart-item {
+  display: block;
+  width: 100%;
+  text-align: left;
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;

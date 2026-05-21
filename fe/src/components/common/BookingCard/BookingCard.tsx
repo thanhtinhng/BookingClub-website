@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./BookingCard.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {getTimeSlot} from "../../../services/sportDetail.api";
-import { useParams } from "react-router-dom";
 
 // --- INTERFACES ---
 interface TimeSlot {
@@ -110,6 +109,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
       return;
     }
 
+    setCourtDetail(null);
+    setAvailableSlots([]);
+
     let isCurrentRequest = true;
 
     const syncDataWithBackend = async () => {
@@ -134,7 +136,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
       } finally {
         if (isCurrentRequest) setIsLoading(false);
       }
-    };
+    }
 
     syncDataWithBackend();
     return () => { isCurrentRequest = false; };
@@ -363,8 +365,6 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
     // Reset Card
     setCart({});
-    // setStartTime("");           
-    // setEndTime("");            
     setSelectedCourtId("");
     setCourtDetail(null);
 
@@ -412,7 +412,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
       <div className="booking-section">
         <div className="date-picker-wrapper">
-          <label className="booking-section-title" style={{ marginBottom: 0 }}>Ngày chơi:</label>
+          <p className="booking-section-title" style={{ marginBottom: 0 }}>Ngày chơi:</p>
           <input
             type="date"
             className="date-picker-input"
@@ -423,7 +423,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
         </div>
 
         <div className="sub-field-picker-wrapper">
-          <label className="booking-section-title" style={{ marginBottom: 0 }}>Chọn sân:</label>
+          <p className="booking-section-title" style={{ marginBottom: 0 }}>Chọn sân:</p>
           <select
             className="sub-field-picker-input"
             value={selectedCourtId}
@@ -437,14 +437,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
           </select>
         </div>
 
-        {courtDetail && (
-          <div className="sub-field-picker-wrapper">
-            <label className="booking-section-title">Loại sân:</label>
-            <div className="booking-field-value">
-              {courtDetail.sportType || "N/A"}
-            </div>
+        <div className="sub-field-picker-wrapper">
+          <p className="booking-section-title">Loại sân:</p>
+          <div className={`booking-field-value ${!courtDetail ? "loading-placeholder" : ""}`}>
+            {courtDetail ? courtDetail.sportType : "..."}
           </div>
-        )}
+        </div>
       </div>
 
       <hr className="booking-divider" />
@@ -460,7 +458,16 @@ const BookingCard: React.FC<BookingCardProps> = ({
           ) : ("")}
         </div>
 
-        <div className="time-grid-scroll-container">
+        <div className="time-grid-scroll-container"
+          style={{
+            opacity: isLoading ? 0.6 : 1,
+            pointerEvents: isLoading ? 'none' : 'auto', 
+            transition: 'opacity 0.15s ease-in-out'
+          }}
+        >
+          {isLoading ? (
+            <div className="loading-slots-shimmer" style={{ minHeight: "250px" }}>Đang tải khung giờ...</div>
+          ) : (
           <div className="time-pill-grid">
             {availableSlots.map((slot) => {
               const isSelected = currentActiveSlots.includes(slot.time);
@@ -470,13 +477,14 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   type="button"
                   className={`time-pill ${isSelected ? "active" : ""} ${slot.isOccupied ? "occupied" : ""}`}
                   onClick={() => handleToggleSlot(slot.time, slot.isOccupied)}
-                  disabled={slot.isOccupied}
+                  disabled={isLoading || slot.isOccupied}
                 >
                   {slot.time}
                 </button>
               );
             })}
           </div>
+          )}
         </div>
       </div>
 
@@ -547,7 +555,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
             const isEditing = id === `${selectedCourtId}-${selectedDate}`;
 
             return (
-              <div className={`mini-cart-item ${isEditing ? 'is-editing' : ''}`}
+              <button className={`mini-cart-item ${isEditing ? 'is-editing' : ''}`}
                 key={id}
                 onClick={() => handleEditCartItem(id)}>
 
@@ -593,7 +601,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                     <span className="info-value price-highlight">{itemTotalPrice.toLocaleString()}đ</span>
                   </div>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

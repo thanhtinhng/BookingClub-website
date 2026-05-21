@@ -126,20 +126,20 @@ const CourtInfo = () => {
             />
           </section>
         </div>
+      </div>
 
-        <aside className="court-sidebar">
-          <OpeningHours
-            openTime={court.openTime}
-            closeTime={court.closeTime}
-          />
-          <BookingCard
-            complexId={court.id}
-            complexName={court.name}
-            courtsList={court.subFields} 
-            courtId={selectedCourtId}
-            onClearSelection={() => setSelectedCourtId(undefined)}
-          />
-        </aside>
+      <div className="court-right-section">
+        <OpeningHours
+          openTime={court.openTime}
+          closeTime={court.closeTime}
+        />
+        <BookingCard
+          complexId={court.id}
+          complexName={court.name}
+          courtsList={court.subFields} 
+          courtId={selectedCourtId}
+          onClearSelection={() => setSelectedCourtId(undefined)}
+        />
       </div>
     </main>
   );

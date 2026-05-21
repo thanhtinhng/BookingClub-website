@@ -1,31 +1,23 @@
 .court-detail-container {
-  max-width: 100%;
-  margin: 0 auto;
   padding: 20px;
-  font-family: sans-serif;
   background-color: white;
-}
-
-.court-left-section {
   display: flex;
-  gap: 24px;
   align-items: flex-start;
+  gap: 24px;
+  position: relative;
 }
 
-/*==============GALLERY & SIDEBAR=================*/
-/* Gallery 2/3 */
-.court-gallery-wrapper {
+/* Content 2/3 */
+.court-left-section {
   flex: 2;
 }
 
 /* Sidebar 1/3 */
-.court-sidebar {
+.court-right-section {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  position: sticky;
-  top: 20px; 
 }
 
 @media (max-width: 768px) {
