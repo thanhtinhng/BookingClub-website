@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { 
   LayoutDashboard, 
   Ticket, 
@@ -20,77 +20,219 @@ import {
   Plus
 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
-import './ManagementPage.css';
-
-interface Booking {
-  id: string;
-  sport: string;
-  venue: string;
-  court: string;
-  date: string;
-  time: string;
-  status: 'Confirmed' | 'Completed' | 'Cancelled';
-  price: string;
-}
-
-const bookings: Booking[] = [
-  { id: '1', sport: 'Tennis', venue: 'Grand Slam Arena', court: 'Court #4 (Clay)', date: 'Oct 24, 2023', time: '10:00 AM - 12:00 PM', status: 'Confirmed', price: '$45.00' },
-  { id: '2', sport: 'Basketball', venue: 'Urban Hoops Center', court: 'Full Court B', date: 'Oct 22, 2023', time: '06:00 PM - 07:30 PM', status: 'Completed', price: '$30.00' },
-  { id: '3', sport: 'Futsal', venue: 'Elite Sports Club', court: 'Indoor Pitch 2', date: 'Oct 18, 2023', time: '08:00 PM - 10:00 PM', status: 'Completed', price: '$60.00' },
-  { id: '4', sport: 'Swimming', venue: 'Aqua Splash Center', court: 'Lane 3 (Lap Pool)', date: 'Oct 15, 2023', time: '07:00 AM - 08:00 AM', status: 'Cancelled', price: '$15.00' },
-];
-
-
+import './ManagementPage.scss';
+import type { Booking } from '../../services/booking.api';
+import {  getBookingOfUserApi, getNextBookingOfUserApi } from '../../services/booking.api';
+import { useAuth } from '../../contexts/AuthContext';
+import { logoutApi } from "../../services/auth.api";
+import { useNavigate } from "react-router";
+import  Modal  from '../../components/common/Modal/Modal.tsx';
+import { ReviewForm } from '../../features/Review/ReviewForm.tsx';
+import type { CreateReviewPayload } from '../../services/review.api';
+import type { GetReviewOfBookingResponse, FilterOption, GetBookingStatsResponse } from '../../services/booking.api';
+import type { UpdateReviewPayload } from '../../services/review.api';
+import { createReviewApi, updateReviewApi} from '../../services/review.api';
+import { getReviewOfBookingApi } from '../../services/booking.api';
+import moment from 'moment';
+import SideBar from '../../components/common/SideBar/SideBar.tsx';
+moment.locale('vi');
 const ManagementPage = () => {
-  const [activeTab, setActiveTab] = useState('My Bookings');
-  const [filter, setFilter] = useState('All');
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [selectedReview, setSelectedReview] = useState<GetReviewOfBookingResponse | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [filter, setFilter] = useState<FilterOption>('Tất cả');
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 5,
+    total: 0,
+    totalPages: 1,
+  });
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeBookingStat, setActiveBookingStat] = useState<GetBookingStatsResponse | null>(null);
+  const [confirmedBookingStat, setConfirmedBookingStat] = useState<GetBookingStatsResponse | null>(null);
+  
+  // Tạo hiệu ứng delay gõ chữ
+  useEffect(() => {
+    const handler = setTimeout(() => {
+    setDebouncedSearch(searchQuery);
+    setPagination(prev => ({ ...prev, page: 1 }));
+  }, 400); // Sau khi dừng gõ 400ms mới bắt đầu call API
 
-  const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard' },
-    { icon: Ticket, label: 'My Bookings' },
-    { icon: User, label: 'Profile' },
-    { icon: Settings, label: 'Settings' },
-  ];
+  return () => clearTimeout(handler);
+}, [searchQuery]);
+  
+  useEffect(()  => {
+    fetchBookings();
+    fetchBookingStats();
+  }, [pagination.page, filter, debouncedSearch]);
+
+  useEffect(() => {
+    fetchBookingStats();
+  }, []);
+
+  const fetchBookings = async () => {
+    try {
+      const result = await getBookingOfUserApi(searchQuery, filter, pagination.page, pagination.limit);
+      setBookings(result.data || [] );
+      setPagination(prev => ({
+        ...prev,
+        total: result.total,
+        totalPages: result.totalPages,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch bookings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchBookingStats = async () => {
+    try {
+      // Chạy song song cả 2 request lên server cùng một lúc
+    const [activeStats, confirmedStats] = await Promise.all([
+      getNextBookingOfUserApi('active'),
+      getNextBookingOfUserApi('completed') // Lưu ý: Ở backend bạn viết logic là 'completed', nên truyền 'completed' nhé!
+    ]);
+      setActiveBookingStat(activeStats);
+      setConfirmedBookingStat(confirmedStats);
+    } catch (error) {
+      console.error("Failed to fetch booking stats:", error);
+    }
+  };
+  const goPrevPage = () => {
+    if(pagination.page === 1) return;
+    
+    setPagination(prev => ({
+      ...prev,
+      page: prev.page - 1,
+    }));
+  };
+
+  const goToPage = (page: number) => {
+    setPagination(prev => ({
+      ...prev,
+      page,
+    }));
+  };
+
+  const goNextPage = () => {
+    if(pagination.page === pagination.totalPages) return;
+    setPagination(prev => ({
+      ...prev,
+      page: prev.page + 1,
+    }));
+  };
+
+  // Ham thay doi filter Log
+  const handleFilterChange = async (opt: FilterOption) => {
+    setFilter(opt);
+    setIsLoading(true);
+  }
+
+
+  // Ham mo modal review
+  const handleOpenReviewModal = async (booking: Booking) => {
+    try{
+    const reviewData = await getReviewOfBookingApi(booking._id);
+    setSelectedReview(reviewData);
+    setSelectedBooking(booking);
+    setIsReviewModalOpen(true);
+    }catch(error) {
+      console.error("Failed to fetch review for booking:", error);
+      setSelectedReview(null); 
+    }
+  };
+
+  // Ham dong modal review
+
+  const handleCloseReviewModal = () => {
+    setSelectedBooking(null);
+    setIsReviewModalOpen(false);
+    setSelectedReview(null); // Reset review khi đóng modal để tránh hiển thị dữ liệu cũ khi mở modal khác
+  };
+
+  // Ham submit review
+  const handleSubmitReview = async (data: { rating: number; comment: string }) => {
+    try {
+      if (!selectedBooking) {
+        alert("No booking selected for review!");
+        return;
+      }
+      if(selectedReview) {
+        // Nếu đã có review rồi thì gọi API cập nhật review (nếu backend có hỗ trợ)
+        const payload: UpdateReviewPayload ={
+          rating: data.rating,
+          comment: data.comment,
+        }
+        await updateReviewApi( selectedReview._id, payload );
+        alert("Review updated successfully");
+        handleCloseReviewModal();
+        return;
+      }
+      // Implementation for submitting review
+      const payload: CreateReviewPayload = {
+        booking_id: selectedBooking?._id || "",
+        rating: data.rating,
+        comment: data.comment,
+      };
+      await createReviewApi(payload);
+      alert("Review submitted successfully");
+      handleCloseReviewModal();
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+    }
+  };
+
+  // Ham thanh toan
+  const handlePayment = async () => {
+    try {
+      // Implementation for payment
+    } catch (error) {
+      console.error("Payment failed:", error);
+    }
+  };
   
     return (
-    <div className="app-container">
+      <div className="management-page">
+        <div className="app-container">
        {/* Sidebar Navigation */}
-      <aside className="sidebar">
-        <div className="sidebar-logo-section">
-          <h1 className="sidebar-title">CourtMaster</h1>
-          <p className="sidebar-subtitle">Player Portal</p>
-        </div>
-
-        <nav className="nav-menu">
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => setActiveTab(item.label)}
-              className={`nav-item ${
-                activeTab === item.label ? 'nav-item-active' : 'nav-item-inactive'
-              }`}
-            >
-              <item.icon size={20} />
-              <span className="nav-label">{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <button className="sign-out-btn">
-          <LogOut size={20} />
-          <span className="nav-label">Đăng xuất</span>
-        </button>
-      </aside>
+      <SideBar />
 
         {/* Main Content Area */}
-        <main className="main-content">
+        <main className="dashboard-content">
+          <Modal isOpen={isReviewModalOpen} onClose={handleCloseReviewModal}>
+            {selectedBooking && (
+              <ReviewForm 
+                key={selectedReview?. _id || "new-review"} // Đảm bảo form reset khi booking khác được chọn
+                courtName={selectedBooking?.complex_id?.name || ""} 
+                onCancel={handleCloseReviewModal} 
+                onSubmit={handleSubmitReview}
+                data = {selectedReview}
+              />
+            )}
+          </Modal>
+
             {/* Top App Bar */}
         <header className="top-header">
           <div className="search-container">
             <Search className="search-icon" size={18} />
             <input 
               type="text" 
-              placeholder="Tìm kiếm lịch sử..." 
+              placeholder="Tìm kiếm lịch sử..."
+              value={searchQuery}
+              onChange={
+                (e) => {
+                setSearchQuery(e.target.value);
+                setPagination(prev => ({
+                  ...prev,
+                  page: 1, // Reset về trang 1 mỗi khi thay đổi từ khóa tìm kiếm
+                }));
+                }}
               className="search-input"
             />
           </div>
@@ -106,18 +248,6 @@ const ManagementPage = () => {
               </button>
             </div>
 
-            <div className="user-profile">
-              <div className="user-info">
-                <p className="user-name">Alex Rivera</p>
-                <p className="user-tier">Premium Member</p>
-              </div>
-              <img 
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop" 
-                alt="Profile" 
-                className="profile-img"
-                referrerPolicy="no-referrer"
-              />
-            </div>
           </div>
         </header>
 
@@ -144,11 +274,13 @@ const ManagementPage = () => {
           >
             <div className="card-bg-circle" />
             <div className="stats-content">
-              <p className="stats-label">Active Bookings</p>
-              <h3 className="stats-value">03</h3>
+              <p className="stats-label">Tổng số đơn đang chờ chơi</p>
+              <h3 className="stats-value">{activeBookingStat?.totalBookings || 0}</h3>
               <div className="stats-meta">
                 <Calendar size={16} />
-                <span>Next: Tomorrow, 10:00 AM</span>
+                <span> 
+                  Next: {activeBookingStat?.booking?.booking_date ? moment(activeBookingStat.booking.booking_date).format('HH:mm - DD/MM/YYYY') : "Không có đơn sắp tới"}
+                 </span>
               </div>
             </div>
           </motion.div>
@@ -161,11 +293,11 @@ const ManagementPage = () => {
           >
             <div className="card-bg-circle" />
             <div className="stats-content">
-              <p className="stats-label">Completed Bookings</p>
-              <h3 className="stats-value">28</h3>
+              <p className="stats-label">Tổng số đơn đã hoàn thành</p>
+              <h3 className="stats-value">{confirmedBookingStat?.totalBookings || 0}</h3>
               <div className="stats-meta">
                 <History size={16} />
-                <span>Last played: 3 days ago</span>
+                <span>Last played: {confirmedBookingStat?.booking?.booking_date ? moment(confirmedBookingStat.booking.booking_date).format('HH:mm - DD/MM/YYYY') : "Không có đơn đã hoàn thành"}</span>
               </div>
             </div>
           </motion.div>
@@ -199,13 +331,14 @@ const ManagementPage = () => {
             <div className="section-title-group">
               <h4 className="section-title">Booking Logs</h4>
               <div className="filter-tabs">
-                {['Tất cả', 'Sắp tới', 'Hoàn thành'].map((opt) => (
+                {(['Tất cả', 'Hoàn thành', 'Khác'] as FilterOption[]).map((opt) => (
                   <button
                     key={opt}
-                    onClick={() => setFilter(opt)}
+                    onClick={() => handleFilterChange(opt)}
                     className={`filter-tab ${
                       filter === opt ? 'filter-tab-active' : 'filter-tab-inactive'
                     }`}
+                    disabled={isLoading}
                   >
                     {opt}
                   </button>
@@ -231,66 +364,148 @@ const ManagementPage = () => {
                 </tr>
               </thead>
               <tbody>
-                <AnimatePresence>
-                  {bookings.map((booking, idx) => (
-                    <motion.tr 
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      key={booking.id} 
-                    >
-                      <td className="font-semibold">{booking.sport}</td>
-                      <td>
-                        <p className="font-semibold text-sm">{booking.venue}</p>
-                        <p className="text-xs">{booking.court}</p>
-                      </td>
-                      <td>
-                        <p className="font-semibold text-sm">{booking.date}</p>
-                        <p className="text-xs">{booking.time}</p>
-                      </td>
-                      <td>
-                        <span className={`status-pill ${
-                          booking.status === 'Confirmed' ? 'status-confirmed' :
-                          booking.status === 'Completed' ? 'status-completed' :
-                          'status-cancelled'
-                        }`}>
-                          {booking.status}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={booking.status === 'Cancelled' ? 'price-canceled' : 'price-active'}>
-                          {booking.price}
-                        </span>
-                      </td>
-                      <td className="text-right">
-                        <div className="row-actions">
-                          <button className="action-eye-btn">
-                            <Eye size={16} />
-                          </button>
-                          <button className="rebook-btn">
-                            Rebook
-                          </button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              </tbody>
+  <AnimatePresence>
+    {isLoading ? (
+      /* Trường hợp 1: Đang tải dữ liệu - Hiển thị hiệu ứng loading bên trong bảng */
+    <tr>
+      <td colSpan={6} className="text-center py-8">
+        <div className="flex flex-col items-center justify-center gap-2">
+          {/* Hiệu ứng xoay tròn (Spinner) bằng CSS thuần Tailwind */}
+          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm text-gray-500 font-medium">Đang tải danh sách đặt sân...</p>
+        </div>
+      </td>
+    </tr>
+    ) : bookings && bookings.length > 0 ? (
+      /* Trường hợp 2: Dữ liệu đã tải xong và có booking - Hiển thị danh sách booking */
+     bookings.map((booking, idx) => (
+      <motion.tr
+        key={booking._id}
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: idx * 0.1 }}
+      >
+        {/* Sport */}
+        <td className="font-semibold">
+          Unknown
+        </td>
+
+        {/* Tên sân */}
+        <td>
+          <p className="font-semibold text-sm">
+            {booking.complex_id?.name}
+          </p>
+
+          <p className="text-xs">
+            Booking ID: {booking._id}
+          </p>
+        </td>
+
+        {/* Ngày đặt */}
+        <td>
+          <p className="font-semibold text-sm">
+            {new Date(booking.booking_date).toLocaleDateString("vi-VN")}
+          </p>
+        </td>
+
+        {/* Status */}
+        <td>
+          <span
+            className={`status-pill ${
+              booking.status === "confirmed"
+                ? "status-confirmed"
+                : booking.status === "completed"
+                ? "status-completed"
+                : booking.status === "pending"
+                ? "status-pending"
+                : "status-cancelled"
+            }`}
+          >
+            {booking.status}
+          </span>
+        </td>
+
+        {/* Price */}
+        <td>
+          <span
+            className={
+              booking.status === "cancelled"
+                ? "price-canceled"
+                : "price-active"
+            }
+          >
+            {Number(
+              booking.total_price.$numberDecimal
+            ).toLocaleString("vi-VN")}
+            đ
+          </span>
+        </td>
+
+        {/* Actions */}
+        <td className="text-right">
+          <div className="row-actions">
+            <button className="action-eye-btn">
+              <Eye size={16} />
+            </button>
+
+          {
+            booking.status === "completed" ? (
+              <button className="action-review-btn" onClick={() => handleOpenReviewModal(booking)}>
+                Review
+              </button>
+            ) : booking.status === "pending" ? (
+              <button className="action-payment-btn " onClick={() => handlePayment}>
+                Make Payment
+              </button>
+            ) : null
+          }
+            
+          </div>
+        </td>
+      </motion.tr>
+    ))) : (
+      // Trường hợp 3: Dữ liệu đã tải xong nhưng không có booking nào - Hiển thị thông báo trống
+      <tr>
+      <td colSpan={6} className="text-center py-8 text-gray-500">
+        Không tìm thấy lịch sử đặt sân nào ở trạng thái này.
+      </td>
+      </tr>
+    )}
+  </AnimatePresence>
+</tbody>
             </table>
           </div>
           {/* Pagination */}
           <div className="pagination">
-            <p className="text-xs font-medium">Showing 4 of 28 bookings</p>
+            <p className='text-xs font-medium'>
+              Showing {bookings.length} of {pagination.total} bookings
+            </p>
             <div className="pagination-controls">
-              <button className="page-arrow">
-                <ChevronLeft size={16} />
-              </button>
-              <button className="page-num page-num-active">1</button>
-              <button className="page-num page-num-inactive">2</button>
-              <button className="page-num page-num-inactive">3</button>
-              <button className="page-arrow">
-                <ChevronRight size={16} />
-              </button>
+                  <button 
+                  className="page-arrow" 
+                  disabled={pagination.page === 1}
+                  onClick={goPrevPage}
+                >
+                    <ChevronLeft size={16} />
+                  </button>
+
+                  {Array.from({ length: pagination.totalPages }).map((_,idx) => (
+                    <button
+                      key={idx + 1}
+                      className={`page-num ${pagination.page === idx + 1 ? 'page-num-active' : 'page-num-inactive'}`}
+                      onClick={() => goToPage(idx + 1)}
+                    >
+                      {idx + 1}
+                    </button>
+                  ))}
+
+                  <button 
+                    className="page-arrow"
+                    disabled={pagination.page === pagination.totalPages}
+                    onClick={goNextPage}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
             </div>
           </div>
         </section>
@@ -340,7 +555,9 @@ const ManagementPage = () => {
 
         </main>
 
-    </div>
+        </div>
+      </div>
+    
   );
 }
 

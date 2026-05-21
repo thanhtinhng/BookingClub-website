@@ -5,7 +5,7 @@ import SubField from "../models/sub_field.model.js";
 import FieldTypeConfig from "../models/field_type_configs.model.js";
 import mongoose from "mongoose";
 import { CalculatePrice } from "./subfield.service.js";
-
+import SportComplex from "../models/sport_complex.model.js";
 const timeToMinutes = (time) => {
   const [h, m] = time.split(":").map(Number);
 
@@ -244,5 +244,95 @@ export const completeFinishedBookings = async () => {
       booking.status = "completed";
       await booking.save();
     }
+  }
+};
+
+export const getBookingOfUser = async (userId, searchKeyword, statusFilter, page, limit) => {
+  const skip = (page - 1) * limit;
+  
+  let queryCondition = { user_id: userId };
+
+  if (statusFilter === 'completed') {
+    queryCondition.status = 'completed';
+  } else if (statusFilter === 'other') {
+    queryCondition.status = { $ne: 'completed' };
+  }
+
+  if (searchKeyword && searchKeyword.trim() !== '') {
+    // Tìm tất cả các sân có tên chứa từ khóa tìm kiếm (Không phân biệt hoa thường nhờ i-regex)
+    const matchedComplexes = await SportComplex.find({
+      name: { $regex: searchKeyword.trim(), $options: 'i' }
+    }).select('_id').lean();
+
+    // Gom tất cả các _id tìm được thành một mảng [id1, id2, ...]
+    const complexIds = matchedComplexes.map(complex => complex._id);
+
+    // Ép điều kiện: Booking phải thuộc về một trong các sân nằm trong danh sách complexIds này
+    queryCondition.complex_id = { $in: complexIds };
+  }
+
+  const total = await Booking.countDocuments(queryCondition);
+  const bookings = await Booking.find(queryCondition)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .populate("complex_id", "name")
+    .select("_id complex_id booking_date total_price status")
+    .lean();
+
+  return { bookings, total };
+};
+
+export const getNextBookingOfUser = async (userId, stateStatus) => {
+  try {
+    const now = new Date();
+    
+    // 1. Xác định điều kiện lọc dựa trên stateStatus truyền vào
+    let searchStatus = "";
+    let dateCondition = {};
+    let sortCondition = {};
+
+    if (stateStatus === "active") {
+      searchStatus = "confirmed";
+      dateCondition = { $gte: now }; 
+      sortCondition = { booking_date: 1 }; 
+    } else if (stateStatus === "completed") {
+      searchStatus = "completed";
+      // Đơn đã xong gần đây nhất: Ngày đặt sân phải nhỏ hơn thời gian hiện tại
+      dateCondition = { $lt: now }; 
+      sortCondition = { booking_date: -1 }; 
+    } else {
+      // Trường hợp status không hợp lệ
+      return { totalBookings: 0, booking: null };
+    }
+
+    const [totalBookings, booking] = await Promise.all([
+      // Truy vấn 1: Đếm tổng số lượng đơn theo trạng thái của User
+      Booking.countDocuments({
+        user_id: userId,
+        status: searchStatus
+      }),
+
+      // Truy vấn 2: Lấy ra đúng 1 đơn thỏa mãn điều kiện thời gian gần nhất
+      Booking.findOne({
+        user_id: userId,
+        status: searchStatus,
+        booking_date: dateCondition,
+      })
+        .sort(sortCondition)
+        .populate("complex_id", "name")
+        .select("_id complex_id booking_date ")
+        .lean()
+    ]);
+
+    // 3. Trả về cấu trúc dữ liệu đồng nhất cho Front-end dễ xử lý
+    return {
+      totalBookings,
+      booking        
+    };
+
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin booking stats:", error);
+    throw error;
   }
 };

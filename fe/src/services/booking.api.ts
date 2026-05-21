@@ -39,3 +39,72 @@ export const createVnpayPaymentApi = (
 ): Promise<CreatePaymentResponse> => {
   return axios.post(`/api/v1/bookings/${bookingId}/payments/vnpay`);
 };
+
+
+export interface Booking {
+  _id: string;
+
+  complex_id: {
+    _id: string;
+    name: string;
+  };
+
+  total_price: {
+    $numberDecimal: string;
+  };
+
+  booking_date: string;
+
+  status: "confirmed" | "completed" | "pending" | "cancelled";
+}
+
+export type FilterOption = 'Tất cả' | 'Hoàn thành' | 'Khác';
+
+export interface GetBookingsResponse {
+  data: Booking[];
+  total: number;
+  totalPages: number;
+}
+
+const getBookingOfUserApi = async (
+  searchKeyword: string ,
+  statusFilter: FilterOption,
+  page: number,
+  limit: number
+): Promise<GetBookingsResponse> => {
+  let statusParam = 'all';
+  if (statusFilter === 'Khác') statusParam = 'other';
+  if (statusFilter === 'Hoàn thành') statusParam = 'completed';
+  const URL_API = `/api/v1/bookings/history?keyword=${searchKeyword || ''}&status=${statusParam}&page=${page}&limit=${limit}`;
+
+  return await axios.get<any, GetBookingsResponse>(URL_API);
+};
+
+export interface GetReviewOfBookingResponse {
+    _id: string;
+    rating: number;
+    comment: string;
+}
+
+const getReviewOfBookingApi = async (bookingId: string): Promise<GetReviewOfBookingResponse> => {
+    const URL_API = `/api/v1/bookings`;
+    const response = await axios.get<any,GetReviewOfBookingResponse[]>(`${URL_API}/reviews/user-review/${bookingId}`);
+    return response[0];
+}
+
+export interface GetBookingStatsResponse {
+  totalBookings: number;
+  booking: Booking | null;
+}
+
+const getNextBookingOfUserApi = async (stateStatus: string) : Promise<GetBookingStatsResponse> => {
+  const URL_API = `/api/v1/bookings/next-booking`;
+  const response = await axios.get<any,GetBookingStatsResponse>(URL_API, {
+    params: {
+      status: stateStatus 
+    }
+  });
+  return response;
+}
+
+export { getBookingOfUserApi, getReviewOfBookingApi, getNextBookingOfUserApi };

@@ -12,6 +12,7 @@ import HomePage from "../pages/HomePage/HomePage.tsx"
 import CourtInfo from "../pages/CourtInfo/CourtInfo.tsx"
 import ManagementPage from "../pages/ManagementPage/ManagementPage.tsx"
 
+
 function AppRoutes() {
   return (
     <Routes>
